@@ -9,10 +9,10 @@ import {
   Text,
   Anchor,
 } from "@mantine/core";
-//   import { useForm } from "@mantine/form";
 import classes from "@/styles/auth.module.css";
 import Image from "next/image";
 import { useForm } from "@mantine/form";
+import { useRouter } from "next/navigation";
 
 export default function AuthenticationImage() {
   const form = useForm({
@@ -29,6 +29,15 @@ export default function AuthenticationImage() {
     },
   });
 
+  const router = useRouter();
+
+  const handleLogin = (e: any) => {
+    e.preventDefault();
+    localStorage.setItem("email", form.values.email);
+    console.log(form.values);
+    router.push("/dashboard");
+  };
+
   return (
     <div className={classes.wrapper}>
       <div className="hidden md:flex w-full h-full flex-row justify-center items-center">
@@ -44,7 +53,7 @@ export default function AuthenticationImage() {
           </Title> */}
         <form
           className="w-full max-w-[400px] self-center"
-          onSubmit={form.onSubmit((values) => console.log(values))}
+          onSubmit={(e) => handleLogin(e)}
         >
           <TextInput
             label="Username or Email address"
