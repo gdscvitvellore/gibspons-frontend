@@ -36,7 +36,7 @@ export default function Navbar() {
         >
           <p className="px-4">Blogs</p>
         </Link>
-        <Link href="/auth/login" className="hover:scale-110">
+        <Link href="/login" className="hover:scale-110">
           <p className="px-4 m-0 md:ml-4 py-2 text-white bg-black rounded-full">
             Get Started
           </p>

@@ -1,0 +1,41 @@
+.wrapper {
+  min-height: rem(800px);
+  height: 100vh;
+  background-size: cover;
+  background-image: url("../assets/login-bg.png");
+  background-color: black;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+#logo {
+  @media (max-width: 480px) {
+    display: hidden;
+  }
+}
+
+.form {
+  border-left: rem(1px) solid
+    light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-7));
+  min-height: rem(800px);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  min-width: rem(300px);
+  padding-top: rem(80px);
+  margin: auto;
+  margin-right: 0;
+  border-radius: 1rem 0 0 1rem;
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+}
+
+.title {
+  color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
+  font-family: Greycliff CF, var(--mantine-font-family);
+}
