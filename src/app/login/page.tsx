@@ -35,7 +35,7 @@ export default function AuthenticationImage() {
     e.preventDefault();
     localStorage.setItem("email", form.values.email);
     console.log(form.values);
-    router.push("/dashboard");
+    router.push("/home");
   };
 
   return (
@@ -76,7 +76,7 @@ export default function AuthenticationImage() {
             size="md"
             {...form.getInputProps("loginPreference")}
           />
-          <Button mt="xl" size="md" type="submit" w="100%">
+          <Button fullWidth mt="xl" className="bg-blue-500 hover:bg-blue-400" type="submit" size="md" w="100%">
             Login
           </Button>
         </form>

@@ -24,7 +24,9 @@ export default function RootLayout({
         <ColorSchemeScript defaultColorScheme="light"/>
       </head>
       <body>
-        <MantineProvider>{children}</MantineProvider>
+        <MantineProvider defaultColorScheme='light'>
+          {children}
+        </MantineProvider>
       </body>
     </html>
   );

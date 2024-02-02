@@ -1,5 +1,6 @@
 .navbar {
-  height: rem(700px);
+  min-height: rem(700px);
+  height: 100vh;
   width: rem(300px);
   padding: var(--mantine-spacing-md);
   display: flex;
@@ -44,7 +45,7 @@
 
       .linkIcon {
         color: var(--mantine-color-blue-light-color);
-      }
+      };
     }
   }
 }
