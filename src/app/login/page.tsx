@@ -13,6 +13,7 @@ import classes from "@/styles/auth.module.css";
 import Image from "next/image";
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
+import { authStore, user } from "@/store/auth";
 
 export default function AuthenticationImage() {
   const form = useForm({
@@ -29,12 +30,28 @@ export default function AuthenticationImage() {
     },
   });
 
+  const { login } = authStore();
+
   const router = useRouter();
 
   const handleLogin = (e: any) => {
     e.preventDefault();
-    localStorage.setItem("email", form.values.email);
-    console.log(form.values);
+    const User: user = {
+      name: form.values.email,
+      email: form.values.email,
+      loginPreference: form.values.loginPreference,
+      id: 1,
+      accessToken: "wiehf;oiwaj",
+      refreshToken: "/lwenfliewj",
+    }
+    localStorage.setItem("name", User.name);
+    localStorage.setItem("email", User.email);
+    localStorage.setItem("loginPreference", User.loginPreference.toString());
+    localStorage.setItem("id", User.id.toString());
+    localStorage.setItem("accessToken", User.accessToken);
+    localStorage.setItem("refreshToken", User.refreshToken);
+    login(User);
+    console.log(User);
     router.push("/home");
   };
 

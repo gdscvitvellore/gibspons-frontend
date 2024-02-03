@@ -16,6 +16,8 @@ import {
 import { MantineLogo } from "@mantinex/mantine-logo";
 import classes from "@/styles/NavbarSimple.module.css";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { authStore } from "@/store/auth";
+import { useRouter } from "next/navigation";
 
 const data = [
   { link: "", label: "Notifications", icon: IconBellRinging },
@@ -29,6 +31,15 @@ const data = [
 
 function NavbarSimple() {
   const [active, setActive] = useState("Billing");
+  const { logout } = authStore();
+  const router = useRouter();
+
+  const handleLogout = (e: React.BaseSyntheticEvent): void => {
+    e.preventDefault();
+    localStorage.clear();
+    logout();
+    router.push("/");
+  };
 
   const links = data.map((item) => (
     <a
@@ -47,44 +58,31 @@ function NavbarSimple() {
   ));
 
   return (
-        <div className="flex flex-row">
-          <nav className={classes.navbar}>
-            <div className={classes.navbarMain}>
-              <Group className={classes.header} justify="space-between">
-                <MantineLogo size={28} />
-                <Code fw={700}>v3.1.2</Code>
-              </Group>
-              {links}
-            </div>
+    <nav className={classes.navbar}>
+      <div className={classes.navbarMain}>
+        <Group className={classes.header} justify="space-between">
+          <MantineLogo size={28} />
+          <Code fw={700}>v3.1.2</Code>
+        </Group>
+        {links}
+      </div>
 
-            <div className={classes.footer}>
-              <a
-                href="#"
-                className={classes.link}
-                onClick={(event) => event.preventDefault()}
-              >
-                <IconSwitchHorizontal
-                  className={classes.linkIcon}
-                  stroke={1.5}
-                />
-                <span>Change account</span>
-              </a>
+      <div className={classes.footer}>
+        <a
+          href="#"
+          className={classes.link}
+          onClick={(event) => event.preventDefault()}
+        >
+          <IconSwitchHorizontal className={classes.linkIcon} stroke={1.5} />
+          <span>Change account</span>
+        </a>
 
-              <a
-                href="#"
-                className={classes.link}
-                onClick={(event) => event.preventDefault()}
-              >
-                <IconLogout className={classes.linkIcon} stroke={1.5} />
-                <span>Logout</span>
-              </a>
-            </div>
-          </nav>
-          <div>
-            <h1>Dashboard</h1>
-            <p>Protected route</p>
-          </div>
-        </div>
+        <a href="#" className={classes.link} onClick={(e) => handleLogout(e)}>
+          <IconLogout className={classes.linkIcon} stroke={1.5} />
+          <span>Logout</span>
+        </a>
+      </div>
+    </nav>
   );
 }
 
