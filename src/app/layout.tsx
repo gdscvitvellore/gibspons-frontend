@@ -15,33 +15,22 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { login, isLoggedIn } = authStore();
+  const { login, isLoggedIn, initializeFromLocalStorage } = authStore();
 
   useEffect(() => {
-    const name = localStorage.getItem("name");
-    const email = localStorage.getItem("email");
-    const loginPreference = localStorage.getItem("loginPreference");
-    const id = localStorage.getItem("id");
-    const accessToken = localStorage.getItem("accessToken");
-    const refreshToken = localStorage.getItem("refreshToken");
-    if (name && email && loginPreference && id && accessToken && refreshToken) {
-      const User: user = {
-        name: name,
-        email: email,
-        loginPreference: JSON.parse(loginPreference),
-        id: parseInt(id),
-        accessToken: accessToken,
-        refreshToken: refreshToken,
-      };
-      login(User);
-    } else {
-      if (!isLoggedIn) {
-        console.log("Not logged in");
-      } else {
-        console.log("Logged in");
-      }
+    if (isLoggedIn){
+      return () => {
+        null
     }
+    } else {
+      initializeFromLocalStorage();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn, login]);
+
+  useEffect(() => {
+    initializeFromLocalStorage();
+  }, [initializeFromLocalStorage]);
 
   return (
     <html lang="en">
