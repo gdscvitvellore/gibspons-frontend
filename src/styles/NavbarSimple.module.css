@@ -1,17 +1,20 @@
 .navbar {
-  min-height: rem(700px);
+  /* min-height: rem(700px); */
   height: 100vh;
-  width: rem(350px);
+  width: rem(300px);
   padding: var(--mantine-spacing-md);
+  position: fixed;
   display: flex;
+  overflow: auto;
   flex-direction: column;
   background-color: var(--mantine-color-dark-8);
   border-right: rem(1px) solid
     var(--mantine-color-dark-4);
-  @media screen and (max-width: 36em){
+  @media screen and (max-width: 40rem){
     display: none;
   }
 }
+
 
 .navbarMain {
   flex: 1;

@@ -6,6 +6,7 @@ import { Group } from "@mantine/core";
 import {
   IconLogout,
 } from "@tabler/icons-react";
+import icon from "@/assets/icon.svg";
 import { IoMdCalendar } from "react-icons/io";
 import { BiSolidDashboard, BiBuildings } from "react-icons/bi";
 import { RiTeamFill } from "react-icons/ri";
@@ -15,17 +16,18 @@ import classes from "@/styles/NavbarSimple.module.css";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { authStore } from "@/store/auth";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const data = [
-  { link: "", icon: BiSolidDashboard, label: "My Team"},
-  { link: "", icon: RiTeamFill, label: "Members" },
-  { link: "", icon: BiBuildings, label: "Sponsorships" },
-  { link: "", icon: IoMdCalendar, label: "Event Details" },
-  { link: "", icon: IoMailOpen, label: "Generate a Mail" }
+  { link: "/home/team", icon: BiSolidDashboard, label: "My Team"},
+  { link: "/home/members", icon: RiTeamFill, label: "Members" },
+  { link: "/home/sponsorships", icon: BiBuildings, label: "Sponsorships" },
+  { link: "/home/eventdetails", icon: IoMdCalendar, label: "Event Details" },
+  { link: "/home/mail", icon: IoMailOpen, label: "Generate a Mail" }
 ];
 
 function NavbarSimple() {
-  const [active, setActive] = useState("My Team");
+  const [active, setActive] = useState("");
   const { logout } = authStore();
   const router = useRouter();
 
@@ -38,12 +40,13 @@ function NavbarSimple() {
 
   const links = data.map((item) => (
     <a
-      className={classes.link}
+      className={classes.link + " " + "hover:cursor-pointer"}
       data-active={item.label === active || undefined}
       key={item.label}
       onClick={(event) => {
         event.preventDefault();
         setActive(item.label);
+        router.replace(item.link);
       }}
     >
       <item.icon className={classes.linkIcon} />
@@ -55,7 +58,7 @@ function NavbarSimple() {
     <nav className={classes.navbar}>
       <div className={classes.navbarMain}>
         <Group className={classes.header} justify="space-end">
-          <img src="./icon.svg" alt="Icon" className="h-[3.75rem]"/>
+          <Image width='50' height='50' src={icon} alt="Icon" className="h-[3.75rem] aspect-square"/>
           <span className="flex flex-col text-white">
             <p className="text-3xl font-bold">gibspons</p>
             <p className="text-sm">by GDSC VIT.</p>

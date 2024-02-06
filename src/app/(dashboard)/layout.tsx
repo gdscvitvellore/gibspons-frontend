@@ -10,12 +10,12 @@ function Dashboard({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="flex flex-row">
-        <NavbarMinimal />
-        <Sidebar />
-      <div className="flex flex-col w-full">
+    <div className="flex flex-row bg-[#ECECEC] w-full absolute h-screen">
+      <NavbarMinimal />
+      <Sidebar />
+      <div className="flex flex-col w-full ml-[rem(80)] sm:ml-[rem(300)]">
         <HeaderTabs />
-        {children}
+        <div className="m-4 bg-white rounded-md h-full overflow-auto p-4 relative">{children}</div>
       </div>
     </div>
   );
