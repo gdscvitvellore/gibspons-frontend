@@ -13,9 +13,14 @@ import classes from "@/styles/auth.module.css";
 import Image from "next/image";
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
-import { authStore, user } from "@/store/auth";
+import { loginRes } from "@/types/user";
+import { handleLogin } from "@/utils/auth";
+import { authStore } from "@/store/auth";
 
-export default function AuthenticationImage() {
+export default function Login() {
+
+  const { login } = authStore();
+
   const form = useForm({
     initialValues: {
       email: "",
@@ -30,29 +35,40 @@ export default function AuthenticationImage() {
     },
   });
 
-  const { login } = authStore();
-
   const router = useRouter();
 
-  const handleLogin = (e: any) => {
+  const Login = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const User: user = {
-      name: form.values.email,
-      email: form.values.email,
-      loginPreference: form.values.loginPreference,
-      id: 1,
-      accessToken: "wiehf;oiwaj",
-      refreshToken: "/lwenfliewj",
+    const { email, password, loginPreference } = form.values;
+    try {
+      localStorage.clear();
+      const res: loginRes = await handleLogin(
+        email,
+        password
+      );
+      console.log(res);
+      if(res.data.access_token) {
+        const user = {
+          name: res.data.name,
+          email: res.data.email,
+          loginPreference: loginPreference,
+          id: res.data.id,
+          accessToken: res.data.access_token,
+          refreshToken: res.data.refresh_token,
+        };
+        login(user);
+        // if(loginPreference) {
+        //   sessionStorage.setItem("user", JSON.stringify(user));
+        // } else {}
+        localStorage.setItem("user", JSON.stringify(user));
+        router.push("/home");
+      } else {
+        window.alert("Login failed");
+      }
+    } catch (error) {
+      window.alert(error);
+      console.log(error);
     }
-    localStorage.setItem("name", User.name);
-    localStorage.setItem("email", User.email);
-    localStorage.setItem("loginPreference", User.loginPreference.toString());
-    localStorage.setItem("id", User.id.toString());
-    localStorage.setItem("accessToken", User.accessToken);
-    localStorage.setItem("refreshToken", User.refreshToken);
-    login(User);
-    console.log(User);
-    router.push("/home");
   };
 
   return (
@@ -65,12 +81,12 @@ export default function AuthenticationImage() {
         </div>
       </div>
       <Paper className={classes.form} p={30}>
-        {/* <Title order={2} className={classes.title} ta="center" mt="md" mb={50}>
-            Welcome back to Mantine!
-          </Title> */}
+        <Title order={2} className={classes.title} ta="center" mt="md" mb={50}>
+          Welcome back to gibspons!
+        </Title>
         <form
           className="w-full max-w-[400px] self-center"
-          onSubmit={(e) => handleLogin(e)}
+          onSubmit={(e) => Login(e)}
         >
           <TextInput
             label="Username or Email address"
@@ -93,7 +109,14 @@ export default function AuthenticationImage() {
             size="md"
             {...form.getInputProps("loginPreference")}
           />
-          <Button fullWidth mt="xl" className="bg-blue-500 hover:bg-blue-400" type="submit" size="md" w="100%">
+          <Button
+            fullWidth
+            mt="xl"
+            className="bg-blue-500 hover:bg-blue-400"
+            type="submit"
+            size="md"
+            w="100%"
+          >
             Login
           </Button>
         </form>

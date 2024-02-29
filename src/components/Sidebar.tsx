@@ -3,9 +3,7 @@
 
 import { useState } from "react";
 import { Group } from "@mantine/core";
-import {
-  IconLogout,
-} from "@tabler/icons-react";
+import { IconLogout } from "@tabler/icons-react";
 import icon from "@/assets/icon.svg";
 import { IoMdCalendar } from "react-icons/io";
 import { BiSolidDashboard, BiBuildings } from "react-icons/bi";
@@ -19,11 +17,11 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 const data = [
-  { link: "/home/team", icon: BiSolidDashboard, label: "My Team"},
+  { link: "/home/team", icon: BiSolidDashboard, label: "My Team" },
   { link: "/home/members", icon: RiTeamFill, label: "Members" },
   { link: "/home/sponsorships", icon: BiBuildings, label: "Sponsorships" },
-  { link: "/home/eventdetails", icon: IoMdCalendar, label: "Event Details" },
-  { link: "/home/mail", icon: IoMailOpen, label: "Generate a Mail" }
+  { link: "/home/eventDetails", icon: IoMdCalendar, label: "Event Details" },
+  { link: "/home/generateMail", icon: IoMailOpen, label: "Generate a Mail" },
 ];
 
 function NavbarSimple() {
@@ -58,7 +56,13 @@ function NavbarSimple() {
     <nav className={classes.navbar}>
       <div className={classes.navbarMain}>
         <Group className={classes.header} justify="space-end">
-          <Image width='50' height='50' src={icon} alt="Icon" className="h-[3.75rem] aspect-square"/>
+          <Image
+            width="50"
+            height="50"
+            src={icon}
+            alt="Icon"
+            className="h-[3.75rem] aspect-square"
+          />
           <span className="flex flex-col text-white">
             <p className="text-3xl font-bold">gibspons</p>
             <p className="text-sm">by GDSC VIT.</p>

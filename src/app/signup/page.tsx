@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import {
   Paper,
   TextInput,
@@ -12,13 +12,23 @@ import {
 import { useForm } from "@mantine/form";
 import classes from "@/styles/auth.module.css";
 import Image from "next/image";
+import { handleRegister } from "@/utils/auth";
+import { authStore } from "@/store/auth";
+import { useRouter } from "next/navigation";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function AuthenticationImage() {
+  // const { login } = authStore();
+  const router = useRouter();
+
   const form = useForm({
     initialValues: {
       email: "",
       password: "",
       name: "",
+      username: "",
+      loginPreference: false,
     },
 
     validate: {
@@ -30,8 +40,35 @@ export default function AuthenticationImage() {
     },
   });
 
+  const register = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const { email, password, name, username, loginPreference } = form.values;
+    try {
+      const res = await handleRegister(name, email, username, password);
+      if (res.id) {
+        // window.alert("Registered successfully");
+        toast.success("User Registered successfully", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        setTimeout(() => {
+          router.push("/login");
+        }, 2000);
+      }
+    } catch (error) {
+      window.alert(error);
+      console.log(error);
+    }
+  };
+
   return (
     <div className={classes.wrapper}>
+      <ToastContainer />
       <div className="hidden md:flex w-full h-full flex-row justify-center items-center">
         <Image src="/icon.svg" alt="Gibspons logo" width="60" height="60" />
         <div className="flex flex-col justify-center text-white text-left p-2">
@@ -45,7 +82,7 @@ export default function AuthenticationImage() {
             </Title> */}
         <form
           className="max-w-[400px] self-center"
-          onSubmit={form.onSubmit((values) => console.log(values))}
+          onSubmit={(e) => register(e)}
         >
           <TextInput
             label="Name"
@@ -53,6 +90,13 @@ export default function AuthenticationImage() {
             size="md"
             required
             {...form.getInputProps("name")}
+          />
+          <TextInput
+            label="Username"
+            placeholder="Rupaak"
+            size="md"
+            required
+            {...form.getInputProps("username")}
           />
           <TextInput
             label="Email address"
@@ -70,7 +114,13 @@ export default function AuthenticationImage() {
             required
             {...form.getInputProps("password")}
           />
-          {/* <Checkbox label="Keep me logged in" mt="xl" size="md" /> */}
+          {/* <Checkbox
+            id="loginPreference"
+            label="Keep me logged in"
+            mt="xl"
+            size="md"
+            {...form.getInputProps("loginPreference")}
+          /> */}
           <p className="text-sm text-gray-500 mt-2">
             By continuing, you agree to our{" "}
             <Anchor<"a"> href="/terms" fw={700}>
@@ -82,7 +132,14 @@ export default function AuthenticationImage() {
             </Anchor>
             .
           </p>
-          <Button mt="xl" w="100%" size="md" ta="center" type="submit">
+          <Button
+            mt="xl"
+            w="100%"
+            size="md"
+            ta="center"
+            type="submit"
+            className="bg-blue-500 hover:bg-blue-400"
+          >
             Sign Up
           </Button>
         </form>

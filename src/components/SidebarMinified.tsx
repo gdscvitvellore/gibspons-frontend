@@ -7,6 +7,7 @@ import { IoMailOpen } from "react-icons/io5";
 import { IoMdCalendar } from "react-icons/io";
 import Image from "next/image";
 import classes from "../styles/sidebarminified.module.css";
+import { useRouter } from "next/navigation";
 
 interface NavbarLinkProps {
   icon: typeof BiSolidDashboard;
@@ -16,6 +17,7 @@ interface NavbarLinkProps {
 }
 
 function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
+
   return (
     <Tooltip label={label} position="right" transitionProps={{ duration: 0 }}>
       <UnstyledButton
@@ -30,22 +32,27 @@ function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
 }
 
 const mockdata = [
-  { icon: BiSolidDashboard, label: "My Team" },
-  { icon: RiTeamFill, label: "Members" },
-  { icon: BiBuildings, label: "Sponsorships" },
-  { icon: IoMdCalendar, label: "Event Details" },
-  { icon: IoMailOpen, label: "Generate a Mail" },
+  { icon: BiSolidDashboard, label: "My Team", link: "/home/team"},
+  { icon: RiTeamFill, label: "Members", link: "/home/members"},
+  { icon: BiBuildings, label: "Sponsorships", link: "/home/sponsorships"},
+  { icon: IoMdCalendar, label: "Event Details", link: "/home/eventDetails"},
+  { icon: IoMailOpen, label: "Generate a Mail", link: "/home/generateMail"},
 ];
 
 export default function NavbarMinimal() {
   const [active, setActive] = useState(2);
+  
+  const router = useRouter();
+
 
   const links = mockdata.map((link, index) => (
     <NavbarLink
       {...link}
       key={link.label}
       active={index === active}
-      onClick={() => setActive(index)}
+      onClick={() => {
+        setActive(index);
+        router.replace(link.link);}}
       icon={link.icon}
     />
   ));

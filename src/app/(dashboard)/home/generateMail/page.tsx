@@ -8,7 +8,7 @@ export default function Home() {
     <div>
       <h1>Dashboard</h1>
       <p>Protected route</p>
-      <h1>Members Page</h1>
+      <h1>Generate Mail</h1>
       <p>{name}</p>
       <p>{email}</p>
     </div>

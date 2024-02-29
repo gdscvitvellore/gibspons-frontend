@@ -5,8 +5,8 @@ export interface user {
   email: string;
   loginPreference: boolean;
   id: number;
-  accessToken: string;
-  refreshToken: string;
+  accessToken: string | null;
+  refreshToken: string | null;
 }
 
 interface AuthStore extends user {
