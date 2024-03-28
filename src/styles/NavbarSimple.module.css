@@ -8,31 +8,27 @@
   overflow: auto;
   flex-direction: column;
   background-color: var(--mantine-color-dark-8);
-  border-right: rem(1px) solid
-    var(--mantine-color-dark-4);
-  @media screen and (max-width: 40rem){
-    display: none;
+  border-right: rem(1px) solid var(--mantine-color-dark-4);
+  @media screen and (max-width: 640px) {
+    padding: var(--mantine-spacing-xs);
+    width: rem(60px);
   }
 }
-
 
 .navbarMain {
   flex: 1;
 }
 
 .header {
-
   padding-bottom: var(--mantine-spacing-md);
   margin-bottom: calc(var(--mantine-spacing-md) * 1.5);
-  border-bottom: rem(1px) solid
-    var(--mantine-color-dark-4);
+  border-bottom: rem(1px) solid var(--mantine-color-dark-4);
 }
 
 .footer {
   padding-top: var(--mantine-spacing-md);
   margin-top: var(--mantine-spacing-md);
-  border-top: rem(1px) solid
-  var(--mantine-color-dark-4);
+  border-top: rem(1px) solid var(--mantine-color-dark-4);
 }
 
 .link {
@@ -41,38 +37,50 @@
   text-decoration: none;
   font-size: var(--mantine-font-size-sm);
   color: var(--mantine-color-dark-1);
-  padding: var(--mantine-spacing-xs) var(--mantine-spacing-sm);
+  padding: var(--mantine-spacing-xs) var(--mantine-spacing-xs);
   border-radius: var(--mantine-radius-sm);
   font-weight: 500;
 
   &[data-active] {
     &,
     &:hover {
-      background-color: #5379F6;
+      background-color: #5379f6;
       color: white;
 
       .linkIcon {
         color: white;
-      };
+      }
     }
   }
 }
 
-.link:hover{
-    background-color: light-dark(
-      var(--mantine-color-gray-0),
-      var(--mantine-color-dark-6)
-    );
-    color: var(--mantine-color-white);
+.link:hover {
+  background-color: light-dark(
+    var(--mantine-color-gray-0),
+    var(--mantine-color-dark-6)
+  );
+  color: var(--mantine-color-white);
 
-    .linkIcon {
-      color: var(--mantine-color-white);
-    }
+  .linkIcon {
+    color: var(--mantine-color-white);
   }
+}
 
 .linkIcon {
-  color: var(--mantine-color-dark-2) ;
+  color: var(--mantine-color-dark-2);
   margin-right: var(--mantine-spacing-sm);
   width: auto;
   height: rem(24px);
+  @media screen and (max-width: 640px) {
+    margin: 0px;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .linkLabel {
+    display: none;
+  }
+  .title {
+    display: none;
+  }
 }

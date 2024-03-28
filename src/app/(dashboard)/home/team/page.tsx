@@ -1,9 +1,9 @@
-'use client'
+"use client";
 import { authStore } from "@/store/auth";
 
 export default function Home() {
 
-  const { name, email } = authStore();
+  const { name: name, email: email } = authStore();
 
   return (
     <div className="h-screen">

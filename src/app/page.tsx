@@ -5,10 +5,21 @@ import { Inter } from "next/font/google";
 import Navbar from "../components/Navbar";
 import styles from "../styles/index.module.css";
 import Footer from "../components/Footer";
+import { authStore } from "@/store/auth";
+import { useEffect } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+
+  const { initializeFromLocalStorage } = authStore();
+
+  useEffect(() => {
+    initializeFromLocalStorage()
+    
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[]);
+
   return (
     <div className="w-full h-full bg-[#F8F8F8]">
       <Navbar />

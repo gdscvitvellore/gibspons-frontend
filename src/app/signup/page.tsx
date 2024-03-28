@@ -77,9 +77,9 @@ export default function AuthenticationImage() {
         </div>
       </div>
       <Paper className={classes.form} p={30}>
-        {/* <Title order={2} className={classes.title} ta="center" mt="md" mb={50}>
-              Welcome back to Mantine!
-            </Title> */}
+        <Title order={2} className={classes.title} ta="center" mt="md" mb={50}>
+          Create New Account
+        </Title>
         <form
           className="max-w-[400px] self-center"
           onSubmit={(e) => register(e)}

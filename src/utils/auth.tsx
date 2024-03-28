@@ -1,7 +1,10 @@
+"use client";
+
 import { loginRes, registerRes } from "@/types/user";
 import axios from "axios";
 
-const BaseURL = "http://localhost:8000";
+const BaseURL = process.env.NEXT_PUBLIC_BASE_URL;
+console.log(BaseURL);
 
 export async function handleLogin(
   email: string,
@@ -9,6 +12,7 @@ export async function handleLogin(
 ): Promise<loginRes> {
   try {
     console.log("inside handleLogin");
+    console.log(BaseURL);
     const response = await axios.post(`${BaseURL}/users/login/`, {
       email: email,
       password: password,

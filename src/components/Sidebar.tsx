@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Group } from "@mantine/core";
 import { IconLogout } from "@tabler/icons-react";
 import icon from "@/assets/icon.svg";
@@ -36,6 +36,12 @@ function NavbarSimple() {
     router.push("/");
   };
 
+  useEffect(() => {
+    const path = window.location.pathname;
+    const item = data.find((item) => item.link === path);
+    setActive(item?.label || "");
+  }, []);
+
   const links = data.map((item) => (
     <a
       className={classes.link + " " + "hover:cursor-pointer"}
@@ -48,7 +54,7 @@ function NavbarSimple() {
       }}
     >
       <item.icon className={classes.linkIcon} />
-      <span>{item.label}</span>
+      <span className={classes.linkLabel}>{item.label}</span>
     </a>
   ));
 
@@ -63,7 +69,7 @@ function NavbarSimple() {
             alt="Icon"
             className="h-[3.75rem] aspect-square"
           />
-          <span className="flex flex-col text-white">
+          <span className={` ${classes.title} flex flex-col text-white`}>
             <p className="text-3xl font-bold">gibspons</p>
             <p className="text-sm">by GDSC VIT.</p>
           </span>
@@ -74,7 +80,7 @@ function NavbarSimple() {
       <div className={classes.footer}>
         <a href="#" className={classes.link} onClick={(e) => handleLogout(e)}>
           <IconLogout className={classes.linkIcon} stroke={1.5} />
-          <span>Logout</span>
+          <span className={classes.linkLabel}>Logout</span>
         </a>
       </div>
     </nav>

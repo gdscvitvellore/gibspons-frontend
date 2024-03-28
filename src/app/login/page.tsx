@@ -18,7 +18,6 @@ import { handleLogin } from "@/utils/auth";
 import { authStore } from "@/store/auth";
 
 export default function Login() {
-
   const { login } = authStore();
 
   const form = useForm({
@@ -46,7 +45,6 @@ export default function Login() {
         email,
         password
       );
-      console.log(res);
       if(res.data.access_token) {
         const user = {
           name: res.data.name,
@@ -81,6 +79,9 @@ export default function Login() {
         </div>
       </div>
       <Paper className={classes.form} p={30}>
+        <Title order={1} className={classes.title} ta="center" mt="md" mb={50}>
+          Login
+        </Title>
         <Title order={2} className={classes.title} ta="center" mt="md" mb={50}>
           Welcome back to gibspons!
         </Title>
@@ -129,6 +130,11 @@ export default function Login() {
             // onClick={(event) => event.preventDefault()}
           >
             Register
+          </Anchor>
+        </Text>
+        <Text ta="center" mt="md">
+          <Anchor<"a"> href="/forgot" fw={500}>
+            Forgot password?
           </Anchor>
         </Text>
       </Paper>

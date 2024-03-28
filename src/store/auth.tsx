@@ -9,7 +9,13 @@ export interface user {
   refreshToken: string | null;
 }
 
-interface AuthStore extends user {
+interface AuthStore {
+  name: string;
+  email: string;
+  loginPreference: boolean;
+  id: number;
+  accessToken: string | null;
+  refreshToken: string | null;
   isLoggedIn: boolean;
   login: (props: user) => void;
   logout: () => void;
@@ -38,22 +44,28 @@ export const authStore = create<AuthStore>((set) => ({
       isLoggedIn: false,
     }),
   initializeFromLocalStorage: () => {
-    const name = localStorage.getItem("name");
-    const email = localStorage.getItem("email");
-    const loginPreference = localStorage.getItem("loginPreference");
-    const id = localStorage.getItem("id");
-    const accessToken = localStorage.getItem("accessToken");
-    const refreshToken = localStorage.getItem("refreshToken");
-    if (name && email && loginPreference && id && accessToken && refreshToken) {
-      set({
-        name,
-        email,
-        loginPreference: loginPreference === "true",
-        id: parseInt(id),
-        accessToken,
-        refreshToken,
+    const data: user = JSON.parse(localStorage.getItem("user") || "{}");
+
+    const { name, email, loginPreference, id, accessToken, refreshToken } =
+      data;
+
+    if (
+      name &&
+      email &&
+      typeof loginPreference !== undefined &&
+      id &&
+      accessToken &&
+      refreshToken
+    ) {
+      set(() => ({
+        name: name,
+        email: email,
+        loginPreference: loginPreference,
+        id: id,
+        accessToken: accessToken,
+        refreshToken: refreshToken,
         isLoggedIn: true,
-      });
+      }));
     }
   },
 }));
