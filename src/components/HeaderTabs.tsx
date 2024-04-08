@@ -1,5 +1,6 @@
-import cx from 'clsx';
-import { useState } from 'react';
+"use client";
+import cx from "clsx";
+import { useEffect, useState } from "react";
 import {
   Container,
   Avatar,
@@ -11,36 +12,40 @@ import {
   Burger,
   rem,
   useMantineTheme,
-} from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import {
-  IconLogout,
-  IconSettings,
-  IconUser,
-} from '@tabler/icons-react';
-import classes from '../styles/headertabs.module.css';
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { IconLogout, IconSettings, IconUser } from "@tabler/icons-react";
+import classes from "../styles/headertabs.module.css";
+import { authStore } from "../store/auth";
 
 const user = {
-  name: 'Jane Spoonfighter',
-  email: 'janspoon@fighter.dev',
-  image: 'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-5.png',
+  name: "Jane Spoonfighter",
+  email: "janspoon@fighter.dev",
+  image:
+    "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-5.png",
 };
 
 const tabs = [
-  'Home',
-  'Orders',
-  'Education',
-  'Community',
-  'Forums',
-  'Support',
-  'Account',
-  'Helpdesk',
+  "Home",
+  "Orders",
+  "Education",
+  "Community",
+  "Forums",
+  "Support",
+  "Account",
+  "Helpdesk",
 ];
 
 export default function HeaderTabs() {
   const theme = useMantineTheme();
   // const [opened, { toggle }] = useDisclosure(false);
   const [userMenuOpened, setUserMenuOpened] = useState(false);
+  const [username, setuserName] = useState("");
+  const { name } = authStore();
+
+  useEffect(() => {
+    setuserName(name);
+  }, [name]);
 
   const items = tabs.map((tab) => (
     <Tabs.Tab value={tab} key={tab}>
@@ -60,21 +65,34 @@ export default function HeaderTabs() {
           }}  hiddenFrom="lg" size="sm" /> */}
 
           <Menu
-            width={260}
+            width={160}
             position="bottom-end"
-            transitionProps={{ transition: 'pop-top-right' }}
+            transitionProps={{ transition: "pop-top-right" }}
             onClose={() => setUserMenuOpened(false)}
             onOpen={() => setUserMenuOpened(true)}
             withinPortal
           >
             <Menu.Target>
               <UnstyledButton
-                className={cx(classes.user, { [classes.userActive]: userMenuOpened })}
+                className={cx(classes.user, {
+                  [classes.userActive]: userMenuOpened,
+                })}
               >
                 <Group gap={7}>
-                  <Avatar src={user.image} alt={user.name} radius="xl" size={20} />
-                  <Text fw={500} size="sm" lh={1} mr={3}>
-                    {user.name}
+                  <Avatar
+                    src={user.image}
+                    alt={username}
+                    radius="xl"
+                    size={20}
+                  />
+                  <Text
+                    fw={500}
+                    className="hidden md:block"
+                    size="sm"
+                    lh={1}
+                    mr={3}
+                  >
+                    {username}
                   </Text>
                   {/* <IconChevronDown style={{ width: rem(12), height: rem(12) }} stroke={1.5} /> */}
                 </Group>
@@ -95,14 +113,20 @@ export default function HeaderTabs() {
               <Menu.Label>Settings</Menu.Label>
               <Menu.Item
                 leftSection={
-                  <IconSettings style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
+                  <IconSettings
+                    style={{ width: rem(16), height: rem(16) }}
+                    stroke={1.5}
+                  />
                 }
               >
                 Account settings
               </Menu.Item>
               <Menu.Item
                 leftSection={
-                  <IconLogout style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
+                  <IconLogout
+                    style={{ width: rem(16), height: rem(16) }}
+                    stroke={1.5}
+                  />
                 }
               >
                 Logout

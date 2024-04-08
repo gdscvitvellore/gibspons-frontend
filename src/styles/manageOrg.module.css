@@ -1,0 +1,34 @@
+
+#logo {
+    @media (max-width: 480px) {
+      display: hidden;
+    }
+  }
+  
+  .form {
+    background-color: #ececec;
+    border-left: rem(1px) solid
+      light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-7));
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-width: rem(300px);
+    padding-top: rem(80px);
+    margin: auto;
+    margin-right: 0;
+    @media (max-width: 768px) {
+      width: 100%;
+    }
+  }
+  
+  .title {
+    color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
+    font-family: Greycliff CF, var(--mantine-font-family);
+    max-width: rem(500px);
+    width: 100%;
+    text-wrap: wrap;
+  }
+  

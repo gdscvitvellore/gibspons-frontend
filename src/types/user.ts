@@ -4,11 +4,22 @@ export interface loginRes {
     name: string;
     email: string;
     username: string;
-    organisation: number | null;
-    role: "user" | "admin" | null;
+    organisation: string | null;
+    is_approved: boolean;
+    role: "user" | "admin" | "owner" | null;
     access_token: string;
     refresh_token: string;
   };
+}
+
+export interface user{
+  id: number;
+  name: string;
+  email: string;
+  username: string;
+  organisation: string | null;
+  role: "user" | "admin" | "owner" | null;
+  is_approved: boolean;
 }
 
 export interface registerRes {
@@ -16,6 +27,6 @@ export interface registerRes {
   name: string;
   email: string;
   username: string;
-  organisation: number | null;
-  role: "user" | "admin" | null;
+  organisation: null;
+  role: "user";
 }

@@ -41,16 +41,16 @@ export default function Login() {
     const { email, password, loginPreference } = form.values;
     try {
       localStorage.clear();
-      const res: loginRes = await handleLogin(
-        email,
-        password
-      );
-      if(res.data.access_token) {
+      const res: loginRes = await handleLogin(email, password);
+      if (res.data.access_token) {
         const user = {
           name: res.data.name,
           email: res.data.email,
           loginPreference: loginPreference,
           id: res.data.id,
+          organisation: res.data.organisation,
+          role: res.data.role,
+          is_approved: res.data.is_approved,
           accessToken: res.data.access_token,
           refreshToken: res.data.refresh_token,
         };
@@ -58,12 +58,12 @@ export default function Login() {
         // if(loginPreference) {
         //   sessionStorage.setItem("user", JSON.stringify(user));
         // } else {}
-        localStorage.setItem("user", JSON.stringify(user));
+        // localStorage.setItem("user", JSON.stringify(user));
         router.push("/home");
       } else {
         window.alert("Login failed");
       }
-    } catch (error) {
+    } catch (error: any) {
       window.alert(error);
       console.log(error);
     }

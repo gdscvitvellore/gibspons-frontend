@@ -18,11 +18,12 @@ import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export default function AuthenticationImage() {
+export default function SignUp() {
   // const { login } = authStore();
   const router = useRouter();
 
   const form = useForm({
+    validateInputOnChange: false,
     initialValues: {
       email: "",
       password: "",
@@ -40,8 +41,8 @@ export default function AuthenticationImage() {
     },
   });
 
-  const register = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const register = async () => {
+    // e.preventDefault();
     const { email, password, name, username, loginPreference } = form.values;
     try {
       const res = await handleRegister(name, email, username, password);
@@ -82,7 +83,7 @@ export default function AuthenticationImage() {
         </Title>
         <form
           className="max-w-[400px] self-center"
-          onSubmit={(e) => register(e)}
+          onSubmit={form.onSubmit(register)}
         >
           <TextInput
             label="Name"
