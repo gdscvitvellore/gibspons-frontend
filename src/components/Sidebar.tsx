@@ -5,17 +5,12 @@ import { useEffect, useState } from "react";
 import { Group } from "@mantine/core";
 import { IconLogout } from "@tabler/icons-react";
 import icon from "@/assets/icon.svg";
-import { IoMdCalendar } from "react-icons/io";
-import { BiSolidDashboard, BiBuildings } from "react-icons/bi";
-import { RiTeamFill } from "react-icons/ri";
-import { IoMailOpen } from "react-icons/io5";
-
 import classes from "@/styles/NavbarSimple.module.css";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { authStore } from "@/store/auth";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { navLinkStore, dataType } from "@/store/navLinks";
+import { IconType } from "react-icons/lib";
 
 // const data = [
 //   { link: "/team", icon: BiSolidDashboard, label: "My Team" },
@@ -24,6 +19,12 @@ import { navLinkStore, dataType } from "@/store/navLinks";
 //   // { link: "/home/eventDetails"g, icon: IoMdCalendar, label: "Event Details" },
 //   // { link: "/home/generateMail", icon: IoMailOpen, label: "Generate a Mail" },
 // ];
+
+type dataType = {
+  link: string;
+  icon: IconType;
+  label: string;
+};
 
 function NavbarSimple({ data }: { data: dataType[] }) {
   const [active, setActive] = useState("");
