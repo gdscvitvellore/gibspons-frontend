@@ -6,12 +6,12 @@ import Navbar from "../components/Navbar";
 import styles from "../styles/index.module.css";
 import Footer from "../components/Footer";
 
-// const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
 
   return (
-    <div className="w-full h-full bg-[#F8F8F8]">
+    <div className={`w-full  h-full bg-[#F8F8F8]`}>
       <Navbar />
       <div
         id="home"

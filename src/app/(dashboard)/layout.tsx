@@ -8,8 +8,11 @@ import { useEffect, useState } from "react";
 import { BiSolidDashboard, BiBuildings } from "react-icons/bi";
 import { RiTeamFill } from "react-icons/ri";
 import { IoMailOpen } from "react-icons/io5";
-
+import { Inter } from "next/font/google";
 import { usePathname } from "next/navigation";
+
+const inter = Inter({ subsets: ["latin"] });
+
 
 function Dashboard({
   children,
@@ -28,29 +31,32 @@ function Dashboard({
 
   const event_id = pathname.split("/")[2];
 
+  const teamPathRegex = /^\/team\/\d+$/;
+  const isTeamPath = teamPathRegex.test(pathname);
+
   return (
-    <div className="flex flex-row bg-[#ECECEC] w-full absolute h-screen">
+    <div className={`flex flex-row bg-[#ECECEC] w-full absolute h-screen ${inter.className}`}>
       <Sidebar
         data={
-          pathname.includes("/team/")
+          isTeamPath
             ? [
                 {
-                  link: `/team/${event_id}/dashboard`,
+                  link: `${pathname}/dashboard`,
                   icon: BiSolidDashboard,
                   label: "Dashboard",
                 },
                 {
-                  link: `/team/${event_id}/eventDetails`,
+                  link: `${pathname}/eventDetails`,
                   icon: RiTeamFill,
                   label: "Event Details",
                 },
                 {
-                  link: `/team/${event_id}/sponsorships`,
+                  link: `${pathname}/sponsorships`,
                   icon: BiBuildings,
                   label: "Sponsorships",
                 },
                 {
-                  link: `/team/${event_id}/generateMail`,
+                  link: `${pathname}/generateMail`,
                   icon: IoMailOpen,
                   label: "Generate a Mail",
                 },
@@ -73,7 +79,7 @@ function Dashboard({
         {Organisation === null || Is_approved === false ? (
           <ManageOrg />
         ) : (
-          <div className="m-4 relative bg-white rounded-md h-full overflow-auto">
+          <div className="m-4 relative rounded-md h-full overflow-auto">
             {children}
           </div>
         )}

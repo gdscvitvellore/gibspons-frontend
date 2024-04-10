@@ -10,7 +10,7 @@ import {
   Anchor,
 } from "@mantine/core";
 import classes from "@/styles/auth.module.css";
-import Image from "next/image";
+import Image from "next/image"; 
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
 import { loginRes } from "@/types/user";

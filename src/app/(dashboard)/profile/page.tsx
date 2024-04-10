@@ -10,7 +10,7 @@ export default function profile() {
   const { org } = organisationStore();
 
   return (
-    <div className="flex flex-col h-full gap-8">
+    <div className="flex bg-white flex-col h-full gap-8">
       <h1 className="text-2xl font-bold w-full text-center">Your Profile</h1>
       <div className="flex flex-row w-full items-center justify-start gap-4">
         <Image

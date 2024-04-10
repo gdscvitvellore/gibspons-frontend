@@ -19,3 +19,18 @@ export async function getEvents(accessToken: string, org_id: number) {
     throw new Error(error.response.data);
   }
 }
+
+export async function createEvent(accessToken: string, event: any) {
+  try {
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+    };
+    const response = await axios.post(`${BaseURL}/app/event/`, event, {
+      headers,
+    });
+    const data = await response.data;
+    return data;
+  } catch (error: any) {
+    throw new Error(error.response.data);
+  }
+}

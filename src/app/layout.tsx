@@ -1,6 +1,7 @@
 "use client";
 
 import "@mantine/core/styles.css";
+import "@mantine/dates/styles.css";
 // import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "../styles/globals.css";
@@ -44,6 +45,7 @@ export default function RootLayout({
   // }, [initializeFromLocalStorage]);
 
   const theme = createTheme({
+    fontFamily: "Inter",
     components: {
       Input: Input.extend({
         defaultProps: {
@@ -54,7 +56,7 @@ export default function RootLayout({
         },
         classNames: {
           input:
-            "focus:outline-none bg-[#ececec] border-gray-300 w-full focus:border-black rounded-lg w-full",
+            "focus:outline-none bg-white border-[#D0D0D0] w-full focus:border-[#7BB9FA] rounded-lg w-full",
         },
       }),
 

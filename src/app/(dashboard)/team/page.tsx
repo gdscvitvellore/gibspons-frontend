@@ -6,6 +6,7 @@ import { IoLocationSharp } from "react-icons/io5";
 import { useState, useEffect } from "react";
 import { getEvents } from "@/utils/events";
 import { IoMdAddCircleOutline } from "react-icons/io";
+import {useRouter} from "next/navigation";
 
 type Event = {
   id: number;
@@ -42,35 +43,9 @@ const eventCard = (event: Event) => {
 
 export default function Home() {
   const { accessToken, role } = authStore();
-  const [eventsData, setEventsData] = useState<Event[]>([
-    {
-      id: 1,
-      name: "Event 1",
-      date_of_event: "2022-12-12",
-      expected_reg: 100,
-      description: "Event 1 Description",
-      brochure: "Brochure",
-      logo: "Logo",
-    },
-    {
-      id: 2,
-      name: "Event 2",
-      date_of_event: "2022-12-12",
-      expected_reg: 100,
-      description: "Event 2 Description",
-      brochure: "Brochure",
-      logo: "Logo",
-    },
-    {
-      id: 3,
-      name: "Event 3",
-      date_of_event: "2022-12-12",
-      expected_reg: 100,
-      description: "Event 3 Description",
-      brochure: "Brochure",
-      logo: "Logo",
-    },
-  ]);
+  const router = useRouter();
+
+  const [eventsData, setEventsData] = useState<Event[]>([]);
   const { org } = organisationStore();
 
   useEffect(() => {
@@ -116,7 +91,9 @@ export default function Home() {
             role === "owner" || role === "admin" ? "" : "hidden"
           } `}
         >
-          <button className="flex bg-white flex-row sticky bottom-0 items-center gap-2 border-2 font-bold rounded-sm border-blue-500 text-blue-500 p-2 px-4 z-10">
+          <button onClick={()=>{
+            router.push("/team/createNewEvent")
+          }} className="flex bg-white flex-row sticky bottom-0 items-center gap-2 border-2 font-bold rounded-sm border-blue-500 text-blue-500 p-2 px-4 z-10">
             <IoMdAddCircleOutline className="text-2xl font-bold" /> Create New
             Event
           </button>
