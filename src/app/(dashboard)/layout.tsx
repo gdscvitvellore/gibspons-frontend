@@ -26,6 +26,8 @@ function Dashboard({
     setIsApproved(is_approved);
   }, [organisation, is_approved]);
 
+  const event_id = pathname.split("/")[2];
+
   return (
     <div className="flex flex-row bg-[#ECECEC] w-full absolute h-screen">
       <Sidebar
@@ -33,22 +35,22 @@ function Dashboard({
           pathname.includes("/team/")
             ? [
                 {
-                  link: "/team/dashboard",
+                  link: `/team/${event_id}/dashboard`,
                   icon: BiSolidDashboard,
                   label: "Dashboard",
                 },
                 {
-                  link: "/team/eventDetails",
+                  link: `/team/${event_id}/eventDetails`,
                   icon: RiTeamFill,
                   label: "Event Details",
                 },
                 {
-                  link: "/team/sponsorships",
+                  link: `/team/${event_id}/sponsorships`,
                   icon: BiBuildings,
                   label: "Sponsorships",
                 },
                 {
-                  link: "/team/generateMail",
+                  link: `/team/${event_id}/generateMail`,
                   icon: IoMailOpen,
                   label: "Generate a Mail",
                 },
@@ -71,7 +73,7 @@ function Dashboard({
         {Organisation === null || Is_approved === false ? (
           <ManageOrg />
         ) : (
-          <div className="m-4 bg-white rounded-md h-full overflow-auto p-4 relative">
+          <div className="m-4 relative bg-white rounded-md h-full overflow-auto">
             {children}
           </div>
         )}

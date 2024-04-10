@@ -52,7 +52,7 @@ function NavbarSimple({ data }: { data: dataType[] }) {
       onClick={(event) => {
         event.preventDefault();
         setActive(item.label);
-        router.replace(item.link);
+        router.push(item.link);
       }}
     >
       <item.icon className={classes.linkIcon} />
@@ -63,7 +63,9 @@ function NavbarSimple({ data }: { data: dataType[] }) {
   return (
     <nav className={classes.navbar}>
       <div className={classes.navbarMain}>
-        <Group className={classes.header} justify="space-end">
+        <Group className={classes.header} onClick={() => {
+          router.push("/team");
+        }} justify="space-end">
           <Image
             width="50"
             height="50"

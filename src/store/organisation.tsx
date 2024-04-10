@@ -4,7 +4,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 export interface organisation {
-  id: number | null;
+  id: number;
   name: string;
   industry: string;
   location: string;
@@ -22,7 +22,7 @@ export const organisationStore = create<organisationStore>()(
   persist(
     (set, get) => ({
       org: {
-        id: null,
+        id: 0,
         name: "",
         industry: "",
         location: "",

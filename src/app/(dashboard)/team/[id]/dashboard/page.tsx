@@ -1,7 +1,7 @@
 "use client";
 import { authStore } from "@/store/auth";
 
-export default function Home() {
+export default function Home({params}: {params: {id: number}}) {
   const { name, email } = authStore();
 
   return (
@@ -10,7 +10,7 @@ export default function Home() {
       <p>Protected route</p>
       <h1>Team Dashboard</h1>
       <p>{name}</p>
-      <p>{email}</p>
+      <p>{params.id}</p>
     </div>
   );
 }

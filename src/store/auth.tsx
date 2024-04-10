@@ -9,8 +9,8 @@ export interface User {
   organisation: string | null;
   is_approved: boolean;
   role: "user" | "admin" | "owner" | null;
-  accessToken: string | null;
-  refreshToken: string | null;
+  accessToken: string;
+  refreshToken: string;
 }
 
 interface AuthStore extends User {
