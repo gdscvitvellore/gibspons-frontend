@@ -55,10 +55,8 @@
 }
 
 .link:hover {
-  background-color: light-dark(
-    var(--mantine-color-gray-0),
-    var(--mantine-color-dark-6)
-  );
+  background-color: 
+    var(--mantine-color-dark-6);
   color: var(--mantine-color-white);
 
   .linkIcon {

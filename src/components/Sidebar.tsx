@@ -15,16 +15,17 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import { authStore } from "@/store/auth";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { navLinkStore, dataType } from "@/store/navLinks";
 
-const data = [
-  { link: "/home/team", icon: BiSolidDashboard, label: "My Team" },
-  { link: "/home/members", icon: RiTeamFill, label: "Members" },
-  { link: "/home/sponsorships", icon: BiBuildings, label: "Sponsorships" },
-  { link: "/home/eventDetails", icon: IoMdCalendar, label: "Event Details" },
-  { link: "/home/generateMail", icon: IoMailOpen, label: "Generate a Mail" },
-];
+// const data = [
+//   { link: "/team", icon: BiSolidDashboard, label: "My Team" },
+//   { link: "/members", icon: RiTeamFill, label: "Members" },
+//   { link: "/sponsorships", icon: BiBuildings, label: "Sponsorships" },
+//   // { link: "/home/eventDetails"g, icon: IoMdCalendar, label: "Event Details" },
+//   // { link: "/home/generateMail", icon: IoMailOpen, label: "Generate a Mail" },
+// ];
 
-function NavbarSimple() {
+function NavbarSimple({ data }: { data: dataType[] }) {
   const [active, setActive] = useState("");
   const { logout } = authStore();
   const router = useRouter();
@@ -40,9 +41,9 @@ function NavbarSimple() {
     const path = window.location.pathname;
     const item = data.find((item) => item.link === path);
     setActive(item?.label || "");
-  }, []);
+  }, [data]);
 
-  const links = data.map((item) => (
+  const links = data?.map((item) => (
     <a
       className={classes.link + " " + "hover:cursor-pointer"}
       data-active={item.label === active || undefined}

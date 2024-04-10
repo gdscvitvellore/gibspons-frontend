@@ -53,7 +53,7 @@ export const authStore = create<AuthStore>()(
       login: (props: User) => {
         set({ ...props, isLoggedIn: true });
       },
-      logout: () =>
+      logout: () => {
         set({
           name: "",
           email: "",
@@ -64,12 +64,12 @@ export const authStore = create<AuthStore>()(
           accessToken: "",
           refreshToken: "",
           isLoggedIn: false,
-        }),
-
+        });
+          localStorage.clear();
+      },
     }),
     {
-      name: "authStore", // Name of the store for persistence
-      getStorage: () => localStorage, // Storage mechanism (localStorage in this case)
-    },
-  ),
+      name: "authStore",
+    }
+  )
 );

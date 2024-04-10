@@ -16,9 +16,12 @@ import { useRouter } from "next/navigation";
 import { loginRes } from "@/types/user";
 import { handleLogin } from "@/utils/auth";
 import { authStore } from "@/store/auth";
+import { organisationStore } from "@/store/organisation";
+import { getOrganisation } from "@/utils/organisation";
 
 export default function Login() {
   const { login } = authStore();
+  const { updateOrganisation } = organisationStore();
 
   const form = useForm({
     initialValues: {
@@ -43,23 +46,35 @@ export default function Login() {
       localStorage.clear();
       const res: loginRes = await handleLogin(email, password);
       if (res.data.access_token) {
+        const {
+          name,
+          email,
+          organisation,
+          id,
+          role,
+          is_approved,
+          access_token,
+          refresh_token,
+        } = res.data;
         const user = {
-          name: res.data.name,
-          email: res.data.email,
+          name,
+          email,
           loginPreference: loginPreference,
-          id: res.data.id,
-          organisation: res.data.organisation,
-          role: res.data.role,
-          is_approved: res.data.is_approved,
-          accessToken: res.data.access_token,
-          refreshToken: res.data.refresh_token,
+          id,
+          organisation,
+          role,
+          is_approved,
+          accessToken: access_token,
+          refreshToken: refresh_token,
         };
         login(user);
+        const org = await getOrganisation(access_token);
+        updateOrganisation(org);
         // if(loginPreference) {
         //   sessionStorage.setItem("user", JSON.stringify(user));
         // } else {}
         // localStorage.setItem("user", JSON.stringify(user));
-        router.push("/home");
+        router.push("/team");
       } else {
         window.alert("Login failed");
       }

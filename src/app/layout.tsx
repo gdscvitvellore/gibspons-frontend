@@ -4,11 +4,17 @@ import "@mantine/core/styles.css";
 // import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "../styles/globals.css";
-import { ColorSchemeScript, MantineProvider, createTheme, Input } from "@mantine/core";
-// import { authStore, user } from "@/store/auth";
+import {
+  ColorSchemeScript,
+  MantineProvider,
+  createTheme,
+  Input,
+} from "@mantine/core";
+// import { authStore } from "@/store/auth";
+// import { use, useEffect } from "react";
 // import { useEffect } from "react";
 
-const inter = Inter({ subsets: ["latin"] });
+// const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
   children,
@@ -16,7 +22,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   // const { login, isLoggedIn } = authStore();
-
+  // useEffect(() => {
+  //   if (isLoggedIn) {
+  //     handleRefreshData();
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
   // useEffect(() => {
   //   if (isLoggedIn){
   //     return () => {
@@ -41,7 +52,10 @@ export default function RootLayout({
           size: "md",
           w: "100%",
         },
-        classNames: {input: "focus:outline-none bg-[#ececec] border-gray-300 w-full focus:border-black rounded-lg w-full"},
+        classNames: {
+          input:
+            "focus:outline-none bg-[#ececec] border-gray-300 w-full focus:border-black rounded-lg w-full",
+        },
       }),
 
       InputWrapper: Input.Wrapper.extend({
@@ -58,7 +72,9 @@ export default function RootLayout({
         <ColorSchemeScript defaultColorScheme="light" />
       </head>
       <body>
-        <MantineProvider theme={theme} defaultColorScheme="light">{children}</MantineProvider>
+        <MantineProvider theme={theme} defaultColorScheme="light">
+          {children}
+        </MantineProvider>
       </body>
     </html>
   );

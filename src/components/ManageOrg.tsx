@@ -13,8 +13,8 @@ import { useForm } from "@mantine/form";
 import {
   handleJoinOrg,
   handleCreateOrg,
-  handleRefreshData,
 } from "@/utils/auth";
+import { getUserData } from "@/utils/auth";
 import { authStore } from "@/store/auth";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { ToastContainer, toast } from "react-toastify";
@@ -73,7 +73,7 @@ function ManageOrg() {
 
   const refreshData = async () => {
     //todo: put logic here once backend is updated
-    const resp: user = await handleRefreshData(accessToken);
+    const resp: user = await getUserData(accessToken);
     const User = getUser();
     update({
       ...User,
@@ -232,9 +232,11 @@ function ManageOrg() {
 
           <Text ta="center" mt="md">
             Don&apos;t have an invite code?{" "}
-            <Anchor<"a"> href="/signup" fw={700}>
+            <span className="text-blue-500" onClick={()=>{
+              setCreateOrg(true);
+            }}>
               Create Your Own Team
-            </Anchor>
+            </span>
           </Text>
         </Paper>
       ) : (

@@ -6,7 +6,7 @@ import Navbar from "../components/Navbar";
 import styles from "../styles/index.module.css";
 import Footer from "../components/Footer";
 
-const inter = Inter({ subsets: ["latin"] });
+// const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
 

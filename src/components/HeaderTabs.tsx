@@ -13,10 +13,10 @@ import {
   rem,
   useMantineTheme,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
 import { IconLogout, IconSettings, IconUser } from "@tabler/icons-react";
 import classes from "../styles/headertabs.module.css";
 import { authStore } from "../store/auth";
+import { useRouter } from "next/navigation";
 
 const user = {
   name: "Jane Spoonfighter",
@@ -41,7 +41,8 @@ export default function HeaderTabs() {
   // const [opened, { toggle }] = useDisclosure(false);
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const [username, setuserName] = useState("");
-  const { name } = authStore();
+  const { name, logout } = authStore();
+  const router = useRouter();
 
   useEffect(() => {
     setuserName(name);
@@ -100,6 +101,10 @@ export default function HeaderTabs() {
             </Menu.Target>
             <Menu.Dropdown>
               <Menu.Item
+                component="button"
+                onClick={() => {
+                  router.push("/profile");
+                }}
                 leftSection={
                   <IconUser
                     style={{ width: rem(16), height: rem(16) }}
@@ -122,6 +127,12 @@ export default function HeaderTabs() {
                 Account settings
               </Menu.Item>
               <Menu.Item
+                component="button"
+                onClick={() => {
+                  // localStorage.clear();
+                  router.push("/");
+                  logout();
+                }}
                 leftSection={
                   <IconLogout
                     style={{ width: rem(16), height: rem(16) }}
