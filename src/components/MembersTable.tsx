@@ -83,28 +83,20 @@ function Th({ children, reversed, sorted, onSort }: ThProps) {
   );
 }
 
-export default function MembersTable({ data }: { data: RowData[]}) {
+export default function MembersTable({ data }: { data: RowData[] }) {
   const [search, setSearch] = useState("");
   const [sortedData, setSortedData] = useState<RowData[]>(data);
-  const [SortBy, setSortBy] = useState<keyof RowData | null>(
-    null
-  );
-  const [reverseSortDirection, setReverseSortDirection] =
-    useState(false);
+  const [SortBy, setSortBy] = useState<keyof RowData | null>(null);
+  const [reverseSortDirection, setReverseSortDirection] = useState(false);
 
   const setSorting = (field: keyof RowData) => {
-    const reversed =
-      field === SortBy ? !reverseSortDirection : false;
+    const reversed = field === SortBy ? !reverseSortDirection : false;
     setReverseSortDirection(reversed);
     setSortBy(field);
-    setSortedData(
-      sortData(sortedData, { sortBy: field, reversed, search })
-    );
+    setSortedData(sortData(sortedData, { sortBy: field, reversed, search }));
   };
 
-  const handleSearchChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget;
     setSearch(value);
     setSortedData(
@@ -126,10 +118,12 @@ export default function MembersTable({ data }: { data: RowData[]}) {
   ));
 
   return (
-    <ScrollArea>
+    <>
+      {" "}
       <TextInput
         placeholder="Search by any field"
         mb="md"
+        w={'100%'}
         leftSection={
           <IconSearch
             style={{ width: rem(16), height: rem(16) }}
@@ -139,58 +133,70 @@ export default function MembersTable({ data }: { data: RowData[]}) {
         value={search}
         onChange={handleSearchChange}
       />
-      <Table
-        horizontalSpacing="md"
-        verticalSpacing="xs"
-        miw={700}
-        layout="fixed"
+      <Table.ScrollContainer
+        // className=" inline overflow-x-hidden"
+        type="native"
+        minWidth={800}
+        maw={"100%"}
       >
-        <Table.Tbody>
-          <Table.Tr>
-            <Th
-              sorted={SortBy === "name"}
-              reversed={reverseSortDirection}
-              onSort={() => setSorting("name")}
-            >
-              Name
-            </Th>
-            <Th
-              sorted={SortBy === "email"}
-              reversed={reverseSortDirection}
-              onSort={() => setSorting("email")}
-            >
-              Email
-            </Th>
-            <Th
-              sorted={SortBy === "username"}
-              reversed={reverseSortDirection}
-              onSort={() => setSorting("username")}
-            >
-              Username
-            </Th>
-            <Th
-              sorted={SortBy === "role"}
-              reversed={reverseSortDirection}
-              onSort={() => setSorting("role")}
-            >
-              Role
-            </Th>
-          </Table.Tr>
-        </Table.Tbody>
-        <Table.Tbody>
-          {rows.length > 0 ? (
-            rows
-          ) : (
-            <Table.Tr>
-              <Table.Td colSpan={4}>
-                <Text fw={500} ta="center">
-                  Nothing found
-                </Text>
-              </Table.Td>
-            </Table.Tr>
-          )}
-        </Table.Tbody>
-      </Table>
-    </ScrollArea>
+        <ScrollArea>
+          <Table
+            horizontalSpacing="md"
+            verticalSpacing="xs"
+            miw={800}
+            withRowBorders
+            border={1}
+            borderColor="grape"
+            layout="fixed"
+          >
+            <Table.Tbody>
+              <Table.Tr>
+                <Th
+                  sorted={SortBy === "name"}
+                  reversed={reverseSortDirection}
+                  onSort={() => setSorting("name")}
+                >
+                  Name
+                </Th>
+                <Th
+                  sorted={SortBy === "email"}
+                  reversed={reverseSortDirection}
+                  onSort={() => setSorting("email")}
+                >
+                  Email
+                </Th>
+                <Th
+                  sorted={SortBy === "username"}
+                  reversed={reverseSortDirection}
+                  onSort={() => setSorting("username")}
+                >
+                  Username
+                </Th>
+                <Th
+                  sorted={SortBy === "role"}
+                  reversed={reverseSortDirection}
+                  onSort={() => setSorting("role")}
+                >
+                  Role
+                </Th>
+              </Table.Tr>
+            </Table.Tbody>
+            <Table.Tbody>
+              {rows.length > 0 ? (
+                rows
+              ) : (
+                <Table.Tr>
+                  <Table.Td colSpan={4}>
+                    <Text fw={500} ta="center">
+                      Nothing found
+                    </Text>
+                  </Table.Td>
+                </Table.Tr>
+              )}
+            </Table.Tbody>
+          </Table>
+        </ScrollArea>
+      </Table.ScrollContainer>
+    </>
   );
 }

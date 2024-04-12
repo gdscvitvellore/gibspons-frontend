@@ -57,7 +57,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="h-full bg-white rounded-md gap-8 flex flex-col items-center p-4">
+    <div className="h-full absolute max-w-full overflow-x-auto bg-white rounded-md gap-8 flex flex-col items-center p-4">
       <div className="flex flex-row w-full items-center gap-4 h-full max-h-[11rem] justify-between">
         <div className="flex w-full max-w-[35rem] flex-col">
           {org.logo && (
@@ -80,7 +80,7 @@ export default function Home() {
           Overview
         </div>
       </div>
-      {membersNotApproved && <MembersTable data={membersNotApproved} />}
+      {membersNotApproved && <MembersTable  data={membersNotApproved} />}
       <br />
       {membersApproved && <MembersTable data={membersApproved} />}
     </div>

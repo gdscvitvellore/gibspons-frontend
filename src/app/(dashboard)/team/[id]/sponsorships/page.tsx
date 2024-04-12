@@ -1,23 +1,13 @@
 "use client";
 import { authStore } from "@/store/auth";
-import { sponsByOrg } from "@/types/org";
 import { fetchAllSponsors } from "@/utils/organisation";
 
 import {
   Table,
   ScrollArea,
-  UnstyledButton,
-  Group,
   Text,
-  Center,
-  TextInput,
-  rem,
-  keys,
 } from "@mantine/core";
-import classes from "@/styles/TableSort.module.css";
-import axios from "axios";
 import { useState, useEffect } from "react";
-import { link } from "fs";
 import { organisationStore } from "@/store/organisation";
 
 interface RowData {
@@ -66,11 +56,11 @@ export default function Home() {
       <Table.Td className="text-center">
         <span
           className={`
-        ${row.status === "Accepted" ? "bg-[#D1FAE5] text-[#10B981]" : ""}
-        ${row.status === "Rejected" ? "bg-[#FEE2E2] text-[#EF4444]" : ""}
-        ${row.status === "No Reply" ? "bg-[#FEF3C7] text-[#F59E0B]" : ""}
-        ${row.status === "In Progress" ? "bg-[#FCE7F3] text-[#EC4899]" : ""}
-        ${row.status === "None" ? "bg-[#F9FAFB] text-[#6B7280]" : ""}
+        ${row.status === "Accepted" ? "bg-[#E7F6EE] text-[#3AB876]" : ""}
+        ${row.status === "Rejected" ? "bg-[#FEEDE9] text-[#F46E47]" : ""}
+        ${row.status === "No Reply" ? "bg-[#FFF9E6] text-[#FFD12E]" : ""}
+        ${row.status === "In Progress" ? "bg-[#D1C5FF] text-[#7F5DFF]" : ""}
+        ${row.status === "None" ? "bg-[#F6F6F6] text-[#414141]" : ""}
         p-2 px-4 rounded-full`}
         >
           {row.status}

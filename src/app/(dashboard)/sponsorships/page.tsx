@@ -1,23 +1,13 @@
 "use client";
 import { authStore } from "@/store/auth";
-import { sponsByOrg } from "@/types/org";
 import { fetchAllSponsors } from "@/utils/organisation";
 
 import {
   Table,
   ScrollArea,
-  UnstyledButton,
-  Group,
   Text,
-  Center,
-  TextInput,
-  rem,
-  keys,
 } from "@mantine/core";
-import classes from "@/styles/TableSort.module.css";
-import axios from "axios";
 import { useState, useEffect } from "react";
-import { link } from "fs";
 import { organisationStore } from "@/store/organisation";
 
 interface RowData {
@@ -64,13 +54,13 @@ export default function Home() {
         <span className="bg-[#F6F6F6] p-2 px-4 rounded-full">{row.status}</span>
       </Table.Td>
       <Table.Td className="text-center">
-        <span
+      <span
           className={`
-        ${row.status === "Accepted" ? "bg-[#D1FAE5] text-[#10B981]" : ""}
-        ${row.status === "Rejected" ? "bg-[#FEE2E2] text-[#EF4444]" : ""}
-        ${row.status === "No Reply" ? "bg-[#FEF3C7] text-[#F59E0B]" : ""}
-        ${row.status === "In Progress" ? "bg-[#FCE7F3] text-[#EC4899]" : ""}
-        ${row.status === "None" ? "bg-[#F9FAFB] text-[#6B7280]" : ""}
+        ${row.status === "Accepted" ? "bg-[#E7F6EE] text-[#3AB876]" : ""}
+        ${row.status === "Rejected" ? "bg-[#FEEDE9] text-[#F46E47]" : ""}
+        ${row.status === "No Reply" ? "bg-[#FFF9E6] text-[#FFD12E]" : ""}
+        ${row.status === "In Progress" ? "bg-[#D1C5FF] text-[#7F5DFF]" : ""}
+        ${row.status === "None" ? "bg-[#F6F6F6] text-[#414141]" : ""}
         p-2 px-4 rounded-full`}
         >
           {row.status}
@@ -79,15 +69,16 @@ export default function Home() {
     </Table.Tr>
   ));
 
-  return (
-    <div className="h-full bg-white rounded-md gap-8 flex flex-col items-center p-4">
+  return ( 
+    <div className="h-full w-full absolute overflow-x-auto bg-white rounded-md gap-8 flex flex-col items-center p-4">
       <h1 className="text-3xl font-bold">View Companies</h1>
       <p className="text-gray-500 text-sm w-full max-w-[400px] text-center">
         View, Update or Archive the Details of the Companies that have been
         recently contacted.
       </p>
-      <ScrollArea>
-        {/* <TextInput
+      <Table.ScrollContainer type="native" minWidth={800} maw={"100%"}>
+        <ScrollArea>
+          {/* <TextInput
         placeholder="Search by any field"
         mb="md"
         leftSection={
@@ -99,39 +90,39 @@ export default function Home() {
         value={search}
         onChange={handleSearchChange}
       /> */}
-        <Table
-          horizontalSpacing="md"
-          verticalSpacing="xs"
-          miw={700}
-          layout="fixed"
-          borderColor="black"
-          withRowBorders
-
-        >
-          <Table.Tbody>
-            <Table.Tr>
-              <Table.Th className={classes.th}>Company</Table.Th>
-              <Table.Th className="text-center">Event</Table.Th>
-              <Table.Th className="text-center">Industry</Table.Th>
-              <Table.Th className="text-center">Status</Table.Th>
-              <Table.Th className="text-center">Status</Table.Th>
-            </Table.Tr>
-          </Table.Tbody>
-          <Table.Tbody>
-            {rows.length > 0 ? (
-              rows
-            ) : (
+          <Table
+            horizontalSpacing="md"
+            verticalSpacing="xs"
+            miw={700}
+            layout="fixed"
+            borderColor="black"
+            withRowBorders
+          >
+            <Table.Tbody>
               <Table.Tr>
-                <Table.Td colSpan={5}>
-                  <Text fw={500} ta="center">
-                    Nothing found
-                  </Text>
-                </Table.Td>
+                <Table.Th>Company</Table.Th>
+                <Table.Th className="text-center">Event</Table.Th>
+                <Table.Th className="text-center">Industry</Table.Th>
+                <Table.Th className="text-center">Status</Table.Th>
+                <Table.Th className="text-center">Status</Table.Th>
               </Table.Tr>
-            )}
-          </Table.Tbody>
-        </Table>
-      </ScrollArea>
+            </Table.Tbody>
+            <Table.Tbody>
+              {rows.length > 0 ? (
+                rows
+              ) : (
+                <Table.Tr>
+                  <Table.Td colSpan={5}>
+                    <Text fw={500} ta="center">
+                      Nothing found
+                    </Text>
+                  </Table.Td>
+                </Table.Tr>
+              )}
+            </Table.Tbody>
+          </Table>
+        </ScrollArea>
+      </Table.ScrollContainer>
     </div>
   );
 }
