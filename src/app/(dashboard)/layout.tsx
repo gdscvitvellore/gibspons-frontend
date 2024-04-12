@@ -10,6 +10,7 @@ import { RiTeamFill } from "react-icons/ri";
 import { IoMailOpen } from "react-icons/io5";
 import { Inter } from "next/font/google";
 import { usePathname } from "next/navigation";
+import path from "path";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,32 +32,35 @@ function Dashboard({
 
   const event_id = pathname.split("/")[2];
 
-  const teamPathRegex = /^\/team\/\d+$/;
+  const teamPathRegex = /^\/team\/(\d+)\/.*$/; // Fix regular expression syntax
+
   const isTeamPath = teamPathRegex.test(pathname);
+  console.log(isTeamPath);
+  console.log(pathname);
 
   return (
     <div className={`flex flex-row bg-[#ECECEC] w-full absolute h-screen ${inter.className}`}>
       <Sidebar
         data={
-          isTeamPath
+          pathname.includes(`/team/${event_id}/`)
             ? [
                 {
-                  link: `${pathname}/dashboard`,
+                  link: `/team/${event_id}/dashboard`,
                   icon: BiSolidDashboard,
                   label: "Dashboard",
                 },
                 {
-                  link: `${pathname}/eventDetails`,
+                  link: `/team/${event_id}/eventDetails`,
                   icon: RiTeamFill,
                   label: "Event Details",
                 },
                 {
-                  link: `${pathname}/sponsorships`,
+                  link: `/team/${event_id}/sponsorships`,
                   icon: BiBuildings,
                   label: "Sponsorships",
                 },
                 {
-                  link: `${pathname}/generateMail`,
+                  link: `/team/${event_id}/generateMail`,
                   icon: IoMailOpen,
                   label: "Generate a Mail",
                 },

@@ -10,7 +10,7 @@ import {
   Anchor,
 } from "@mantine/core";
 import classes from "@/styles/auth.module.css";
-import Image from "next/image"; 
+import Image from "next/image";
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
 import { loginRes } from "@/types/user";
@@ -68,8 +68,10 @@ export default function Login() {
           refreshToken: refresh_token,
         };
         login(user);
-        const org = await getOrganisation(access_token);
-        updateOrganisation(org);
+        if (organisation && is_approved) {
+          const org = await getOrganisation(access_token);
+          updateOrganisation(org);
+        }
         // if(loginPreference) {
         //   sessionStorage.setItem("user", JSON.stringify(user));
         // } else {}
