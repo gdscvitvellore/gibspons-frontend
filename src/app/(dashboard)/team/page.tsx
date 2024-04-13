@@ -24,7 +24,7 @@ const eventCard = (event: Event) => {
     <a
       key={event.id}
       href={`/team/${event.id}/dashboard`}
-      className="flex relative flex-col p-4 bg-[#F4F4F4] w-[30rem] max-w-full h-[12.75rem] max-h-full shadow-md rounded-lg"
+      className="flex relative flex-col p-4 bg-[#F4F4F4] max-w-[30rem] w-full h-[12.75rem] max-h-full shadow-md rounded-lg"
     >
       {/* <div className="flex flex-row items-center justify-between">
         <h2 className="text-xl font-semibold">{event.name}</h2>
@@ -40,7 +40,7 @@ const eventCard = (event: Event) => {
       </div> */}
       <div className="flex h-full w-wull text-[2rem] text-[#6D6D6D] flex-row items-center justify-center">
         {event.logo ? (
-          <Image src={event.logo} alt="Event Logo" width={100} height={100} />
+          <Image src={event.logo} alt="Event Logo" width={200} height={200} />
         ) : (
           <h1>{event.name}</h1>
         )}
@@ -72,8 +72,8 @@ export default function Home() {
   return (
     <>
       <div className="relative h-full bg-white gap-8 flex flex-col items-center p-4">
-        <div className="flex flex-row w-full items-center gap-4 h-full max-h-[11rem] justify-between">
-          <div className="flex w-full max-w-[35rem] flex-col">
+        <div className="flex flex-col md:flex-row w-full items-center gap-4 h-full max-h-[11rem] justify-center">
+          <div className="flex flex-col items-center md:items-start w-full max-w-[35rem]">
             {org.logo && (
               <Image
                 src={org.logo}
@@ -90,7 +90,7 @@ export default function Home() {
               </div>
             )}
           </div>
-          <div className="bg-[#4D4D4D] p-4 font-bold text-white text-3xl rounded-md shadow-md w-full max-w-[30rem] h-full max-h-[11rem]">
+          <div className="bg-[#4D4D4D] p-4 font-bold text-white text-xl md:text-3xl rounded-md shadow-md w-full max-w-[30rem] h-full max-h-[11rem]">
             Overview
           </div>
         </div>
