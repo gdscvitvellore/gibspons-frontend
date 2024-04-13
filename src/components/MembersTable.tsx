@@ -10,6 +10,9 @@ import {
   TextInput,
   rem,
   keys,
+  Modal,
+  Button,
+  NativeSelect,
 } from "@mantine/core";
 import {
   IconSelector,
@@ -17,19 +20,26 @@ import {
   IconChevronUp,
   IconSearch,
 } from "@tabler/icons-react";
+import { useForm } from "@mantine/form";
+import { TbEdit } from "react-icons/tb";
 import classes from "@/styles/TableSort.module.css";
+import { useDisclosure } from "@mantine/hooks";
+import { authStore } from "@/store/auth";
+import { changeUserRole } from "@/utils/organisation";
 
 interface RowData {
+  id: string;
   name: string;
   email: string;
-  username: string;
+  created_at: string;
   role: string;
+  username: string;
 }
 
 interface ThProps {
-  children: React.ReactNode;
-  reversed: boolean;
-  sorted: boolean;
+  children: React.ReactNode | null;
+  reversed: boolean | null;
+  sorted: boolean | null;
   onSort(): void;
 }
 function filterData(data: RowData[], search: string) {
@@ -83,11 +93,30 @@ function Th({ children, reversed, sorted, onSort }: ThProps) {
   );
 }
 
-export default function MembersTable({ data }: { data: RowData[] }) {
+export default function MembersTable({
+  data,
+  approved,
+}: {
+  data: RowData[];
+  approved: boolean;
+}) {
   const [search, setSearch] = useState("");
   const [sortedData, setSortedData] = useState<RowData[]>(data);
   const [SortBy, setSortBy] = useState<keyof RowData | null>(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
+  const [opened, { open, close }] = useDisclosure(false);
+  const [selectedUser, setSelectedUser] = useState<RowData>();
+  const { role, accessToken } = authStore();
+
+  const changeRoleForm = useForm({
+    initialValues: {
+      role: "",
+    },
+
+    validate: {
+      role: (value) => (value.length > 0 ? null : "Role is required"),
+    },
+  });
 
   const setSorting = (field: keyof RowData) => {
     const reversed = field === SortBy ? !reverseSortDirection : false;
@@ -108,22 +137,102 @@ export default function MembersTable({ data }: { data: RowData[] }) {
     );
   };
 
+  const handleModalOpen = (User: RowData) => {
+    setSelectedUser(User);
+    open();
+  };
+
+  const handleChangeRole = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const resp = await changeUserRole(
+      accessToken,
+      Number(selectedUser?.id),
+      changeRoleForm.values.role
+    );
+    if (resp.status === 200) {
+      const newData = sortedData.map((item) => {
+        if (item.id === selectedUser?.id) {
+          return { ...item, role: changeRoleForm.values.role };
+        }
+        return item;
+      });
+      setSortedData(newData);
+    }
+    close();
+  };
+
   const rows = sortedData.map((row) => (
-    <Table.Tr key={row.username}>
+    <Table.Tr key={row.id}>
       <Table.Td>{row.name}</Table.Td>
-      <Table.Td>{row.email}</Table.Td>
-      <Table.Td>{row.username}</Table.Td>
-      <Table.Td>{row.role}</Table.Td>
+      <Table.Td className="text-center">{row.email}</Table.Td>
+      <Table.Td className="text-center">{row.created_at}</Table.Td>
+      <Table.Td className="text-center">{row.role}</Table.Td>
+      {role === "user" ? (
+        ""
+      ) : (
+        <Table.Td className="flex flex-row items-center justify-end">
+          <Button>
+            <TbEdit
+              onClick={() => {
+                handleModalOpen(row);
+              }}
+              className="hover:bg-[#f8f9fa] text-black rounded-md cursor-pointer p-2"
+              // className="w-full flex flex-row  items-center justify-end text-left"
+              style={{ width: rem(40), height: rem(40) }}
+              // stroke={2}
+            />
+          </Button>
+        </Table.Td>
+      )}
     </Table.Tr>
   ));
 
   return (
     <>
       {" "}
+      <Modal
+        classNames={{ content: "border-2 border-red-500" }}
+        opened={opened}
+        centered
+        onClose={close}
+        title="Modify User Role"
+      >
+        <form
+          className="w-full max-w-[400px] flex flex-col items-center gap-4 self-center"
+          onSubmit={handleChangeRole}
+        >
+          Change the role of {selectedUser?.name} from {selectedUser?.role} to
+          <NativeSelect
+            label="Role"
+            radius="md"
+            size="md"
+            w="100%"
+            data={[
+              { label: "Select New Role", value: "" },
+              { label: "Owner", value: "owner" },
+              { label: "Admin", value: "admin" },
+              { label: "User", value: "user" },
+              // { label: "Sales", value: "sales" },
+            ]}
+            // onChange={(e) => {}}
+            {...changeRoleForm.getInputProps("role")}
+          />
+          <Button
+            key="join-team"
+            mt="xl"
+            className="bg-blue-500  hover:bg-blue-400"
+            type="submit"
+            size="md"
+            w="60%"
+          >
+            Change Role
+          </Button>
+        </form>
+      </Modal>
       <TextInput
         placeholder="Search by any field"
         mb="md"
-        w={'100%'}
+        w={"100%"}
         leftSection={
           <IconSearch
             style={{ width: rem(16), height: rem(16) }}
@@ -146,7 +255,7 @@ export default function MembersTable({ data }: { data: RowData[] }) {
             miw={800}
             withRowBorders
             border={1}
-            borderColor="grape"
+            borderColor="#48484814"
             layout="fixed"
           >
             <Table.Tbody>
@@ -170,7 +279,7 @@ export default function MembersTable({ data }: { data: RowData[] }) {
                   reversed={reverseSortDirection}
                   onSort={() => setSorting("username")}
                 >
-                  Username
+                  {approved ? "Date Joined" : "Date Requested"}
                 </Th>
                 <Th
                   sorted={SortBy === "role"}
@@ -179,6 +288,13 @@ export default function MembersTable({ data }: { data: RowData[] }) {
                 >
                   Role
                 </Th>
+                {role === "user" ? (
+                  ""
+                ) : (
+                  <Th reversed={null} sorted={null} onSort={() => {}}>
+                    <TbEdit className="w-[20px] h-[20px]" />
+                  </Th>
+                )}
               </Table.Tr>
             </Table.Tbody>
             <Table.Tbody>

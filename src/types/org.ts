@@ -6,6 +6,7 @@ export interface membersByOrg {
   organisation: number;
   role: string;
   is_approved: boolean | null;
+  created_at: string;
 }
 
 export interface sponsByOrg {
@@ -17,3 +18,14 @@ export interface sponsByOrg {
   status: string;
   event: number;
 }
+
+export interface Event {
+  id: number;
+  name: string;
+  start_date: string;
+  end_date: string;
+  expected_reg: number;
+  description: string;
+  brochure: string | null;
+  logo: string | null;
+};

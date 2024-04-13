@@ -23,8 +23,8 @@ export default function CreateEvent() {
   const form = useForm({
     initialValues: {
       name: "",
-      startDate: null,
-      endDate: null,
+      startDate: new Date(),
+      endDate: new Date(),
       ExpReg: null,
       Desc: "",
       EventLogo: "",
@@ -34,6 +34,7 @@ export default function CreateEvent() {
       name: (value) => (value.length > 0 ? null : "Enter Email ID"),
       startDate: (value) => (value ? null : "Enter A Start Date"),
       endDate: (value) => (value ? null : "Enter an End Date"),
+      Desc: (value) => (value.length > 0 ? null : "Description can not be blank"),
       ExpReg: (value) =>
         value !== null
           ? Number.isInteger(value)
@@ -46,8 +47,8 @@ export default function CreateEvent() {
   const handleCreateEvent = async () => {
     const event = {
       name: form.values.name,
-      date_of_event: form.values.startDate,
-      // endDate: form.values.endDate,
+      start_date: form.values.startDate,
+      end_date: form.values.endDate,
       expected_reg: form.values.ExpReg,
       description: form.values.Desc,
       ...(form.values.EventLogo && { EventLogo: form.values.EventLogo }),
@@ -90,7 +91,7 @@ export default function CreateEvent() {
         >
           <TextInput
             label="Name"
-            placeholder="XYZ Solution Pvt. Ltd."
+            placeholder="Devjams '24"
             size="md"
             classNames={{ input: "bg-white w-full" }}
             mb={16}

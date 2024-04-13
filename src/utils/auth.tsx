@@ -17,9 +17,10 @@ export async function handleLogin(
     const data: loginRes = await response.data;
     return data;
   } catch (error: any) {
-    try {
-      throw new Error(error.response.data);
-    } catch {
+    if (error.response.status === 400) {
+      console.log(error.response.data.detail);
+      throw new Error(error.response.data.detail);
+    } else {
       throw new Error("Network Error");
     }
   }
@@ -106,9 +107,7 @@ export async function handleCreateOrg(
   }
 }
 
-export async function getUserData(
-  accessToken: string | null
-): Promise<user> {
+export async function getUserData(accessToken: string | null): Promise<user> {
   try {
     const headers = {
       Authorization: `Bearer ${accessToken}`,
@@ -129,4 +128,3 @@ export async function getUserData(
     }
   }
 }
-

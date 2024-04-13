@@ -6,7 +6,6 @@ import {
   Button,
   Title,
   Text,
-  Anchor,
   NativeSelect,
 } from "@mantine/core";
 import classes from "@/styles/manageOrg.module.css";
@@ -22,10 +21,12 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect, useState } from "react";
 import { user } from "@/types/user";
+import { organisation, organisationStore } from "@/store/organisation";
+import { getOrganisation } from "@/utils/organisation";
 
 function ManageOrg() {
   const { accessToken, organisation, update, getUser } = authStore();
-
+  const { updateOrganisation } = organisationStore();
   const [hasJoined, setHasJoined] = useState(false);
   const [createOrg, setCreateOrg] = useState(false);
   const [showCreateOrg, setShowCreateOrg] = useState(false);
@@ -74,16 +75,20 @@ function ManageOrg() {
 
   const refreshData = async () => {
     //todo: put logic here once backend is updated
-    const resp: user = await getUserData(accessToken);
+    const respUser: user = await getUserData(accessToken);
     const User = getUser();
+    const respOrg: organisation = await getOrganisation(accessToken);
     update({
       ...User,
-      organisation: resp.organisation,
-      role: resp.role,
-      is_approved: resp.is_approved,
+      organisation: respUser.organisation,
+      role: respUser.role,
+      is_approved: respUser.is_approved,
     });
+    updateOrganisation(respOrg);
     setHasJoined(true);
   };
+
+  refreshData();
 
   const CreateOrg = async () => {
     console.log("CreateOrg");
@@ -142,7 +147,7 @@ function ManageOrg() {
           >
             <TextInput
               label="Team Name"
-              placeholder="XYZ Solutions Pvt Ltd."
+              placeholder="Google Developer Student Club"
               radius="md"
               size="md"
               w="100%"
@@ -155,9 +160,9 @@ function ManageOrg() {
               w="100%"
               data={[
                 { label: "Select Team Type", value: "" },
-                { label: "Angular", value: "angular" },
-                { label: "Svelte", value: "svelte" },
-                { label: "Vue", value: "vue" },
+                { label: "Technical", value: "technical" },
+                { label: "Marketing", value: "marketing" },
+                { label: "Sales", value: "sales" },
               ]}
               {...CreateOrgForm.getInputProps("teamtype")}
             />

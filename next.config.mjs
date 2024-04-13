@@ -17,9 +17,6 @@ const nextConfig = {
       },
     ],
   },
-  env: {
-    MY_CUSTOM_ENV_VARIABLE: "value",
-  },
 };
 
 export default nextConfig;

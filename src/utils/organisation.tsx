@@ -61,3 +61,27 @@ export async function fetchAllSponsors(
     throw new Error(error.response.data);
   }
 }
+
+export async function changeUserRole(
+  accessToken: string,
+  user_id: number,
+  role: string
+) {
+  try {
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+    };
+    const body = {
+      id: user_id,
+      role: role,
+      is_approved: true,
+    };
+    const response = await axios.post(`${BaseURL}/users/changerole/`, body, {
+      headers,
+    });
+    console.log(response.data);;
+    return response;
+  } catch (error: any) {
+    throw new Error(error.response.data);
+  }
+}

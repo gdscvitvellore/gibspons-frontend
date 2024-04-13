@@ -8,10 +8,12 @@ import { getMembersByOrg } from "@/utils/organisation";
 import MembersTable from "@/components/MembersTable";
 
 interface RowData {
+  id: string;
   name: string;
   email: string;
-  username: string;
+  created_at: string;
   role: string;
+  username: string;
 }
 
 export default function Home() {
@@ -30,24 +32,44 @@ export default function Home() {
           .filter((member) => member.is_approved === true)
           .map((member) => {
             return {
+              id: String(member.id),
               name: member.name,
               email: member.email,
-              username: member.username,
+              created_at: new Date(member.created_at).toLocaleDateString(
+                "en-IN",
+                {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                }
+              ),
               role: member.role,
+              username: member.username,
             };
           });
         const rowDataNotApproved = data
           .filter((member) => member.is_approved === false)
           .map((member) => {
             return {
+              id: String(member.id),
               name: member.name,
               email: member.email,
-              username: member.username,
+              created_at: new Date(member.created_at).toLocaleDateString(
+                "en-IN",
+                {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                }
+              ),
               role: member.role,
+              username: member.username,
             };
           });
         setMembersApproved(rowDataApproved);
-        setMembersNotApproved(rowDataNotApproved);
+        setMembersNotApproved(
+          rowDataNotApproved.length === 0 ? null : rowDataNotApproved
+        );
       } catch (error: any) {
         console.error(error);
       }
@@ -80,9 +102,9 @@ export default function Home() {
           Overview
         </div>
       </div>
-      {membersNotApproved && <MembersTable  data={membersNotApproved} />}
+      {membersNotApproved && <MembersTable data={membersNotApproved} approved={false} />}
       <br />
-      {membersApproved && <MembersTable data={membersApproved} />}
+      {membersApproved && <MembersTable data={membersApproved} approved={true}/>}
     </div>
   );
 }

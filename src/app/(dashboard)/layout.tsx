@@ -35,8 +35,6 @@ function Dashboard({
   const teamPathRegex = /^\/team\/(\d+)\/.*$/; // Fix regular expression syntax
 
   const isTeamPath = teamPathRegex.test(pathname);
-  console.log(isTeamPath);
-  console.log(pathname);
 
   return (
     <div className={`flex flex-row bg-[#ECECEC] w-full absolute h-screen ${inter.className}`}>
