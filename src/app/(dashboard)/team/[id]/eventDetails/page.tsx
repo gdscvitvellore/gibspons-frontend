@@ -29,6 +29,7 @@ export default function CreateEvent() {
     description: "",
     brochure: "",
     logo: "",
+    money_raised: 0,
   });
 
   useEffect(() => {
@@ -51,6 +52,7 @@ export default function CreateEvent() {
       }
     };
     if (org.id != 0) fetchEvents();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const form = useForm({
