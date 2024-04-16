@@ -4,6 +4,7 @@ export interface loginRes {
     name: string;
     email: string;
     username: string;
+    profile_pic: string | null;
     organisation: string | null;
     is_approved: boolean;
     role: "user" | "admin" | "owner" | null;
@@ -17,6 +18,7 @@ export interface user{
   name: string;
   email: string;
   username: string;
+  profile_pic: string | null;
   organisation: string | null;
   role: "user" | "admin" | "owner" | null;
   is_approved: boolean;

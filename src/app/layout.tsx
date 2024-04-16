@@ -11,6 +11,7 @@ import {
   createTheme,
   Input,
 } from "@mantine/core";
+import LoadingScreen from "@/components/loadingScreen";
 // import { authStore } from "@/store/auth";
 // import { use, useEffect } from "react";
 // import { useEffect } from "react";
@@ -74,6 +75,7 @@ export default function RootLayout({
         <ColorSchemeScript defaultColorScheme="light" />
       </head>
       <body>
+        <LoadingScreen />
         <MantineProvider theme={theme} defaultColorScheme="light">
           {children}
         </MantineProvider>

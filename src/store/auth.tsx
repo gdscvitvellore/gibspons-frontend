@@ -7,6 +7,7 @@ export interface User {
   loginPreference: boolean;
   id: number;
   organisation: string | null;
+  profile_pic: string | null;
   is_approved: boolean;
   role: "user" | "admin" | "owner" | null;
   accessToken: string;
@@ -31,6 +32,7 @@ export const authStore = create<AuthStore>()(
       loginPreference: false,
       id: NaN,
       accessToken: "",
+      profile_pic: null,
       refreshToken: "",
       is_approved: false,
       isLoggedIn: false,
@@ -40,6 +42,7 @@ export const authStore = create<AuthStore>()(
           email: get().email,
           loginPreference: get().loginPreference,
           id: get().id,
+          profile_pic: get().profile_pic,
           organisation: get().organisation,
           role: get().role,
           is_approved: get().is_approved,
@@ -58,6 +61,7 @@ export const authStore = create<AuthStore>()(
           name: "",
           email: "",
           loginPreference: false,
+          profile_pic: null,
           id: NaN,
           organisation: null,
           role: null,

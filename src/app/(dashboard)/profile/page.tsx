@@ -6,24 +6,94 @@ import { authStore } from "@/store/auth";
 import { organisationStore } from "@/store/organisation";
 import { FaRegCopy } from "react-icons/fa";
 import { toast, ToastContainer, ToastItem } from "react-toastify";
+import { Avatar, Modal, TextInput, Button } from "@mantine/core";
+import { FaEdit } from "react-icons/fa";
+import { useDisclosure } from "@mantine/hooks";
+import { useForm } from "@mantine/form";
+import { updateUser, getUserData } from "@/utils/auth";
+import { user } from "@/types/user";
 
-export default function profile() {
-  const { name, email } = authStore();
+export default function Profile() {
+  const { name, email, profile_pic, accessToken, update, getUser } = authStore();
   const sponsors: any = [];
   const { org } = organisationStore();
+  const [opened, { open, close }] = useDisclosure(false);
+
+  const formContent = useForm({
+    initialValues: {
+      profilePic: "",
+    },
+    validate: {
+      profilePic: (value) => (value.length > 0 ? null : "Enter an URL"),
+    },
+  });
+
+  const refreshData = async () => {
+    //todo: put logic here once backend is updated
+    const respUser: user = await getUserData(accessToken);
+    const User = getUser();
+    update({
+      ...User,
+      profile_pic: respUser.profile_pic,
+    });
+  };
 
   return (
     <div className="flex bg-white flex-col h-full gap-8 p-4">
       <ToastContainer />
+      <Modal
+        classNames={{ content: "border-2 border-red-500", root: "" }}
+        opened={opened}
+        centered
+        size="auto"
+        onClose={close}
+        title="Edit Profil Picture"
+        w={"100%"}
+      >
+        <form
+        className="flex flex-col gap-4"
+          onSubmit={formContent.onSubmit(() => {
+            const body = {
+              profile_pic: formContent.values.profilePic,
+            };
+            updateUser({ accessToken: accessToken, body: body });
+            refreshData();
+            close();
+          })}
+        >
+          <TextInput
+            label="Profile Pic"
+            placeholder=""
+            size="md"
+            w={"100%"}
+            classNames={{ input: "w-full" }}
+            {...formContent.getInputProps("profilePic")}
+          />
+          <Button
+            className="bg-blue-500 w-full self-center hover:bg-blue-400"
+            type="submit"
+            size="md"
+            w="100%"
+          >
+            Update
+          </Button>
+        </form>
+      </Modal>
       <h1 className="text-2xl font-bold w-full text-center">Your Profile</h1>
       <div className="flex flex-row w-full items-center justify-start gap-4">
-        <img
-          // height={100}
-          // width={100}
-          src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-5.png"
-          alt="Profile Picture"
-          className="rounded-full w-28 h-28"
-        />
+        <div className="relative">
+          <Avatar
+            src={profile_pic}
+            alt="profile pic"
+            color="blue"
+            className="rounded-full w-28 h-28 bg-cover bg-center"
+          />
+          <div className="absolute rounded-full w-28 h-28 inset-0 flex items-center bg-slate-500 justify-center opacity-0 hover:opacity-50 transition-opacity duration-300">
+            <button onClick={open} className="bg-gray-200 p-2 rounded-full">
+              <FaEdit />
+            </button>
+          </div>
+        </div>{" "}
         <div>
           <h2 className="text-xl font-bold">{name}</h2>
           <p className="text-sm">{email}</p>

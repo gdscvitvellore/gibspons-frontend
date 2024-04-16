@@ -18,13 +18,6 @@ import classes from "../styles/headertabs.module.css";
 import { authStore } from "../store/auth";
 import { useRouter } from "next/navigation";
 
-const user = {
-  name: "Jane Spoonfighter",
-  email: "janspoon@fighter.dev",
-  image:
-    "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-5.png",
-};
-
 const tabs = [
   "Home",
   "Orders",
@@ -41,7 +34,7 @@ export default function HeaderTabs() {
   // const [opened, { toggle }] = useDisclosure(false);
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const [username, setuserName] = useState("");
-  const { name, logout } = authStore();
+  const { name, logout, profile_pic } = authStore();
   const router = useRouter();
 
   useEffect(() => {
@@ -80,12 +73,7 @@ export default function HeaderTabs() {
                 })}
               >
                 <Group gap={7}>
-                  <Avatar
-                    src={user.image}
-                    alt={username}
-                    radius="xl"
-                    size={20}
-                  />
+                <Avatar src={profile_pic} alt="profile pic" color="blue" />
                   <Text
                     fw={500}
                     className="hidden md:block"

@@ -196,6 +196,31 @@ export async function generateMail(
   }
 }
 
+export async function generateLinkedin(
+  accesstoken: string,
+  poc_id: number,
+  event_id: number,
+  additional_message: string | null,
+): Promise<any> {
+  try {
+    const headers = {
+      Authorization: `Bearer ${accesstoken}`,
+    };
+    const body = {
+      poc_id: poc_id,
+      event_id: event_id,
+      additional: additional_message,
+    };
+    const response = await axios.post(`${BaseURL}/app/generatelinkedin/`, body, {
+      headers,
+    });
+    const data = await response.data;
+    return data;
+  } catch (error: any) {
+    throw new Error(error.response.data);
+  }
+}
+
 export async function getCompanyByID(
   accessToken: string,
   org_id: number,

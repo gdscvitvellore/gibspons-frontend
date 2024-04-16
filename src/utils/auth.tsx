@@ -128,3 +128,17 @@ export async function getUserData(accessToken: string | null): Promise<user> {
     }
   }
 }
+
+export async function updateUser({accessToken, body} : {accessToken : string | null, body: any}): Promise<any> {
+  try {
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+    };
+    const response = await axios.patch(`${BaseURL}/users/user/`,body , { headers });
+    const data = await response.data;
+    return data;
+  } catch (error: any) {
+    throw new Error(error.response.data);
+  }
+}
+

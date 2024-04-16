@@ -10,7 +10,6 @@ import { RiTeamFill } from "react-icons/ri";
 import { IoMailOpen } from "react-icons/io5";
 import { Inter } from "next/font/google";
 import { usePathname } from "next/navigation";
-import path from "path";
 
 const inter = Inter({ subsets: ["latin"] });
 

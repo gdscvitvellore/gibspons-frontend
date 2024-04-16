@@ -14,18 +14,23 @@ import {
 import { useForm } from "@mantine/form";
 import { ToastContainer, ToastItem, toast } from "react-toastify";
 import { FaRegCopy } from "react-icons/fa";
-import { useRouter } from "next/navigation";
 import { BiRefresh } from "react-icons/bi";
 import { usePathname } from "next/navigation";
-import { fetchAllCompanies, getPoCByCompany, generateMail } from "@/utils/organisation";
+import {
+  fetchAllCompanies,
+  getPoCByCompany,
+  generateMail,
+  generateLinkedin,
+} from "@/utils/organisation";
+import { useLoadingStore } from "@/store/loading";
 
 export default function CreateEvent() {
   const { accessToken, organisation } = authStore();
-  const router = useRouter();
   const event_id = usePathname().split("/")[2];
   const [data, setData] = useState<any[] | null>([]);
   const [company_id, setCompany_id] = useState<number>(0);
   const [pocData, setPocData] = useState<any[] | null>([]);
+  const { startLoading, stopLoading } = useLoadingStore();
 
   const form = useForm({
     initialValues: {
@@ -33,7 +38,7 @@ export default function CreateEvent() {
       PoC: "",
       event: Number(event_id),
       communication: "email",
-      additionalPrompt: null,
+      additionalPrompt: "",
       poc_id: 0,
     },
     validate: {
@@ -66,6 +71,7 @@ export default function CreateEvent() {
         console.error(error);
       }
     };
+    if (Number(organisation) === 0) return;
     fetchCompanies();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -84,22 +90,47 @@ export default function CreateEvent() {
         console.error(error);
       }
     };
+    if (Number(organisation) === 0) return;
     fetchPoC();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [company_id]);
 
   const handleGenerate = async () => {
-    console.log(form.values.poc_id, form.values.event, form.values.additionalPrompt)
-    try {
-      const resp = await generateMail(
-        accessToken,
-        form.values.poc_id,
-        form.values.event,
-        form.values.additionalPrompt
-      );
-      formContent.setValues({ ...form.values, content: resp.message });
-    } catch (error: any) {
-      console.error(error);
+    console.log(
+      form.values.poc_id,
+      form.values.event,
+      form.values.additionalPrompt
+    );
+    if (form.values.communication === "email") {
+      startLoading();
+      try {
+        const resp = await generateMail(
+          accessToken,
+          form.values.poc_id,
+          form.values.event,
+          form.values.additionalPrompt
+        );
+        formContent.setValues({ ...form.values, content: resp.message });
+        stopLoading();
+      } catch (error: any) {
+        stopLoading();
+        console.error(error);
+      }
+    } else {
+      try {
+        startLoading();
+        const resp = await generateLinkedin(
+          accessToken,
+          form.values.poc_id,
+          form.values.event,
+          form.values.additionalPrompt
+        );
+        formContent.setValues({ ...form.values, content: resp.message });
+        stopLoading();
+      } catch (error: any) {
+        stopLoading();
+        console.error(error);
+      }
     }
   };
 
@@ -182,7 +213,7 @@ export default function CreateEvent() {
               label="Communication"
               defaultValue={"email"}
               data={[
-                { value: "email", label: "Email"},
+                { value: "email", label: "Email" },
                 { value: "linkedin", label: "LinkedIn" },
               ]}
               w={"100%"}
