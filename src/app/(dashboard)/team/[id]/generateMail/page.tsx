@@ -1,69 +1,105 @@
 "use client";
+
+import { useEffect, useState } from "react";
 import { authStore } from "@/store/auth";
 import {
   Paper,
   TextInput,
   Button,
   Title,
-  Input,
   Textarea,
-  NumberInput,
+  Autocomplete,
+  NativeSelect,
 } from "@mantine/core";
-import { IoMdAddCircleOutline } from "react-icons/io";
 import { useForm } from "@mantine/form";
-import { createEvent } from "@/utils/events";
 import { ToastContainer, ToastItem, toast } from "react-toastify";
 import { FaRegCopy } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { BiRefresh } from "react-icons/bi";
+import { usePathname } from "next/navigation";
+import { fetchAllCompanies, getPoCByCompany, generateMail } from "@/utils/organisation";
 
 export default function CreateEvent() {
-  const { accessToken } = authStore();
+  const { accessToken, organisation } = authStore();
   const router = useRouter();
+  const event_id = usePathname().split("/")[2];
+  const [data, setData] = useState<any[] | null>([]);
+  const [company_id, setCompany_id] = useState<number>(0);
+  const [pocData, setPocData] = useState<any[] | null>([]);
 
   const form = useForm({
     initialValues: {
-      name: "",
-      startDate: new Date(),
-      endDate: new Date(),
-      ExpReg: null,
-      Desc: "",
-      EventLogo: "",
-      SponBrochure: "",
+      company: "",
+      PoC: "",
+      event: Number(event_id),
+      communication: "email",
+      additionalPrompt: null,
+      poc_id: 0,
     },
     validate: {
-      name: (value) => (value.length > 0 ? null : "Enter Email ID"),
-      startDate: (value) => (value ? null : "Enter A Start Date"),
-      endDate: (value) => (value ? null : "Enter an End Date"),
-      Desc: (value) =>
-        value.length > 0 ? null : "Description can not be blank",
-      ExpReg: (value) =>
-        value !== null
-          ? Number.isInteger(value)
-            ? null
-            : "Invalid format, Enter numbers only"
-          : "Enter Expected Registrations",
+      company: (value) => (value.length > 0 ? null : "Enter a company name"),
+      PoC: (value) => (value.length > 0 ? null : "Enter a PoC name"),
+      // additionalPrompt: (value) => (value.length > 0 ? null : "Enter a message"),
     },
   });
 
-  const handleCreateEvent = async () => {
-    const event = {
-      name: form.values.name,
-      start_date: form.values.startDate,
-      end_date: form.values.endDate,
-      expected_reg: form.values.ExpReg,
-      description: form.values.Desc,
-      ...(form.values.EventLogo && { EventLogo: form.values.EventLogo }),
-      ...(form.values.SponBrochure && {
-        SponBrochure: form.values.SponBrochure,
-      }),
+  const formContent = useForm({
+    initialValues: {
+      content: "",
+      add_additional_prompt: "",
+    },
+    validate: {
+      content: (value) => (value.length > 0 ? null : "Enter a message"),
+    },
+  });
+
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      try {
+        const resp = await fetchAllCompanies(accessToken, Number(organisation));
+        if (resp.length === 0) {
+          setData(null);
+        } else {
+          setData(resp);
+        }
+      } catch (error: any) {
+        console.error(error);
+      }
     };
+    fetchCompanies();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (company_id === 0) return;
+    const fetchPoC = async () => {
+      try {
+        const resp = await getPoCByCompany(accessToken, company_id);
+        if (resp.length === 0) {
+          setPocData(null);
+        } else {
+          setPocData(resp);
+        }
+      } catch (error: any) {
+        console.error(error);
+      }
+    };
+    fetchPoC();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [company_id]);
+
+  const handleGenerate = async () => {
+    console.log(form.values.poc_id, form.values.event, form.values.additionalPrompt)
     try {
-      const resp = await createEvent(accessToken, event);
-      toast.success("Event Created Successfully");
+      const resp = await generateMail(
+        accessToken,
+        form.values.poc_id,
+        form.values.event,
+        form.values.additionalPrompt
+      );
+      formContent.setValues({ ...form.values, content: resp.message });
     } catch (error: any) {
-      toast.error(error);
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -84,42 +120,75 @@ export default function CreateEvent() {
         </Title>
         <form
           className="w-full gap-4 max-w-[900px] items-center self-center"
-          onSubmit={form.onSubmit(handleCreateEvent)}
+          onSubmit={form.onSubmit(() => {
+            // handleGenerate
+            handleGenerate();
+          })}
         >
           <div className="flex flex-col select-none mb-4 md:flex-row gap-4">
-            <TextInput
-              label="Company"
+            <Autocomplete
+              label="Name of the Company"
               placeholder="Google"
+              data={data ? data.map((item) => item.name) : []}
+              autoComplete="on"
               size="md"
               w={"100%"}
-              classNames={{ input: "w-full" }}
-              {...form.getInputProps("EventLogo")}
+              limit={5}
+              mb={10}
+              classNames={{ input: "bg-white w-full" }}
+              selectFirstOptionOnChange
+              onOptionSubmit={(value) => {
+                if (data === null) return;
+                const comp = data.find((item) => item.name === value);
+                setCompany_id(comp.id);
+              }}
+              // onChange={(value) => console.log(value)}
+              {...form.getInputProps("company")}
             />
-            <TextInput
+            <Autocomplete
               label="PoC"
-              placeholder="Sundar Pichai"
+              placeholder="Rupaak"
+              data={pocData ? pocData.map((item) => item.name) : []}
+              autoComplete="on"
               size="md"
               w={"100%"}
-              classNames={{ input: "w-full" }}
-              {...form.getInputProps("EventLogo")}
+              limit={5}
+              mb={10}
+              classNames={{ input: "bg-white w-full" }}
+              selectFirstOptionOnChange
+              onOptionSubmit={(value) => {
+                if (pocData === null) return;
+                const poc = pocData.find((item) => item.name === value);
+                form.setValues({
+                  ...form.values,
+                  PoC: poc.name,
+                  poc_id: poc.id,
+                });
+              }}
+              {...form.getInputProps("PoC")}
             />
           </div>
           <div className="w-full mb-4 flex flex-col md:flex-row gap-4">
             <TextInput
-              label="Event"
-              placeholder="Hexathon '23"
+              label="Event ID"
+              placeholder=""
               size="md"
               w={"100%"}
+              disabled
               classNames={{ input: "w-full" }}
-              {...form.getInputProps("EventLogo")}
+              {...form.getInputProps("event")}
             />
-            <TextInput
+            <NativeSelect
               label="Communication"
-              placeholder="Select what you'd want to generate"
+              defaultValue={"email"}
+              data={[
+                { value: "email", label: "Email"},
+                { value: "linkedin", label: "LinkedIn" },
+              ]}
               w={"100%"}
               classNames={{ input: "w-full" }}
               size="md"
-              {...form.getInputProps("SponBrochure")}
+              {...form.getInputProps("communication")}
             />
           </div>
           <Textarea
@@ -128,7 +197,7 @@ export default function CreateEvent() {
             size="md"
             autosize
             mb={16}
-            {...form.getInputProps("Desc")}
+            {...form.getInputProps("additionalPrompt")}
           />
           <div className="w-full my-8 text-center items-center">
             <Button
@@ -145,14 +214,16 @@ export default function CreateEvent() {
           <FaRegCopy
             className="w-5 h-5 cursor-pointer"
             onClick={() => {
-              navigator.clipboard.writeText("Hello");
+              navigator.clipboard.writeText(formContent.values.content);
               toast.success("Copied to clipboard");
             }}
           />
         </div>
         <form
           className="w-full  gap-4 max-w-[900px] items-center self-center"
-          onSubmit={form.onSubmit(handleCreateEvent)}
+          onSubmit={formContent.onSubmit(() => {
+            console.log("hello");
+          })}
         >
           <Textarea
             label="Draft"
@@ -160,7 +231,7 @@ export default function CreateEvent() {
             size="md"
             autosize
             mb={16}
-            {...form.getInputProps("Desc")}
+            {...formContent.getInputProps("content")}
           />
           <Textarea
             label="Additional Prompt (Optional)"
@@ -168,15 +239,14 @@ export default function CreateEvent() {
             size="md"
             autosize
             mb={16}
-            {...form.getInputProps("Desc")}
+            {...formContent.getInputProps("add_additional_prompt")}
           />
           <div className="w-full text-center items-center flex flex-row justify-center">
             <button
               type="submit"
               className="flex bg-white flex-row items-center gap-2 border-2 font-bold rounded-sm border-blue-500 text-blue-500 p-2 px-4"
             >
-              <BiRefresh className="text-2xl font-bold" /> Create New
-              Event
+              <BiRefresh className="text-2xl font-bold" /> Create New Event
             </button>
           </div>
         </form>

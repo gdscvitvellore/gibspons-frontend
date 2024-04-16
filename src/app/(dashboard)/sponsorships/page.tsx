@@ -1,38 +1,32 @@
 "use client";
 import { authStore } from "@/store/auth";
-import { fetchAllSponsors } from "@/utils/organisation";
+import { getSponsorsByOrg } from "@/utils/organisation";
 
-import {
-  Table,
-  ScrollArea,
-  Text,
-} from "@mantine/core";
+import { Table, ScrollArea, Text } from "@mantine/core";
 import { useState, useEffect } from "react";
-import { organisationStore } from "@/store/organisation";
 
 interface RowData {
   id: number;
   name: string;
-  industry: string;
+  added_by: string;
   status: string;
-  event: number;
+  event: string;
 }
 
 export default function Home() {
   const { accessToken, organisation } = authStore();
-  const { org } = organisationStore();
   const [sponsors, setSponsors] = useState<RowData[]>([]);
 
   useEffect(() => {
     const fetchSponsors = async () => {
       try {
-        const data = await fetchAllSponsors(accessToken, org.id);
+        const data = await getSponsorsByOrg(accessToken, organisation);
         const rowData = data.map((sponsor) => {
           return {
             id: sponsor.id,
-            name: sponsor.name,
-            event: sponsor.event,
-            industry: sponsor.industry,
+            name: sponsor.company_name,
+            event: sponsor.event_name,
+            added_by: sponsor.user_name,
             status: sponsor.status,
           };
         });
@@ -41,7 +35,7 @@ export default function Home() {
         console.error(error);
       }
     };
-    if (org.id !== 0) fetchSponsors();
+    if (Number(organisation) !== 0) fetchSponsors();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -49,12 +43,9 @@ export default function Home() {
     <Table.Tr key={row.id} className=" border-b-2 border-black">
       <Table.Td>{row.name}</Table.Td>
       <Table.Td className="text-center">{row.event}</Table.Td>
-      <Table.Td className="text-center">{row.industry}</Table.Td>
+      <Table.Td className="text-center">{row.added_by}</Table.Td>
       <Table.Td className="text-center">
-        <span className="bg-[#F6F6F6] p-2 px-4 rounded-full">{row.status}</span>
-      </Table.Td>
-      <Table.Td className="text-center">
-      <span
+        <span
           className={`
         ${row.status === "Accepted" ? "bg-[#E7F6EE] text-[#3AB876]" : ""}
         ${row.status === "Rejected" ? "bg-[#FEEDE9] text-[#F46E47]" : ""}
@@ -69,7 +60,7 @@ export default function Home() {
     </Table.Tr>
   ));
 
-  return ( 
+  return (
     <div className="h-full w-full absolute overflow-x-auto bg-white rounded-md gap-8 flex flex-col items-center p-4">
       <h1 className="text-3xl font-bold">View Companies</h1>
       <p className="text-gray-500 text-sm w-full max-w-[400px] text-center">
@@ -102,8 +93,8 @@ export default function Home() {
               <Table.Tr>
                 <Table.Th>Company</Table.Th>
                 <Table.Th className="text-center">Event</Table.Th>
-                <Table.Th className="text-center">Industry</Table.Th>
-                <Table.Th className="text-center">Status</Table.Th>
+                {/* <Table.Th className="text-center">Industry</Table.Th> */}
+                <Table.Th className="text-center">Added By</Table.Th>
                 <Table.Th className="text-center">Status</Table.Th>
               </Table.Tr>
             </Table.Tbody>

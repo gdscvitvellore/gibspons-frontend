@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import { authStore } from "@/store/auth";
-import { Paper, TextInput, Button, Title } from "@mantine/core";
+import { Paper, TextInput, Button, Title, Autocomplete } from "@mantine/core";
+import { useEffect } from "react";
 import { useForm, FORM_INDEX } from "@mantine/form";
 import { createEvent } from "@/utils/events";
 import { ToastContainer, ToastItem, toast } from "react-toastify";
-import { addCompany, addPoC } from "@/utils/organisation";
+import { addCompany, addPoC, getSponsorsByOrg } from "@/utils/organisation";
 import { usePathname } from "next/navigation";
 
 type PoC = {
@@ -18,9 +19,28 @@ type PoC = {
 };
 
 export default function CreateEvent() {
-  const { accessToken } = authStore();
+  const { accessToken, organisation } = authStore();
   const [pocCount, setPocCount] = useState<number>(1);
   const event_id = usePathname().split("/")[2];
+  const [data, setData] = useState<any[] | null>([]);
+
+  
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      try {
+        const resp = await getSponsorsByOrg(accessToken, organisation);
+        if (resp.length === 0) {
+          setData(null);
+        } else {
+          setData(resp);
+        }
+      } catch (error: any) {
+        console.error(error);
+      }
+    };
+    fetchCompanies();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const form = useForm({
     initialValues: {
@@ -38,6 +58,23 @@ export default function CreateEvent() {
         },
       ],
     },
+    validate: {
+      CompName: (value) => (value.length > 0 ? null : "Enter a company name"),
+      CompIndustry: (value) =>
+        value.length > 0 ? null : "Enter the industry of the company",
+      CompLinkedin: (value) =>
+        value.length > 0 ? null : "Enter the linkedin of the company",
+      CompWebsite: (value) =>
+        value.length > 0 ? null : "Enter the website of the company",
+      PoCs: {
+        name: (value) => (value.length > 0 ? null : "Enter a name"),
+        designation: (value) =>
+          value.length > 0 ? null : "Enter a designation",
+        linkedin: (value) => (value.length > 0 ? null : "Enter a linkedin"),
+        phone: (value) => (value.length > 0 ? null : "Enter a phone number"),
+        email: (value) => (value.length > 0 ? null : "Enter an email"),
+      },
+    },
   });
 
   const handleCreateCompany = async (values: any) => {
@@ -47,7 +84,7 @@ export default function CreateEvent() {
         website: values.CompWebsite,
         linkedin: values.CompLinkedin,
         industry: values.CompIndustry,
-        event: event_id,
+        event_id: event_id,
       };
       const compResp = await addCompany(accessToken, company);
       const pocData = values.PoCs.map((poc: PoC) => {
@@ -57,8 +94,8 @@ export default function CreateEvent() {
           email: poc.email,
           linkedin: poc.linkedin,
           phone: poc.phone,
-          company: compResp.id,
-          event: event_id,
+          company: compResp.company.id,
+          event: Number(event_id),
         };
       });
       try {
@@ -97,19 +134,48 @@ export default function CreateEvent() {
           className="w-full gap-4 max-w-[800px] items-center self-center"
           onSubmit={form.onSubmit(() => {
             handleCreateCompany(form.values);
+            // console.log(form.values);
           })}
         >
           <Title order={3} className="text-black font-bold" ta="center" mb={20}>
             Company Details
           </Title>
           <div className="flex flex-col select-none md:flex-row gap-4">
-            <TextInput
+            {/* <TextInput
               label="Name of the Company"
               placeholder="Google"
               size="md"
               w={"100%"}
               classNames={{ input: "bg-white w-full" }}
               mb={10}
+              {...form.getInputProps("CompName")}
+            /> */}
+            <Autocomplete
+              label="Name of the Company"
+              placeholder="Google"
+              data={data ? data.map((item) => item.name) : []}
+              autoComplete="on"
+              size="md"
+              w={"100%"}
+              limit={5}
+              mb={10}
+              classNames={{ input: "bg-white w-full" }}
+              selectFirstOptionOnChange
+              onOptionSubmit={(value) => {
+                if (data === null) return;
+                const comp = data.find((item) => item.name === value);
+
+                form.setValues((values) => {
+                  return {
+                    ...values,
+                    CompName: comp?.name,
+                    CompIndustry: comp?.industry,
+                    CompLinkedin: comp?.linkedin,
+                    CompWebsite: comp?.website,
+                  };
+                });
+              }}
+              // onChange={(value) => console.log(value)}
               {...form.getInputProps("CompName")}
             />
             <TextInput

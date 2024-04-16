@@ -8,6 +8,7 @@ import {
   compResp,
   pocResp,
   sponsByEvent,
+  companyByOrg,
 } from "@/types/org";
 
 const BaseURL = process.env.NEXT_PUBLIC_BASE_URL;
@@ -50,16 +51,37 @@ export async function getMembersByOrg(
   }
 }
 
-export async function fetchAllSponsors(
+export async function fetchAllCompanies(
   accessToken: string,
   org_id: number
-): Promise<sponsByOrg[]> {
+): Promise<companyByOrg[]> {
   try {
     const headers = {
       Authorization: `Bearer ${accessToken}`,
     };
     const response = await axios.get(`${BaseURL}/app/company/?org=${org_id}`, {
       headers,
+    });
+    const data = await response.data;
+    return data;
+  } catch (error: any) {
+    throw new Error(error.response.data);
+  }
+}
+
+export async function getSponsorsByOrg(
+  accessToken: string,
+  org: string | null
+): Promise<sponsByOrg[]> {
+  try {
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+    };
+    const response = await axios.get(`${BaseURL}/app/sponsors/`, {
+      headers,
+      params: {
+        org: org,
+      },
     });
     const data = await response.data;
     return data;
@@ -95,7 +117,7 @@ export async function changeUserRole(
 export async function addCompany(
   accessToken: string,
   company: any
-): Promise<compResp> {
+): Promise<any> {
   try {
     const headers = {
       Authorization: `Bearer ${accessToken}`,
@@ -131,13 +153,13 @@ export async function addPoC(
 export async function getSponsorsByEvent(
   accessToken: string,
   event_id: string
-): Promise<sponsByEvent[]> {
+): Promise<sponsByEvent> {
   try {
     const headers = {
       Authorization: `Bearer ${accessToken}`,
     };
     const response = await axios.get(
-      `${BaseURL}/app/event/company/?event=${event_id}`,
+      `${BaseURL}/app/sponsors/?event=${event_id}`,
       {
         headers,
       }
@@ -153,7 +175,7 @@ export async function generateMail(
   accesstoken: string,
   poc_id: number,
   event_id: number,
-  additional_message: string
+  additional_message: string | null,
 ): Promise<any> {
   try {
     const headers = {
@@ -162,13 +184,72 @@ export async function generateMail(
     const body = {
       poc_id: poc_id,
       event_id: event_id,
-      additional_message: additional_message,
+      additional: additional_message,
     };
     const response = await axios.post(`${BaseURL}/app/generateemail/`, body, {
       headers,
     });
     const data = await response.data;
     return data;
+  } catch (error: any) {
+    throw new Error(error.response.data);
+  }
+}
+
+export async function getCompanyByID(
+  accessToken: string,
+  org_id: number,
+  company_id: number
+): Promise<companyByOrg[]> {
+  try {
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+    };
+    const response = await axios.get(`${BaseURL}/app/company/?org=${org_id}&id=${company_id}`, {
+      headers,
+    });
+    const data = await response.data;
+    return data;
+  } catch (error: any) {
+    throw new Error(error.response.data);
+  }
+}
+
+export async function getPoCByCompany(
+  accessToken: string,
+  company_id: number
+): Promise<pocResp[]> {
+  try {
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+    };
+    const response = await axios.get(`${BaseURL}/app/poc/`, {
+      headers,
+      params: {
+        company: company_id,
+      },
+    });
+    const data: pocResp[] = await response.data;
+    return data;
+  } catch (error: any) {
+    throw new Error(error.response.data);
+  }
+}
+
+export async function updateSponsorship(
+  accessToken: string,
+  data: any,
+  org_id: number
+) {
+  try {
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+    };
+    const response = await axios.patch(`${BaseURL}/app/sponsor/${org_id}/`, data, {
+      headers,
+    });
+    console.log(response.data);
+    return response;
   } catch (error: any) {
     throw new Error(error.response.data);
   }

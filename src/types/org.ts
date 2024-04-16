@@ -9,7 +9,7 @@ export interface membersByOrg {
   created_at: string;
 }
 
-export interface sponsByOrg {
+export interface companyByOrg {
   id: number;
   name: string;
   website: string;
@@ -17,6 +17,21 @@ export interface sponsByOrg {
   linkedin: string;
   status: string;
   event: number;
+}
+
+export interface sponsByOrg {
+  id: number;
+  company: number;
+  poc: null | pocResp[];
+  event: number;
+  event_name: string;
+  contacted_by: number;
+  user_name: string;
+  status: "No Reply" | "Accepted" | "Rejected" | "In Progress" | "Not Contacted";
+  type_of_sponsorship: null | string;
+  money_donated: number;
+  additional: null | string;
+  company_name: string;
 }
 
 export interface Event {
@@ -28,6 +43,7 @@ export interface Event {
   description: string;
   brochure: string | null;
   logo: string | null;
+  money_raised: number;
 }
 
 export interface compResp {
@@ -50,10 +66,23 @@ export interface pocResp {
   phone: string;
 }
 
-export interface sponsByEvent {
-  updated_at: string;
+export interface sponsorships {
+  id: number;
+  company: number;
+  poc: null | pocResp;
+  event: number;
+  event_name: string;
+  contacted_by: number;
+  user_name: string;
+  status: string;
+  type_of_sponsorship: string;
+  money_donated: number;
+  additional: string;
   company_name: string;
-  name: string;
-  added_by: string;
-  status: "No Reply" | "Accepted" | "Rejected" | "In Progress" | "None";
+}
+
+export interface sponsByEvent {
+  event: Event;
+  sponsorships: sponsorships[];
+  total_money_raised: number;
 }

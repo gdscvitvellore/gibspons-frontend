@@ -1,4 +1,3 @@
-
 "use client";
 import {
   Paper,
@@ -10,10 +9,7 @@ import {
 } from "@mantine/core";
 import classes from "@/styles/manageOrg.module.css";
 import { useForm } from "@mantine/form";
-import {
-  handleJoinOrg,
-  handleCreateOrg,
-} from "@/utils/auth";
+import { handleJoinOrg, handleCreateOrg } from "@/utils/auth";
 import { getUserData } from "@/utils/auth";
 import { authStore } from "@/store/auth";
 import ProtectedRoute from "@/components/ProtectedRoute";
@@ -88,7 +84,10 @@ function ManageOrg() {
     setHasJoined(true);
   };
 
-  refreshData();
+  useEffect(() => {
+    refreshData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const CreateOrg = async () => {
     console.log("CreateOrg");
@@ -238,9 +237,12 @@ function ManageOrg() {
 
           <Text ta="center" mt="md">
             Don&apos;t have an invite code?{" "}
-            <span className="text-blue-500" onClick={()=>{
-              setCreateOrg(true);
-            }}>
+            <span
+              className="text-blue-500"
+              onClick={() => {
+                setCreateOrg(true);
+              }}
+            >
               Create Your Own Team
             </span>
           </Text>

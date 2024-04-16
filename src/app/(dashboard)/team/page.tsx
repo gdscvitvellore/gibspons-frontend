@@ -71,7 +71,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="relative h-full bg-white gap-8 flex flex-col items-center p-4">
+      <div className="relative h-fit min-h-full bg-white gap-8 flex flex-col items-center p-4">
         <div className="flex flex-col md:flex-row w-full items-center gap-4 h-full max-h-[11rem] justify-center">
           <div className="flex flex-col items-center md:items-start w-full max-w-[35rem]">
             {org.logo && (
