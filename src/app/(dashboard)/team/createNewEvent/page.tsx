@@ -9,7 +9,7 @@ import {
   Textarea,
   NumberInput,
 } from "@mantine/core";
-import { useForm } from "@mantine/form";
+import { useForm, isNotEmpty } from "@mantine/form";
 import { createEvent } from "@/utils/events";
 import { ToastContainer, toast } from "react-toastify";
 import {useRouter } from "next/navigation";
@@ -39,6 +39,7 @@ export default function CreateEvent() {
             ? null
             : "Invalid format, Enter numbers only"
           : "Enter Expected Registrations",
+      EventLogo: isNotEmpty("Enter Event Logo URL"),
     },
   });
 

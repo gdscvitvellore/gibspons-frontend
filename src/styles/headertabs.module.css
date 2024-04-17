@@ -6,6 +6,11 @@
   );
   border-bottom: rem(1px) solid
     light-dark(var(--mantine-color-gray-2), transparent);
+  /* height: rem(60);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end; */
 }
 
 .mainSection {
@@ -14,7 +19,7 @@
 
 .user {
   color: light-dark(var(--mantine-color-black), var(--mantine-color-dark-0));
-  padding: var(--mantine-spacing-xs) var(--mantine-spacing-sm);
+  /* padding: var(--mantine-spacing-xs) var(--mantine-spacing-sm); */
   border-radius: var(--mantine-radius-sm);
   transition: background-color 100ms ease;
 

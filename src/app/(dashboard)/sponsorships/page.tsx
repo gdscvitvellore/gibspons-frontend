@@ -51,7 +51,7 @@ export default function Home() {
         ${row.status === "Rejected" ? "bg-[#FEEDE9] text-[#F46E47]" : ""}
         ${row.status === "No Reply" ? "bg-[#FFF9E6] text-[#FFD12E]" : ""}
         ${row.status === "In Progress" ? "bg-[#D1C5FF] text-[#7F5DFF]" : ""}
-        ${row.status === "None" ? "bg-[#F6F6F6] text-[#414141]" : ""}
+        ${row.status === "Not Contacted" ? "bg-[#F6F6F6] text-[#414141]" : ""}
         p-2 px-4 rounded-full`}
         >
           {row.status}

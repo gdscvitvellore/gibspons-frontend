@@ -24,7 +24,7 @@ const eventCard = (event: Event) => {
     <a
       key={event.id}
       href={`/team/${event.id}/dashboard`}
-      className="flex relative flex-col p-4 bg-[#F4F4F4] max-w-[30rem] w-full h-[12.75rem] max-h-full shadow-md rounded-lg"
+      className="flex relative flex-col p-4 bg-[#F4F4F4] hover:bg-[#dee5ee] max-w-[30rem] w-full h-[12.75rem] max-h-full shadow-md rounded-lg"
     >
       {/* <div className="flex flex-row items-center justify-between">
         <h2 className="text-xl font-semibold">{event.name}</h2>
@@ -72,7 +72,7 @@ export default function Home() {
   return (
     <>
       <div className="relative h-fit min-h-full bg-white gap-8 flex flex-col items-center p-4">
-        <div className="flex flex-col md:flex-row w-full items-center gap-4 h-full max-h-[11rem] justify-center">
+        <div className="flex flex-col md:flex-row w-full items-center gap-4 h-full justify-center">
           <div className="flex flex-col items-center md:items-start w-full max-w-[35rem]">
             {org.logo && (
               <Image
@@ -90,12 +90,27 @@ export default function Home() {
               </div>
             )}
           </div>
-          <div className="bg-[#4D4D4D] p-4 font-bold text-white text-xl md:text-3xl rounded-md shadow-md w-full max-w-[30rem] h-full max-h-[11rem]">
-            Overview
+          <div className="bg-gradient-to-r from-[#4d4d4d] to-[#3e3e3e] p-4 py-8 flex flex-row justify-between text-white rounded-md shadow-md w-full max-w-[30rem] max-h-full h-[11rem]">
+            <div className="flex flex-col w-full justify-center">
+              <p>
+                {new Date().toLocaleDateString("en-IN", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </p>
+              <p className="text-3xl font-bold">OVERVIEW</p>
+            </div>
+            <div className="flex flex-col text-right w-full justify-center">
+              <p>Amount Raised</p>
+              <p className="text-3xl font-bold">
+                &#8377;{org.total_money_raised}
+              </p>
+            </div>
           </div>
         </div>
         <div
-          className={`w-full flex flex-row items-center justify-start ${
+          className={`w-full flex flex-row items-center justify-center  ${
             role === "owner" || role === "admin" ? "" : "hidden"
           } `}
         >
@@ -103,7 +118,7 @@ export default function Home() {
             onClick={() => {
               router.push("/team/createNewEvent");
             }}
-            className="flex bg-white flex-row sticky bottom-0 items-center gap-2 border-2 font-bold rounded-sm border-blue-500 text-blue-500 p-2 px-4 z-10"
+            className="flex bg-white hover:bg-[#dee5ee] flex-row sticky bottom-0 items-center gap-2 border-2 font-bold rounded-sm border-blue-500 text-blue-500 p-2 px-4 z-10"
           >
             <IoMdAddCircleOutline className="text-2xl font-bold" /> Create New
             Event

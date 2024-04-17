@@ -7,7 +7,7 @@ import { getSponsorsByEvent } from "@/utils/organisation";
 import { usePathname } from "next/navigation";
 import { useLoadingStore } from "@/store/loading";
 import { Table, ScrollArea, Text } from "@mantine/core";
-import { PieChart } from '@mantine/charts';
+import PieChart from "@/components/pieChart";
 
 interface RowData {
   id: number;
@@ -64,24 +64,26 @@ export default function Home({ params }: { params: { id: number } }) {
   return (
     <div className="flex flex-row h-full overflow-x-auto absolute gap-4 w-full rounded-md">
       <div className="flex w-full h-full flex-col gap-4">
-        <div className="bg-[#4D4D4D] w-full md:max-w-[800px] justify-between flex rounded-md flex-col gap-4 md:flex-row p-4 text-white">
+        <div className="bg-gradient-to-r from-[#4d4d4d] to-[#3e3e3e]  w-full justify-between flex rounded-md flex-col gap-4 md:flex-row p-4 text-white">
           <div className="flex flex-col">
             <p className="text-xs">Overview</p>
             <p className="text-4xl">{data?.event?.name}</p>
           </div>
           <div className="flex flex-col">
             <p className="text-xs">Total Amount Raised</p>
-            <p className="text-4xl md:text-right">{data?.event?.money_raised}</p>
+            <p className="text-4xl md:text-right">
+              &#8377;{data?.event?.money_raised}
+            </p>
           </div>
         </div>
         <div className="bg-white h-full min-h-fit p-4 rounded-md">
           <h1 className="font-bold mb-8">Companies & Sponsors</h1>
-          <Table.ScrollContainer type="native" minWidth={450} maw={"100%"}>
+          <Table.ScrollContainer type="native" minWidth={500} maw={"100%"}>
             <ScrollArea>
               <Table
                 horizontalSpacing="md"
                 verticalSpacing="xs"
-                miw={450}
+                miw={500}
                 layout="fixed"
                 borderColor="black"
                 withRowBorders
@@ -113,8 +115,15 @@ export default function Home({ params }: { params: { id: number } }) {
           </Table.ScrollContainer>
         </div>
       </div>
-      <div className="hidden md:flex flex-col">
-        <div className="h-full w-full"></div>
+      <div className="w-[50%] max-h-full min-w-[400px] gap-4 flex flex-col">
+        <div className="h-full w-full rounded-md p-2 bg-white">
+          LeaderBoard Position
+          {/* {organisation && <PieChart accessToken={accessToken} event_id={event_id} />} */}
+        </div>
+        <div className="h-[80%] bg-white rounded-md p-2 w-full">
+          {/* <p className="w-full h-fit text-center">Response Statistics</p> */}
+          {organisation && <PieChart accessToken={accessToken} event_id={event_id} />}
+        </div>
       </div>
     </div>
   );

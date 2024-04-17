@@ -28,7 +28,10 @@ export async function getEvents(
   }
 }
 
-export async function createEvent(accessToken: string, event: any):Promise<Event> {
+export async function createEvent(
+  accessToken: string,
+  event: any
+): Promise<Event> {
   try {
     const headers = {
       Authorization: `Bearer ${accessToken}`,
@@ -36,7 +39,7 @@ export async function createEvent(accessToken: string, event: any):Promise<Event
     const response = await axios.post(`${BaseURL}/app/event/`, event, {
       headers,
     });
-    if(response.status === 400){
+    if (response.status !== 200) {
       const data = await response.data;
       throw new Error(data);
     }
@@ -47,14 +50,43 @@ export async function createEvent(accessToken: string, event: any):Promise<Event
   }
 }
 
-export async function updateEvent(accessToken: string, event: any, event_id: number):Promise<Event> {
+export async function updateEvent(
+  accessToken: string,
+  event: any,
+  event_id: number
+): Promise<Event> {
   try {
     const headers = {
       Authorization: `Bearer ${accessToken}`,
     };
-    const response = await axios.patch(`${BaseURL}/app/event/${event_id}/`, event, {
-      headers,
-    });
+    const response = await axios.patch(
+      `${BaseURL}/app/event/${event_id}/`,
+      event,
+      {
+        headers,
+      }
+    );
+    const data = await response.data;
+    return data;
+  } catch (error: any) {
+    throw new Error(error.response.data);
+  }
+}
+
+export async function getPieChart(
+  accessToken: string,
+  event_id: number
+): Promise<any> {
+  try {
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+    };
+    const response = await axios.get(
+      `${BaseURL}/app/piechart/?event=${event_id}`,
+      {
+        headers,
+      }
+    );
     const data = await response.data;
     return data;
   } catch (error: any) {

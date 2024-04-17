@@ -10,6 +10,7 @@ export interface organisation {
   location: string;
   invite_code: string;
   logo: string;
+  total_money_raised: number;
 }
 
 interface organisationStore {
@@ -28,6 +29,7 @@ export const organisationStore = create<organisationStore>()(
         location: "",
         invite_code: "",
         logo: "",
+        total_money_raised: 0,
       },
       getOrganisation: () => {
         return {
@@ -37,6 +39,7 @@ export const organisationStore = create<organisationStore>()(
           location: get().org.location,
           invite_code: get().org.invite_code,
           logo: get().org.logo,
+          total_money_raised: get().org.total_money_raised,
         };
       },
       updateOrganisation: (props: organisation) => {
