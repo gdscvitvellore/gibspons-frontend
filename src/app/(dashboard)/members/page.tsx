@@ -79,7 +79,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="h-full absolute max-w-full overflow-x-auto bg-white rounded-md gap-8 flex flex-col items-center p-4">
+    <div className="h-full absolute w-full overflow-x-auto bg-white rounded-md md:gap-4 flex flex-col items-center p-4">
       <div className="flex flex-row w-full items-center gap-4 h-full max-h-[11rem] justify-between">
         <div className="flex w-full max-w-[35rem] flex-col">
           {org.logo && (

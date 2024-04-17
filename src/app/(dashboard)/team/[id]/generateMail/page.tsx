@@ -232,10 +232,10 @@ export default function CreateEvent() {
           />
           <div className="w-full my-8 text-center items-center">
             <Button
-              className="bg-blue-500 w-full self-center hover:bg-blue-400"
+              className="bg-blue-500 p-2 px-4 self-center hover:bg-blue-400"
               type="submit"
               size="md"
-              w="20%"
+              // w="100%"
             >
               Generate
             </Button>

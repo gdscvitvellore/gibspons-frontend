@@ -3,22 +3,20 @@ import { authStore } from "@/store/auth";
 import {
   Paper,
   TextInput,
-  PasswordInput,
-  Checkbox,
   Button,
   Title,
-  Text,
-  Anchor,
   Input,
   Textarea,
   NumberInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { createEvent } from "@/utils/events";
-import { ToastContainer, ToastItem, toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
+import {useRouter } from "next/navigation";
 
 export default function CreateEvent() {
   const { accessToken } = authStore();
+  const router = useRouter();
 
   const form = useForm({
     initialValues: {
@@ -51,14 +49,13 @@ export default function CreateEvent() {
       end_date: form.values.endDate,
       expected_reg: form.values.ExpReg,
       description: form.values.Desc,
-      ...(form.values.EventLogo && { EventLogo: form.values.EventLogo }),
-      ...(form.values.SponBrochure && {
-        SponBrochure: form.values.SponBrochure,
-      }),
+      logo: form.values.EventLogo,
+      brochure: form.values.SponBrochure,
     };
     try {
       const resp = await createEvent(accessToken, event);
       toast.success("Event Created Successfully");
+      router.push("/team");
     } catch (error: any) {
       toast.error(error);
       console.log(error);

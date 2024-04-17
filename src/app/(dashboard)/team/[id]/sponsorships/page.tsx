@@ -140,7 +140,7 @@ export default function Home() {
         <Table.ScrollContainer
           // className=" inline overflow-x-hidden"
           type="native"
-          minWidth={800}
+          minWidth={500}
           maw={"100%"}
           mah={"70%"}
         >
@@ -151,7 +151,7 @@ export default function Home() {
             <Table
               horizontalSpacing="md"
               verticalSpacing="xs"
-              miw={800}
+              miw={500}
               layout="fixed"
               borderColor="black"
               withRowBorders
@@ -170,7 +170,7 @@ export default function Home() {
                   rows
                 ) : (
                   <Table.Tr>
-                    <Table.Td colSpan={5}>
+                    <Table.Td colSpan={4}>
                       <Text fw={500} ta="center">
                         Nothing found
                       </Text>

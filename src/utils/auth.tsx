@@ -17,12 +17,7 @@ export async function handleLogin(
     const data: loginRes = await response.data;
     return data;
   } catch (error: any) {
-    if (error.response.status === 400) {
-      console.log(error.response.data.detail);
-      throw new Error(error.response.data.detail);
-    } else {
-      throw new Error("Network Error");
-    }
+    throw new Error(error.response.data.detail);
   }
 }
 
@@ -129,12 +124,20 @@ export async function getUserData(accessToken: string | null): Promise<user> {
   }
 }
 
-export async function updateUser({accessToken, body} : {accessToken : string | null, body: any}): Promise<any> {
+export async function updateUser({
+  accessToken,
+  body,
+}: {
+  accessToken: string | null;
+  body: any;
+}): Promise<any> {
   try {
     const headers = {
       Authorization: `Bearer ${accessToken}`,
     };
-    const response = await axios.patch(`${BaseURL}/users/user/`,body , { headers });
+    const response = await axios.patch(`${BaseURL}/users/user/`, body, {
+      headers,
+    });
     const data = await response.data;
     return data;
   } catch (error: any) {
@@ -142,3 +145,22 @@ export async function updateUser({accessToken, body} : {accessToken : string | n
   }
 }
 
+export async function approveUser(
+  accessToken: string | null,
+  user: string
+): Promise<any> {
+  try {
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+    };
+    const response = await axios.post(
+      `${BaseURL}/users/approve/?user=${user}`,
+      { dummy: "test" },
+      { headers }
+    );
+    const data = await response;
+    return data;
+  } catch (error: any) {
+    throw new Error(error.response.data);
+  }
+}

@@ -36,10 +36,14 @@ export async function createEvent(accessToken: string, event: any):Promise<Event
     const response = await axios.post(`${BaseURL}/app/event/`, event, {
       headers,
     });
+    if(response.status === 400){
+      const data = await response.data;
+      throw new Error(data);
+    }
     const data = await response.data;
     return data;
   } catch (error: any) {
-    throw new Error(error.response.data);
+    return error;
   }
 }
 

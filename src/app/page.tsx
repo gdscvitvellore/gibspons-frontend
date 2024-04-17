@@ -5,6 +5,7 @@ import { Inter } from "next/font/google";
 import Navbar from "../components/Navbar";
 import styles from "../styles/index.module.css";
 import Footer from "../components/Footer";
+import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,26 +18,25 @@ export default function Home() {
         id="home"
         className="h-[100vh] bg-[#191919] p-4 w-full flex flex-row justify-center items-center"
       >
-        <div className="md:max-w-[30vw]">
-          <h1 className="text-[6rem] break-words font-bold text-white md:max-w-[30vw] leading-[110%]">
-            draft <br /> <span className="text-[#5379F6]">mails</span> in a
-            blink
+        <div className="w-[30rem]">
+          <h1 className="text-[3rem] md:text-[4rem] font-bold text-white w-full leading-[110%]">
+            tracking <br /> sponsorships <br/> <span className="text-[#5379F6]">made easy</span>
           </h1>
-          <p className="mt-4 text-[1.75rem] text-white">
+          <p className="mt-4 text-[1.75rem]  text-white">
             introducing gibspons, draft mails, track sponsorships, and manage
             negotiations, all in one place!
           </p>
           <div className="mt-8">
-            <button className="px-8 py-2 text-[#070707] text-[1.3rem] bg-[#5379F6] rounded-full mr-4 hover:scale-110">
+            <Link href="/login" className="px-8 py-2 text-[#070707] text-[1.3rem] bg-[#5379F6] rounded-full mr-4 hover:bg-[#6e8ef4]">
               Get Started
-            </button>
+            </Link>
           </div>
         </div>
         <div className="w-auto h-auto hidden md:block">
           <Image
             src="/heroImage.svg"
             alt="hero"
-            className=""
+            className="h-[30rem] w-[30rem] lg:w-[40rem] lg:h=[40rem]"
             width={500}
             height={500}
           />

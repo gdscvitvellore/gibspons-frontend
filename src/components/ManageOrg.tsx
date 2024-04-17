@@ -90,7 +90,6 @@ function ManageOrg() {
   }, []);
 
   const CreateOrg = async () => {
-    console.log("CreateOrg");
     const { teamname, teamtype, location, teamlogo } = CreateOrgForm.values;
     try {
       const res: any = await handleCreateOrg(
@@ -100,7 +99,6 @@ function ManageOrg() {
         teamlogo,
         accessToken
       );
-      console.log(res);
       refreshData();
       toast.success(res);
     } catch (error: any) {
@@ -193,7 +191,7 @@ function ManageOrg() {
             </Button>
           </form>
         </Paper>
-      ) : !hasJoined ? (
+      ) : hasJoined ? (
         <Paper className={classes.form} p={30}>
           <Title
             order={2}
@@ -238,7 +236,7 @@ function ManageOrg() {
           <Text ta="center" mt="md">
             Don&apos;t have an invite code?{" "}
             <span
-              className="text-blue-500"
+              className="text-blue-500 cursor-pointer"
               onClick={() => {
                 setCreateOrg(true);
               }}

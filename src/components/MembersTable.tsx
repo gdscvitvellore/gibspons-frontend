@@ -20,12 +20,15 @@ import {
   IconChevronUp,
   IconSearch,
 } from "@tabler/icons-react";
+import { IoMdCheckmark, IoMdTrash } from "react-icons/io";
 import { useForm } from "@mantine/form";
 import { TbEdit } from "react-icons/tb";
 import classes from "@/styles/TableSort.module.css";
 import { useDisclosure } from "@mantine/hooks";
 import { authStore } from "@/store/auth";
 import { changeUserRole } from "@/utils/organisation";
+import { toast } from "react-toastify";
+import { approveUser } from "@/utils/auth";
 
 interface RowData {
   id: string;
@@ -161,27 +164,51 @@ export default function MembersTable({
     close();
   };
 
+  const handleApproval = async (status: boolean, id: string) => {
+    if(status === false) return close();
+    const resp = await approveUser(accessToken, id );
+    if (resp.status === 200) {
+      toast.success(`User ${status ? "approved" : "rejected"} successfully`);
+    }
+    close();
+  };
+
   const rows = sortedData.map((row) => (
     <Table.Tr key={row.id}>
       <Table.Td>{row.name}</Table.Td>
-      <Table.Td className="text-center">{row.email}</Table.Td>
-      <Table.Td className="text-center">{row.created_at}</Table.Td>
-      <Table.Td className="text-center">{row.role}</Table.Td>
-      {role === "user" ? (
-        ""
+      <Table.Td miw={200} className="overflow-ellipsis ">{row.email}</Table.Td>
+      <Table.Td className="">{row.created_at}</Table.Td>
+      <Table.Td className="">{row.role}</Table.Td>
+      {approved ? (
+        role === "user" ? (
+          ""
+        ) : (
+          <Table.Td className="flex flex-row items-center justify-end">
+            <Button>
+              <TbEdit
+                onClick={() => {
+                  handleModalOpen(row);
+                }}
+                className="hover:bg-[#f8f9fa] text-black rounded-md cursor-pointer p-2"
+                // className="w-full flex flex-row  items-center justify-end text-left"
+                style={{ width: rem(40), height: rem(40) }}
+                // stroke={2}
+              />
+            </Button>
+          </Table.Td>
+        )
       ) : (
-        <Table.Td className="flex flex-row items-center justify-end">
-          <Button>
-            <TbEdit
-              onClick={() => {
-                handleModalOpen(row);
-              }}
-              className="hover:bg-[#f8f9fa] text-black rounded-md cursor-pointer p-2"
-              // className="w-full flex flex-row  items-center justify-end text-left"
-              style={{ width: rem(40), height: rem(40) }}
-              // stroke={2}
-            />
-          </Button>
+        <Table.Td className="flex flex-row items-center gap-4 justify-end">
+          <IoMdCheckmark
+            onClick={()=> handleApproval(true, row.id)}
+            className="text-green-500 cursor-pointer hover:bg-[#c1f3c8] rounded-full"
+            style={{ width: rem(30), height: rem(30) }}
+          />
+          <IoMdTrash
+            onClick={()=> handleApproval(false, row.id)}
+            className="text-red-500 cursor-pointer hover:bg-[#f3c1c1] rounded-full"
+            style={{ width: rem(30), height: rem(30) }}
+          />
         </Table.Td>
       )}
     </Table.Tr>
@@ -245,14 +272,14 @@ export default function MembersTable({
       <Table.ScrollContainer
         // className=" inline overflow-x-hidden"
         type="native"
-        minWidth={800}
+        minWidth={900}
         maw={"100%"}
       >
         <ScrollArea>
           <Table
             horizontalSpacing="md"
             verticalSpacing="xs"
-            miw={800}
+            miw={900}
             withRowBorders
             border={1}
             borderColor="#48484814"

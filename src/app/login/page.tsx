@@ -11,7 +11,7 @@ import {
 } from "@mantine/core";
 import classes from "@/styles/auth.module.css";
 import Image from "next/image";
-import { useForm } from "@mantine/form";
+import { useForm, isEmail } from "@mantine/form";
 import { useRouter } from "next/navigation";
 import { loginRes } from "@/types/user";
 import { handleLogin } from "@/utils/auth";
@@ -31,20 +31,18 @@ export default function Login() {
     },
 
     validate: {
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
+      email: isEmail("Invalid email"),
       password: (value) =>
         value.length >= 6 ? null : "Password should be at least 6 characters",
     },
   });
-
   const router = useRouter();
 
-  const Login = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const onHandleLogin = async () => {
     const { email, password, loginPreference } = form.values;
     try {
       localStorage.clear();
-      const res: loginRes = await handleLogin(email, password);
+      const res: loginRes = await handleLogin(email.toLocaleLowerCase(), password);
       if (res.data.access_token) {
         const {
           name,
@@ -106,10 +104,12 @@ export default function Login() {
         </Title>
         <form
           className="w-full max-w-[400px] self-center"
-          onSubmit={(e) => Login(e)}
+          onSubmit={form.onSubmit(() => {
+            onHandleLogin();
+          })}
         >
           <TextInput
-            label="Username or Email address"
+            label="Email address"
             placeholder="xyz@gmail.com"
             size="md"
             required
