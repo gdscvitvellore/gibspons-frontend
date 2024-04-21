@@ -164,3 +164,17 @@ export async function approveUser(
     throw new Error(error.response.data);
   }
 }
+
+export async function handleForgetPass(
+  email: string
+): Promise<any> {
+  try {
+    const response = await axios.post(`${BaseURL}/users/reset_password/`, {
+      email: email,
+    });
+    const data = await response.data;
+    return data;
+  } catch (error: any) {
+    throw new Error(error.response.data.detail);
+  }
+}

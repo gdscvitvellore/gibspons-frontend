@@ -12,10 +12,14 @@ import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import { updateUser, getUserData } from "@/utils/auth";
 import { user } from "@/types/user";
+import { useEffect, useState } from "react";
+import { getSponsorsByUser } from "@/utils/organisation";
+import { sponsorships } from "@/types/org";
 
 export default function Profile() {
-  const { name, email, profile_pic, accessToken, update, getUser } = authStore();
-  const sponsors: any = [];
+  const { name, email, profile_pic, accessToken, update, getUser } =
+    authStore();
+  const [sponsors, setSponsors] = useState<sponsorships[]>([]);
   const { org } = organisationStore();
   const [opened, { open, close }] = useDisclosure(false);
 
@@ -38,8 +42,24 @@ export default function Profile() {
     });
   };
 
+  useEffect(() => {
+    if (accessToken === "") {
+      return;
+    }
+    async function fetchData() {
+      try {
+        const resp = await getSponsorsByUser(accessToken);
+        setSponsors(resp);
+      } catch (error: any) {
+        toast.error(error.response.data);
+      }
+    }
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
-    <div className="flex bg-white flex-col h-full gap-8 p-4">
+    <div className="flex bg-white flex-col min-h-full gap-8 p-4">
       <ToastContainer />
       <Modal
         classNames={{ content: "border-2 border-red-500", root: "" }}
@@ -51,7 +71,7 @@ export default function Profile() {
         w={"100%"}
       >
         <form
-        className="flex flex-col gap-4"
+          className="flex flex-col gap-4"
           onSubmit={formContent.onSubmit(() => {
             const body = {
               profile_pic: formContent.values.profilePic,
@@ -86,7 +106,7 @@ export default function Profile() {
             src={profile_pic}
             alt="profile pic"
             color="blue"
-            className="rounded-full w-28 h-28 bg-cover bg-center"
+            className="rounded-full w-16 h-16 md:w-28 md:h-28 bg-cover bg-center"
           />
           <div className="absolute rounded-full w-28 h-28 inset-0 flex items-center bg-slate-500 justify-center opacity-0 hover:opacity-50 transition-opacity duration-300">
             <button onClick={open} className="bg-gray-200 p-2 rounded-full">
@@ -136,28 +156,17 @@ export default function Profile() {
           </div>
         </div>
         <div className="w-full flex h-full flex-col border border-black rounded-md p-4">
-          <h1 className="font-bold h-full text-lg">
+          <h1 className="font-bold h-full text-lg mb-2">
             Recently Contacted Sponsors
           </h1>
-          {sponsors.length === 0 ? (
-            <p>No sponsors contacted yet</p>
-          ) : (
-            Object.keys(sponsors).map((sponsor, id) => (
-              <div className="flex flex-row items-center gap-4" key={id}>
-                <Image
-                  height={50}
-                  width={50}
-                  src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-5.png"
-                  alt="Profile Picture"
-                  className="rounded-full w-14 h-14"
-                />
-                <div>
-                  <h2 className="text-lg font-bold">{sponsor}</h2>
-                  <p className="text-sm">{sponsors[sponsor]}</p>
-                </div>
+          {sponsors.slice(0, 10).map((sponsor, id) => (
+            <div className="flex flex-row items-center gap-4" key={id}>
+              <div className="flex flex-row w-full justify-between my-1">
+                <h2 className="text-lg font-bold">{sponsor.company_name}</h2>
+                <p className="text-sm">{sponsor.status}</p>
               </div>
-            ))
-          )}
+            </div>
+          ))}
         </div>
       </div>
     </div>

@@ -42,7 +42,10 @@ export default function Login() {
     const { email, password, loginPreference } = form.values;
     try {
       localStorage.clear();
-      const res: loginRes = await handleLogin(email.toLocaleLowerCase(), password);
+      const res: loginRes = await handleLogin(
+        email.toLocaleLowerCase(),
+        password
+      );
       if (res.data.access_token) {
         const {
           name,

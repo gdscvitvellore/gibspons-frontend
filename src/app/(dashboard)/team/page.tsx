@@ -24,20 +24,8 @@ const eventCard = (event: Event) => {
     <a
       key={event.id}
       href={`/team/${event.id}/dashboard`}
-      className="flex relative flex-col p-4 bg-[#F4F4F4] hover:bg-[#dee5ee] max-w-[30rem] w-full h-[12.75rem] max-h-full shadow-md rounded-lg"
+      className="flex relative flex-col p-4 bg-[#F4F4F4] hover:bg-[#dee5ee] transition-colors duration-200 max-w-[30rem] w-full h-[12.75rem] max-h-full shadow-md rounded-lg"
     >
-      {/* <div className="flex flex-row items-center justify-between">
-        <h2 className="text-xl font-semibold">{event.name}</h2>
-        <h3 className="text-lg font-semibold">{event.date_of_event}</h3>
-      </div>
-      <div className="flex flex-row items-center gap-4">
-        <h3 className="text-lg">{event.expected_reg}</h3>
-        <h3 className="text-lg">{event.description}</h3>
-      </div>
-      <div className="flex flex-row items-center gap-4">
-        <h3 className="text-lg">{event.brochure}</h3>
-        <h3 className="text-lg">{event.logo}</h3>
-      </div> */}
       <div className="flex h-full w-wull text-[2rem] text-[#6D6D6D] flex-row items-center justify-center">
         {event.logo ? (
           <Image src={event.logo} alt="Event Logo" width={200} height={200} />
