@@ -246,7 +246,7 @@ export async function getCompanyByID(
   accessToken: string,
   org_id: number,
   company_id: number
-): Promise<companyByOrg[]> {
+): Promise<companyByOrg> {
   try {
     const headers = {
       Authorization: `Bearer ${accessToken}`,

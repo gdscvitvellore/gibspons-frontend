@@ -23,6 +23,7 @@ import {
   updateSponsorship,
 } from "@/utils/organisation";
 import { usePathname } from "next/navigation";
+import { pocResp } from "@/types/org";
 
 type PoC = {
   designation: string;
@@ -36,7 +37,7 @@ export default function ModifyCompany({ company_id }: { company_id: number }) {
   const { accessToken, organisation } = authStore();
   // const [pocCount, setPocCount] = useState<number>(1);
   const event_id = usePathname().split("/")[2];
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<pocResp[]>([]);
 
   const form = useForm({
     initialValues: {
@@ -64,7 +65,7 @@ export default function ModifyCompany({ company_id }: { company_id: number }) {
 
   useEffect(() => {
     const fetchSponsors = async () => {
-      const comp = await getCompanyByID(
+      const comp_filtered = await getCompanyByID(
         accessToken,
         Number(organisation),
         company_id
@@ -73,7 +74,7 @@ export default function ModifyCompany({ company_id }: { company_id: number }) {
       const spon_filtered = spon.sponsorships.find(
         (c) => c.company === company_id
       );
-      const comp_filtered = comp.find((c) => c.id === company_id);
+      // const comp_filtered = comp.find((c) => c.id === company_id);
       form.setValues({
         CompName: comp_filtered?.name,
         CompIndustry: comp_filtered?.industry,
@@ -103,7 +104,11 @@ export default function ModifyCompany({ company_id }: { company_id: number }) {
         money_donated: values.money_donated,
         additional: values.additional,
       };
-      const resp = await updateSponsorship(accessToken, data, values.sponsor_id);
+      const resp = await updateSponsorship(
+        accessToken,
+        data,
+        values.sponsor_id
+      );
       console.log(resp);
       toast.success("Company updated successfully");
     } catch (error: any) {
@@ -263,7 +268,11 @@ export default function ModifyCompany({ company_id }: { company_id: number }) {
             <Autocomplete
               label="Name"
               placeholder="Rupaak S"
-              data={data.map((item) => item.name)}
+              data={data.map((item) => ({
+                label: item.name,
+                // value: item.name,
+                value: String(item.id),
+              }))}
               autoComplete="on"
               size="md"
               w={"100%"}
@@ -272,18 +281,18 @@ export default function ModifyCompany({ company_id }: { company_id: number }) {
               classNames={{ input: "bg-white w-full" }}
               selectFirstOptionOnChange
               onOptionSubmit={(value) => {
-                const comp = data.find((item) => item.name === value);
-
+                const poc = data.find((item) => item.id === Number(value));
+                if (!poc) return;
                 form.setValues((values) => {
                   return {
                     ...values,
                     PoCs: {
-                      id: comp.id,
-                      designation: comp.designation,
-                      email: comp.email,
-                      linkedin: comp.linkedin,
-                      name: comp.name,
-                      phone: comp.phone,
+                      id: poc.id,
+                      designation: poc.designation,
+                      email: poc.email,
+                      linkedin: poc.linkedin,
+                      name: poc.name,
+                      phone: poc.phone,
                     },
                   };
                 });

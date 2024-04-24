@@ -66,7 +66,7 @@ export default function Home() {
       const rowData = data.sponsorships.map((sponsor, key) => {
         return {
           id: Number(sponsor.company),
-          name: sponsor.poc?.name || "",
+          name: sponsor.poc?.name || "None",
           company_name: sponsor.company_name,
           added_by: sponsor.user_name,
           status: sponsor.status,
@@ -160,7 +160,7 @@ export default function Home() {
                 <Table.Tr>
                   <Table.Th>Company</Table.Th>
                   {/* <Table.Th className="text-center">Company PoC</Table.Th> */}
-                  <Table.Th className="text-center">Last Updated</Table.Th>
+                  <Table.Th className="text-center">Current PoC</Table.Th>
                   <Table.Th className="text-center">Added By</Table.Th>
                   <Table.Th className="text-center">Status</Table.Th>
                 </Table.Tr>

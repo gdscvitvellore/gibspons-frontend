@@ -5,10 +5,16 @@ import { authStore } from "@/store/auth";
 import { Paper, TextInput, Button, Title, Autocomplete } from "@mantine/core";
 import { useEffect } from "react";
 import { useForm, FORM_INDEX } from "@mantine/form";
-import { createEvent } from "@/utils/events";
-import { ToastContainer, ToastItem, toast } from "react-toastify";
-import { addCompany, addPoC, getSponsorsByOrg } from "@/utils/organisation";
+import { useRouter } from "next/navigation";
+import { ToastContainer, toast } from "react-toastify";
+import {
+  addCompany,
+  addPoC,
+  fetchAllCompanies
+} from "@/utils/organisation";
 import { usePathname } from "next/navigation";
+import { companyByOrg } from "@/types/org";
+import { useLoadingStore } from "@/store/loading";
 
 type PoC = {
   designation: string;
@@ -22,13 +28,15 @@ export default function CreateEvent() {
   const { accessToken, organisation } = authStore();
   const [pocCount, setPocCount] = useState<number>(1);
   const event_id = usePathname().split("/")[2];
-  const [data, setData] = useState<any[] | null>([]);
+  const [data, setData] = useState<companyByOrg[] | null>([]);
+  const { startLoading, stopLoading } = useLoadingStore();
+  const router = useRouter();
 
-  
   useEffect(() => {
+    if (accessToken === "") return;
     const fetchCompanies = async () => {
       try {
-        const resp = await getSponsorsByOrg(accessToken, organisation);
+        const resp = await fetchAllCompanies(accessToken, Number(organisation));
         if (resp.length === 0) {
           setData(null);
         } else {
@@ -78,6 +86,7 @@ export default function CreateEvent() {
   });
 
   const handleCreateCompany = async (values: any) => {
+    startLoading();
     try {
       const company = {
         name: values.CompName,
@@ -100,12 +109,18 @@ export default function CreateEvent() {
       });
       try {
         const pocResponse = await addPoC(accessToken, pocData);
+        stopLoading();
         toast.success("Company created successfully");
       } catch (error: any) {
+        stopLoading();
         toast.error("Failed to add PoC");
       }
       toast.success("PoC added successfully");
+      setTimeout(() => {
+        router.push(`/team/${event_id}/sponsorships`);
+      }, 700);
     } catch (error: any) {
+      stopLoading();
       toast.error("Failed to create company");
     }
   };
@@ -141,43 +156,52 @@ export default function CreateEvent() {
             Company Details
           </Title>
           <div className="flex flex-col select-none md:flex-row gap-4">
-            {/* <TextInput
-              label="Name of the Company"
-              placeholder="Google"
-              size="md"
-              w={"100%"}
-              classNames={{ input: "bg-white w-full" }}
-              mb={10}
-              {...form.getInputProps("CompName")}
-            /> */}
-            <Autocomplete
-              label="Name of the Company"
-              placeholder="Google"
-              data={data ? data.map((item) => item.name) : []}
-              autoComplete="on"
-              size="md"
-              w={"100%"}
-              limit={5}
-              mb={10}
-              classNames={{ input: "bg-white w-full" }}
-              selectFirstOptionOnChange
-              onOptionSubmit={(value) => {
-                if (data === null) return;
-                const comp = data.find((item) => item.name === value);
-
-                form.setValues((values) => {
-                  return {
-                    ...values,
-                    CompName: comp?.name,
-                    CompIndustry: comp?.industry,
-                    CompLinkedin: comp?.linkedin,
-                    CompWebsite: comp?.website,
-                  };
-                });
-              }}
-              // onChange={(value) => console.log(value)}
-              {...form.getInputProps("CompName")}
-            />
+            {data === null || data.length === 0 ? (
+              <TextInput
+                label="Name of the Company"
+                placeholder="Google"
+                size="md"
+                w={"100%"}
+                classNames={{ input: "bg-white w-full" }}
+                mb={10}
+                {...form.getInputProps("CompName")}
+              />
+            ) : (
+              <Autocomplete
+                label="Name of the Company"
+                placeholder="Google"
+                data={
+                  data
+                    ? data.map((item) => ({
+                        label: item.name,
+                        value: item.id.toString(),
+                      }))
+                    : []
+                }
+                autoComplete="on"
+                size="md"
+                w={"100%"}
+                limit={5}
+                mb={10}
+                classNames={{ input: "bg-white w-full" }}
+                selectFirstOptionOnChange
+                onOptionSubmit={(value) => {
+                  if (data === null) return;
+                  const comp = data.find((item) => item.id === Number(value));
+                  form.setValues((values) => {
+                    return {
+                      ...values,
+                      CompName: comp?.name,
+                      CompIndustry: comp?.industry,
+                      CompLinkedin: comp?.linkedin,
+                      CompWebsite: comp?.website,
+                    };
+                  });
+                }}
+                // onChange={(value) => console.log(value)}
+                {...form.getInputProps("CompName")}
+              />
+            )}
             <TextInput
               label="Industry"
               placeholder="Tech"
