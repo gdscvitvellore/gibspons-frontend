@@ -1,9 +1,9 @@
 "use client";
 import { authStore } from "@/store/auth";
 import { getSponsorsByOrg } from "@/utils/organisation";
-
 import { Table, ScrollArea, Text } from "@mantine/core";
 import { useState, useEffect } from "react";
+import { useLoadingStore } from "@/store/loading";
 
 interface RowData {
   id: number;
@@ -16,9 +16,11 @@ interface RowData {
 export default function Home() {
   const { accessToken, organisation } = authStore();
   const [sponsors, setSponsors] = useState<RowData[]>([]);
+  const { startLoading, stopLoading } = useLoadingStore();
 
   useEffect(() => {
     const fetchSponsors = async () => {
+      startLoading();
       try {
         const data = await getSponsorsByOrg(accessToken, organisation);
         const rowData = data.map((sponsor) => {
@@ -31,7 +33,9 @@ export default function Home() {
           };
         });
         setSponsors(rowData);
+        stopLoading();
       } catch (error: any) {
+        stopLoading();
         console.error(error);
       }
     };

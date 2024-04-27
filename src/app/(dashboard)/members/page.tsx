@@ -6,6 +6,7 @@ import { IoLocationSharp } from "react-icons/io5";
 import { useState, useEffect } from "react";
 import { getMembersByOrg } from "@/utils/organisation";
 import MembersTable from "@/components/MembersTable";
+import { useLoadingStore } from "@/store/loading";
 
 interface RowData {
   id: string;
@@ -23,65 +24,74 @@ export default function Home() {
   const [membersNotApproved, setMembersNotApproved] = useState<
     RowData[] | null
   >();
+  const { startLoading, stopLoading } = useLoadingStore();
 
+  const fetchMembers = async () => {
+    try {
+      startLoading();
+      const data = await getMembersByOrg(accessToken, org.id);
+      const rowDataApproved = data
+        .filter((member) => member.is_approved === true)
+        .map((member) => {
+          return {
+            id: String(member.id),
+            name: member.name,
+            email: member.email,
+            created_at: new Date(member.created_at).toLocaleDateString(
+              "en-IN",
+              {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              }
+            ),
+            role: member.role,
+            username: member.username,
+          };
+        });
+      const rowDataNotApproved = data
+        .filter((member) => member.is_approved === false)
+        .map((member) => {
+          return {
+            id: String(member.id),
+            name: member.name,
+            email: member.email,
+            created_at: new Date(member.created_at).toLocaleDateString(
+              "en-IN",
+              {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              }
+            ),
+            role: member.role,
+            username: member.username,
+          };
+        });
+      setMembersApproved(rowDataApproved);
+      setMembersNotApproved(
+        rowDataNotApproved.length === 0 ? null : rowDataNotApproved
+      );
+      stopLoading();
+    } catch (error: any) {
+      stopLoading();
+      console.error(error);
+    }
+  };
+
+  const refreshData = async () => {
+    fetchMembers();
+  }
+  
   useEffect(() => {
-    const fetchMembers = async () => {
-      try {
-        const data = await getMembersByOrg(accessToken, org.id);
-        const rowDataApproved = data
-          .filter((member) => member.is_approved === true)
-          .map((member) => {
-            return {
-              id: String(member.id),
-              name: member.name,
-              email: member.email,
-              created_at: new Date(member.created_at).toLocaleDateString(
-                "en-IN",
-                {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                }
-              ),
-              role: member.role,
-              username: member.username,
-            };
-          });
-        const rowDataNotApproved = data
-          .filter((member) => member.is_approved === false)
-          .map((member) => {
-            return {
-              id: String(member.id),
-              name: member.name,
-              email: member.email,
-              created_at: new Date(member.created_at).toLocaleDateString(
-                "en-IN",
-                {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                }
-              ),
-              role: member.role,
-              username: member.username,
-            };
-          });
-        setMembersApproved(rowDataApproved);
-        setMembersNotApproved(
-          rowDataNotApproved.length === 0 ? null : rowDataNotApproved
-        );
-      } catch (error: any) {
-        console.error(error);
-      }
-    };
     if (org.id !== 0) fetchMembers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <div className="h-full absolute w-full overflow-x-auto bg-white rounded-md md:gap-4 flex flex-col items-center p-4">
-      <div className="flex flex-row w-full items-center gap-4 h-full max-h-[11rem] justify-between">
-        <div className="flex w-full max-w-[35rem] flex-col">
+      <div className="flex flex-col md:flex-row w-full items-center gap-4 justify-center">
+        <div className="flex flex-col items-center md:items-start w-full max-w-[35rem]">
           {org.logo && (
             <Image
               src={org.logo}
@@ -98,13 +108,32 @@ export default function Home() {
             </div>
           )}
         </div>
-        <div className="bg-[#4D4D4D] p-4 font-bold text-white text-3xl rounded-md shadow-md w-full max-w-[30rem] h-full max-h-[11rem]">
-          Overview
+        <div className="bg-gradient-to-r from-[#4d4d4d] to-[#3e3e3e] p-4 py-8 flex flex-col sm:flex-row justify-between text-white rounded-md shadow-md w-full max-w-[30rem] max-h-full h-[11rem]">
+          <div className="flex flex-col w-full justify-center">
+            <p>
+              {new Date().toLocaleDateString("en-IN", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </p>
+            <p className="text-xl md:text-3xl font-bold">OVERVIEW</p>
+          </div>
+          <div className="flex flex-col text-right w-full justify-center">
+            <p>Amount Raised</p>
+            <p className="text-xl md:text-3xl font-bold">
+              &#8377;{org.total_money_raised}
+            </p>
+          </div>
         </div>
       </div>
-      {membersNotApproved && <MembersTable data={membersNotApproved} approved={false} />}
+      {membersNotApproved && (
+        <MembersTable data={membersNotApproved} approved={false} refresh={refreshData}/>
+      )}
       <br />
-      {membersApproved && <MembersTable data={membersApproved} approved={true}/>}
+      {membersApproved && (
+        <MembersTable data={membersApproved} approved={true} refresh={refreshData}/>
+      )}
     </div>
   );
 }

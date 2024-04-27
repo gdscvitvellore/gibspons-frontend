@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { getEvents } from "@/utils/events";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { useRouter } from "next/navigation";
+import { useLoadingStore } from "@/store/loading";
 
 type Event = {
   id: number;
@@ -40,16 +41,19 @@ const eventCard = (event: Event) => {
 export default function Home() {
   const { accessToken, role } = authStore();
   const router = useRouter();
-
+  const { startLoading, stopLoading } = useLoadingStore();
   const [eventsData, setEventsData] = useState<Event[]>([]);
   const { org } = organisationStore();
 
   useEffect(() => {
     const fetchEvents = async () => {
+      startLoading();
       try {
         const data = await getEvents(accessToken, org.id, null);
         setEventsData(data);
+        stopLoading();
       } catch (error: any) {
+        stopLoading();
         console.error(error);
       }
     };
@@ -78,7 +82,7 @@ export default function Home() {
               </div>
             )}
           </div>
-          <div className="bg-gradient-to-r from-[#4d4d4d] to-[#3e3e3e] p-4 py-8 flex flex-row justify-between text-white rounded-md shadow-md w-full max-w-[30rem] max-h-full h-[11rem]">
+          <div className="bg-gradient-to-r from-[#4d4d4d] to-[#3e3e3e] p-4 py-8 flex flex-col sm:flex-row justify-between text-white rounded-md shadow-md w-full max-w-[30rem] max-h-full h-[11rem]">
             <div className="flex flex-col w-full justify-center">
               <p>
                 {new Date().toLocaleDateString("en-IN", {
@@ -87,11 +91,11 @@ export default function Home() {
                   day: "numeric",
                 })}
               </p>
-              <p className="text-3xl font-bold">OVERVIEW</p>
+              <p className="text-xl md:text-3xl font-bold">OVERVIEW</p>
             </div>
             <div className="flex flex-col text-right w-full justify-center">
               <p>Amount Raised</p>
-              <p className="text-3xl font-bold">
+              <p className="text-xl md:text-3xl font-bold">
                 &#8377;{org.total_money_raised}
               </p>
             </div>

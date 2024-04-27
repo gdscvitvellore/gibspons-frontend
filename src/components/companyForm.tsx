@@ -65,31 +65,37 @@ export default function ModifyCompany({ company_id }: { company_id: number }) {
 
   useEffect(() => {
     const fetchSponsors = async () => {
-      const comp_filtered = await getCompanyByID(
-        accessToken,
-        Number(organisation),
-        company_id
-      );
-      const spon = await getSponsorsByEvent(accessToken, event_id);
-      const spon_filtered = spon.sponsorships.find(
-        (c) => c.company === company_id
-      );
-      // const comp_filtered = comp.find((c) => c.id === company_id);
-      form.setValues({
-        CompName: comp_filtered?.name,
-        CompIndustry: comp_filtered?.industry,
-        CompLinkedin: comp_filtered?.linkedin,
-        CompWebsite: comp_filtered?.website,
-        type_of_sponsorship: spon_filtered?.type_of_sponsorship,
-        money_donated: spon_filtered?.money_donated,
-        additional: spon_filtered?.additional,
-        status: spon_filtered?.status,
-        added_by: spon_filtered?.user_name,
-        sponsor_id: spon_filtered?.id,
-      });
-      const poc = await getPoCByCompany(accessToken, company_id);
-      // setPocCount(poc.length);
-      setData(poc);
+      try {
+        const comp_filtered = await getCompanyByID(
+          accessToken,
+          Number(organisation),
+          company_id
+        );
+        if(Number(comp_filtered.status) !== 200) throw new Error("Error fetching companies, Please try again later")
+        const spon = await getSponsorsByEvent(accessToken, event_id);
+        const spon_filtered = spon.sponsorships.find(
+          (c) => c.company === company_id
+        );
+        // const comp_filtered = comp.find((c) => c.id === company_id);
+        form.setValues({
+          CompName: comp_filtered?.name,
+          CompIndustry: comp_filtered?.industry,
+          CompLinkedin: comp_filtered?.linkedin,
+          CompWebsite: comp_filtered?.website,
+          type_of_sponsorship: spon_filtered?.type_of_sponsorship,
+          money_donated: spon_filtered?.money_donated,
+          additional: spon_filtered?.additional,
+          status: spon_filtered?.status,
+          added_by: spon_filtered?.user_name,
+          sponsor_id: spon_filtered?.id,
+        });
+        const poc = await getPoCByCompany(accessToken, company_id);
+        // setPocCount(poc.length);
+        setData(poc);
+      } catch (error: any) {
+        toast.error(String(error.response.data));
+        console.error(error);
+      }
     };
     if (Number(organisation) !== 0) fetchSponsors();
     // eslint-disable-next-line react-hooks/exhaustive-deps

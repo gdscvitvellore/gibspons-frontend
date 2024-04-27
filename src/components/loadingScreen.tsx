@@ -11,7 +11,7 @@ export default function LoadingScreen() {
     return (
       //loading screen in tailwindcss
       <div
-        className={`w-full h-full flex-row bg-black opacity-50 absolute z-50 items-center justify-center ${
+        className={`w-full h-full flex-row bg-black transition-colors duration-100 opacity-50 absolute z-50 items-center justify-center ${
           isLoading ? "flex" : "hidden"
         }`}
       >

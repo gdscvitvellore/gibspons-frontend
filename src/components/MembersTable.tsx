@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   Table,
@@ -27,7 +27,7 @@ import classes from "@/styles/TableSort.module.css";
 import { useDisclosure } from "@mantine/hooks";
 import { authStore } from "@/store/auth";
 import { changeUserRole } from "@/utils/organisation";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { approveUser } from "@/utils/auth";
 
 interface RowData {
@@ -99,9 +99,11 @@ function Th({ children, reversed, sorted, onSort }: ThProps) {
 export default function MembersTable({
   data,
   approved,
+  refresh,
 }: {
   data: RowData[];
   approved: boolean;
+  refresh: () => Promise<void>;
 }) {
   const [search, setSearch] = useState("");
   const [sortedData, setSortedData] = useState<RowData[]>(data);
@@ -145,6 +147,10 @@ export default function MembersTable({
     open();
   };
 
+  useEffect(() => {
+    setSortedData(data);
+  }, [data]);
+
   const handleChangeRole = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const resp = await changeUserRole(
@@ -153,6 +159,7 @@ export default function MembersTable({
       changeRoleForm.values.role
     );
     if (resp.status === 200) {
+      toast.success("Role changed successfully");
       const newData = sortedData.map((item) => {
         if (item.id === selectedUser?.id) {
           return { ...item, role: changeRoleForm.values.role };
@@ -160,8 +167,11 @@ export default function MembersTable({
         return item;
       });
       setSortedData(newData);
+    } else {
+      toast.error(resp.data.detail);
     }
     close();
+    refresh();
   };
 
   const handleApproval = async (status: boolean, id: string) => {
@@ -171,6 +181,7 @@ export default function MembersTable({
       toast.success(`User ${status ? "approved" : "rejected"} successfully`);
     }
     close();
+    refresh();
   };
 
   const rows = sortedData.map((row) => (
@@ -216,6 +227,7 @@ export default function MembersTable({
 
   return (
     <>
+      <ToastContainer />
       {" "}
       <Modal
         classNames={{ content: "border-2 border-red-500" }}

@@ -13,7 +13,6 @@ import { usePathname } from "next/navigation";
 
 const inter = Inter({ subsets: ["latin"] });
 
-
 function Dashboard({
   children,
 }: Readonly<{
@@ -36,7 +35,9 @@ function Dashboard({
   const isTeamPath = teamPathRegex.test(pathname);
 
   return (
-    <div className={`flex flex-row bg-[#ECECEC] w-full absolute h-screen ${inter.className}`}>
+    <div
+      className={`flex flex-row bg-[#ECECEC] w-full absolute h-screen ${inter.className}`}
+    >
       <Sidebar
         data={
           pathname.includes(`/team/${event_id}/`)

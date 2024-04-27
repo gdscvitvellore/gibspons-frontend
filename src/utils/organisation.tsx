@@ -39,12 +39,9 @@ export async function getMembersByOrg(
     const headers = {
       Authorization: `Bearer ${accessToken}`,
     };
-    const response = await axios.get(
-      `${BaseURL}/users/displayall/?org=${org_id}`,
-      {
-        headers,
-      }
-    );
+    const response = await axios.get(`${BaseURL}/users/user/?org=${org_id}`, {
+      headers,
+    });
     const data = await response.data;
     return data;
   } catch (error: any) {
@@ -108,9 +105,10 @@ export async function changeUserRole(
     const response = await axios.post(`${BaseURL}/users/changerole/`, body, {
       headers,
     });
-    console.log(response.data);
+    // console.log(response.data);
     return response;
   } catch (error: any) {
+    // return error.response.detail;
     throw new Error(error.response.data);
   }
 }
@@ -179,12 +177,9 @@ export async function getSponsorsByUser(
     const headers = {
       Authorization: `Bearer ${accessToken}`,
     };
-    const response = await axios.get(
-      `${BaseURL}/app/usercompany/`,
-      {
-        headers,
-      }
-    );
+    const response = await axios.get(`${BaseURL}/app/usercompany/`, {
+      headers,
+    });
     const data = await response.data;
     return data;
   } catch (error: any) {
@@ -196,7 +191,7 @@ export async function generateMail(
   accesstoken: string,
   poc_id: number,
   event_id: number,
-  additional_message: string | null,
+  additional_message: string | null
 ): Promise<any> {
   try {
     const headers = {
@@ -221,7 +216,7 @@ export async function generateLinkedin(
   accesstoken: string,
   poc_id: number,
   event_id: number,
-  additional_message: string | null,
+  additional_message: string | null
 ): Promise<any> {
   try {
     const headers = {
@@ -232,9 +227,13 @@ export async function generateLinkedin(
       event_id: event_id,
       additional: additional_message,
     };
-    const response = await axios.post(`${BaseURL}/app/generatelinkedin/`, body, {
-      headers,
-    });
+    const response = await axios.post(
+      `${BaseURL}/app/generatelinkedin/`,
+      body,
+      {
+        headers,
+      }
+    );
     const data = await response.data;
     return data;
   } catch (error: any) {
@@ -251,9 +250,12 @@ export async function getCompanyByID(
     const headers = {
       Authorization: `Bearer ${accessToken}`,
     };
-    const response = await axios.get(`${BaseURL}/app/company/?org=${org_id}&id=${company_id}`, {
-      headers,
-    });
+    const response = await axios.get(
+      `${BaseURL}/app/company/?org=${org_id}&id=${company_id}`,
+      {
+        headers,
+      }
+    );
     const data = await response.data;
     return data;
   } catch (error: any) {
@@ -291,9 +293,13 @@ export async function updateSponsorship(
     const headers = {
       Authorization: `Bearer ${accessToken}`,
     };
-    const response = await axios.patch(`${BaseURL}/app/sponsor/${org_id}/`, data, {
-      headers,
-    });
+    const response = await axios.patch(
+      `${BaseURL}/app/sponsor/${org_id}/`,
+      data,
+      {
+        headers,
+      }
+    );
     console.log(response.data);
     return response;
   } catch (error: any) {
