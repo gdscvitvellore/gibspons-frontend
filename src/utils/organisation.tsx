@@ -259,7 +259,8 @@ export async function getCompanyByID(
     const data = await response.data;
     return data;
   } catch (error: any) {
-    throw new Error(error.response.data);
+    console.log(error, "boom");
+    throw new Error(error.response.data.detail);
   }
 }
 

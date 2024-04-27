@@ -12,8 +12,8 @@ import {
   Autocomplete,
 } from "@mantine/core";
 import { useForm, FORM_INDEX } from "@mantine/form";
-import { createEvent } from "@/utils/events";
-import { ToastContainer, ToastItem, toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import {
   addCompany,
   addPoC,
@@ -33,7 +33,7 @@ type PoC = {
   phone: string;
 };
 
-export default function ModifyCompany({ company_id }: { company_id: number }) {
+export default function ModifyCompany({ company_id, close }: { company_id: number, close: (success?:boolean, data?:string) => void}) {
   const { accessToken, organisation } = authStore();
   // const [pocCount, setPocCount] = useState<number>(1);
   const event_id = usePathname().split("/")[2];
@@ -71,7 +71,6 @@ export default function ModifyCompany({ company_id }: { company_id: number }) {
           Number(organisation),
           company_id
         );
-        if(Number(comp_filtered.status) !== 200) throw new Error("Error fetching companies, Please try again later")
         const spon = await getSponsorsByEvent(accessToken, event_id);
         const spon_filtered = spon.sponsorships.find(
           (c) => c.company === company_id
@@ -93,7 +92,8 @@ export default function ModifyCompany({ company_id }: { company_id: number }) {
         // setPocCount(poc.length);
         setData(poc);
       } catch (error: any) {
-        toast.error(String(error.response.data));
+        toast.error(String(error));
+        // close();
         console.error(error);
       }
     };
@@ -116,7 +116,7 @@ export default function ModifyCompany({ company_id }: { company_id: number }) {
         values.sponsor_id
       );
       console.log(resp);
-      toast.success("Company updated successfully");
+      close(true, "Sponsorship Updated Successfully");
     } catch (error: any) {
       console.error(error);
     }
@@ -124,7 +124,7 @@ export default function ModifyCompany({ company_id }: { company_id: number }) {
 
   return (
     <div className="bg-white relative p-4 rounded-md">
-      <ToastContainer />
+      <ToastContainer className="absolute top-0 right-0" />
       <Paper className="h-full relative min-h-[rem(800)px] flex flex-col items-center justify-center max-w-full w-[rem(1200px)]">
         <Title
           order={1}
@@ -190,6 +190,7 @@ export default function ModifyCompany({ company_id }: { company_id: number }) {
               placeholder="Rupaak S"
               size="md"
               w={"50%"}
+              disabled
               classNames={{ input: "bg-[#4d4d4d] w-full " }}
               mb={10}
               {...form.getInputProps("added_by")}

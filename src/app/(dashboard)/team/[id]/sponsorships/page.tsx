@@ -22,6 +22,8 @@ import { useDisclosure } from "@mantine/hooks";
 import Link from "next/link";
 import ModifyCompany from "@/components/companyForm";
 import { IconDots } from "@tabler/icons-react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface RowData {
   id: number;
@@ -53,6 +55,16 @@ export default function Home() {
   const handleOpen = (id: number) => {
     setCompanyId(id);
     open();
+  };
+
+  const handleCloseFunc = (success?: boolean, data?: string) => {
+    if (success) {
+      toast.success(data);
+    } else {
+      toast.error(data);
+    }
+    fetchSponsors();
+    close();
   };
 
   const handleClose = () => {
@@ -118,6 +130,7 @@ export default function Home() {
 
   return (
     <>
+      <ToastContainer />
       <div className="h-full absolute max-w-full overflow-x-auto bg-white rounded-md gap-8 flex flex-col items-center p-4">
         <h1 className="text-3xl font-bold">View Sponsorships</h1>
         <p className="text-gray-500 text-sm w-full max-w-[400px] text-center">
@@ -189,7 +202,7 @@ export default function Home() {
               title="Modify User Role"
               w={"100%"}
             >
-              <ModifyCompany company_id={companyId} />
+              <ModifyCompany close={handleCloseFunc} company_id={companyId} />
             </Modal>
           </ScrollArea>
         </Table.ScrollContainer>

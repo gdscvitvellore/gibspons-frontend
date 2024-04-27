@@ -7,14 +7,11 @@ import { useEffect } from "react";
 import { useForm, FORM_INDEX } from "@mantine/form";
 import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
-import {
-  addCompany,
-  addPoC,
-  fetchAllCompanies
-} from "@/utils/organisation";
+import { addCompany, addPoC, fetchAllCompanies } from "@/utils/organisation";
 import { usePathname } from "next/navigation";
 import { companyByOrg } from "@/types/org";
 import { useLoadingStore } from "@/store/loading";
+import { MdOutlineDeleteForever } from "react-icons/md";
 
 type PoC = {
   designation: string;
@@ -78,9 +75,9 @@ export default function CreateEvent() {
         name: (value) => (value.length > 0 ? null : "Enter a name"),
         designation: (value) =>
           value.length > 0 ? null : "Enter a designation",
-        linkedin: (value) => (value.length > 0 ? null : "Enter a linkedin"),
-        phone: (value) => (value.length > 0 ? null : "Enter a phone number"),
-        email: (value) => (value.length > 0 ? null : "Enter an email"),
+        // linkedin: (value, values) => (value.length || values.PoCs[Number(0)].email.length || values.PoCs[Number(0)].phone.length > 0 ? null : "Enter a linkedin"),
+        // phone: (value) => (value.length > 0 ? null : "Enter a phone number"),
+        // email: (value) => (value.length > 0 ? null : "Enter an email"),
       },
     },
   });
@@ -237,15 +234,35 @@ export default function CreateEvent() {
           </Title>
           {Array.from({ length: pocCount }).map((_, index) => (
             <div key={index}>
-              <TextInput
-                label={`Name of PoC ${index + 1}`}
-                placeholder="Google"
-                size="md"
-                w={"100%"}
-                classNames={{ input: "bg-white w-full" }}
-                mb={10}
-                {...form.getInputProps(`PoCs.${index}.name`)}
-              />
+              <div className="flex flex-row w-full justify-between">
+                <TextInput
+                  label={`Name of PoC ${index + 1}`}
+                  placeholder="Google"
+                  size="md"
+                  w={"100%"}
+                  classNames={{ input: "bg-white w-full" }}
+                  mb={10}
+                  {...form.getInputProps(`PoCs.${index}.name`)}
+                />
+                <MdOutlineDeleteForever
+                className="text-red-500 text-2xl h-full self-center cursor-pointer hover:text-red-400"
+                  onClick={() => { 
+                    form.setValues((values) => {
+                      if (values.PoCs !== undefined) {
+                        return {
+                          ...values,
+                          PoCs: values.PoCs.filter((_, i) => i !== index),
+                        };
+                      } else {
+                        return {
+                          ...values,
+                        };
+                      }
+                    });
+                    setPocCount(pocCount - 1);
+                  }}
+                />
+              </div>
               <div className="flex flex-col select-none md:flex-row gap-4">
                 <TextInput
                   label="Designation"

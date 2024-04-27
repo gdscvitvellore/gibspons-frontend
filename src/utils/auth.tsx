@@ -8,16 +8,24 @@ const BaseURL = process.env.NEXT_PUBLIC_BASE_URL;
 export async function handleLogin(
   email: string,
   password: string
-): Promise<loginRes> {
+): Promise<any> {
   try {
     const response = await axios.post(`${BaseURL}/users/login/`, {
       email: email,
       password: password,
     });
-    const data: loginRes = await response.data;
-    return data;
+    if (response.status === 200) {
+      const data = response.data.data;
+      return data;
+    } else {
+      throw new Error(response.data.detail);
+    }
   } catch (error: any) {
-    throw new Error(error.response.data.detail);
+    if (error.response && error.response.data && error.response.data.detail) {
+      throw new Error(error.response.data.detail);
+    } else {
+      throw new Error("An error occurred while logging in.");
+    }
   }
 }
 
@@ -165,9 +173,7 @@ export async function approveUser(
   }
 }
 
-export async function handleForgetPass(
-  email: string
-): Promise<any> {
+export async function handleForgetPass(email: string): Promise<any> {
   try {
     const response = await axios.post(`${BaseURL}/users/reset_password/`, {
       email: email,

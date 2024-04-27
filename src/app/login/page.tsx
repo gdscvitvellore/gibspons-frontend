@@ -18,6 +18,8 @@ import { handleLogin } from "@/utils/auth";
 import { authStore } from "@/store/auth";
 import { organisationStore } from "@/store/organisation";
 import { getOrganisation } from "@/utils/organisation";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Login() {
   const { login } = authStore();
@@ -42,11 +44,8 @@ export default function Login() {
     const { email, password, loginPreference } = form.values;
     try {
       localStorage.clear();
-      const res: loginRes = await handleLogin(
-        email.toLocaleLowerCase(),
-        password
-      );
-      if (res.data.access_token) {
+      const res = await handleLogin(email.toLocaleLowerCase(), password);
+      if (res && res.access_token) {
         const {
           name,
           email,
@@ -57,7 +56,7 @@ export default function Login() {
           is_approved,
           access_token,
           refresh_token,
-        } = res.data;
+        } = res;
         const user = {
           name,
           email,
@@ -75,22 +74,19 @@ export default function Login() {
           const org = await getOrganisation(access_token);
           updateOrganisation(org);
         }
-        // if(loginPreference) {
-        //   sessionStorage.setItem("user", JSON.stringify(user));
-        // } else {}
-        // localStorage.setItem("user", JSON.stringify(user));
         router.push("/team");
       } else {
-        window.alert("Login failed");
+        toast.error("Login Failed");
       }
     } catch (error: any) {
-      window.alert(error);
-      console.log(error);
+      toast.error(error.message);
+      console.error("Error:", error.message);
     }
   };
 
   return (
     <div className={classes.wrapper}>
+      <ToastContainer />
       <div className="hidden md:flex w-full h-full flex-row justify-center items-center">
         <Image src="/icon.svg" alt="Gibspons logo" width="60" height="60" />
         <div className="flex flex-col justify-center text-white text-left p-2">
