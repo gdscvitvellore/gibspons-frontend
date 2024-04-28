@@ -14,10 +14,21 @@ import { user } from "@/types/user";
 import { useEffect, useState } from "react";
 import { getSponsorsByUser } from "@/utils/organisation";
 import { sponsorships } from "@/types/org";
+import { Outfit } from "next/font/google";
+
+const outfit = Outfit({ subsets: ["latin"] });
 
 export default function Profile() {
-  const { name, email, profile_pic, accessToken, update, getUser, organisation } =
-    authStore();
+  const {
+    name,
+    email,
+    username,
+    profile_pic,
+    accessToken,
+    update,
+    getUser,
+    organisation,
+  } = authStore();
   const [sponsors, setSponsors] = useState<sponsorships[]>([]);
   const { org } = organisationStore();
   const [opened, { open, close }] = useDisclosure(false);
@@ -58,19 +69,23 @@ export default function Profile() {
   }, []);
 
   return (
-    <div className="flex bg-white flex-col min-h-full gap-8 p-4">
+    <div className="flex bg-white flex-col min-h-full min-w-[40rem] gap-8 p-4">
       <ToastContainer />
       <Modal
-        classNames={{ content: "border-2 border-red-500", root: "" }}
+        classNames={{
+          content: "border-2 border-blue-500 min-w-[40rem] min-h-[10rem]",
+          root: "min-w-[50rem]",
+          title: `font-bold ${outfit.className}`,
+        }}
         opened={opened}
         centered
         size="auto"
         onClose={close}
-        title="Edit Profil Picture"
+        title="Edit Profile Picture"
         w={"100%"}
       >
         <form
-          className="flex flex-col gap-4"
+          className="flex flex-col items-center justify-around h-[10rem] gap-4"
           onSubmit={formContent.onSubmit(() => {
             const body = {
               profile_pic: formContent.values.profilePic,
@@ -118,16 +133,23 @@ export default function Profile() {
           <p className="text-sm">{email}</p>
         </div>
       </div>
-      <div className="flex flex-col h-full md:flex-row gap-4 items-center justify-center">
+      <div className="flex flex-col h-full md:flex-row gap-4 items-start justify-center">
         <div className="flex flex-col h-full gap-4 w-full">
-          <div className="border p-4 border-black rounded-md max-w-[500px] w-full flex flex-col">
-            <p className="font-semibold">Username</p>
+          <div className="p-4 border-gray-300 border-2 rounded-md h-full max-w-[500px]n w-full flex flex-col">
+            <p className="font-semibold">Name</p>
             <p>@{name}</p>
+            <br />
+            <p className="font-semibold">Username</p>
+            <p>@{username}</p>
             <br />
             <p className="font-semibold">Email</p>
             <p>{email}</p>
           </div>
-          <div className={`h-fit  p-4 w-full border border-black rounded-md ${organisation === null ? 'hidden' : ""} `}>
+          <div
+            className={`h-full p-4 w-full border-gray-300 border-2 rounded-md ${
+              organisation === null ? "hidden" : ""
+            } `}
+          >
             <h1 className="text-lg font-bold">Team Information</h1>
             <div className="flex flex-row gap-4">
               <p className="font-semibold">Organisation:</p>
@@ -154,7 +176,11 @@ export default function Profile() {
             </div>
           </div>
         </div>
-        <div className={`w-full flex h-full flex-col border border-black rounded-md p-4 ${organisation === null ? "hidden" : ""}`}>
+        <div
+          className={`w-full flex h-full flex-col border-gray-300 border-2 rounded-md p-4 ${
+            organisation === null ? "hidden" : ""
+          }`}
+        >
           <h1 className="font-bold h-full text-lg mb-2">
             Recently Contacted Sponsors
           </h1>

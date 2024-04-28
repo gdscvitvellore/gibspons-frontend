@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { getMembersByOrg } from "@/utils/organisation";
 import MembersTable from "@/components/MembersTable";
 import { useLoadingStore } from "@/store/loading";
+import { useLinkStore } from "@/store/crumbs";
 
 interface RowData {
   id: string;
@@ -25,6 +26,7 @@ export default function Home() {
     RowData[] | null
   >();
   const { startLoading, stopLoading } = useLoadingStore();
+  const { setLink } = useLinkStore();
 
   const fetchMembers = async () => {
     try {
@@ -84,6 +86,9 @@ export default function Home() {
   }
   
   useEffect(() => {
+    setLink([
+      { href: "/members", title: "Members" },
+    ]);
     if (org.id !== 0) fetchMembers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -108,7 +113,7 @@ export default function Home() {
             </div>
           )}
         </div>
-        <div className="bg-gradient-to-r from-[#4d4d4d] to-[#3e3e3e] p-4 py-8 flex flex-col sm:flex-row justify-between text-white rounded-md shadow-md w-full max-w-[30rem] max-h-full h-[11rem]">
+        <div className="bg-gradient-to-r from-[#4d4d4d] to-[#3e3e3e] p-4 py-8 flex flex-col sm:flex-row justify-between text-white rounded-md shadow-md w-full max-w-[30rem]">
           <div className="flex flex-col w-full justify-center">
             <p>
               {new Date().toLocaleDateString("en-IN", {

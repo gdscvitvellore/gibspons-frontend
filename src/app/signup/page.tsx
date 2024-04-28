@@ -78,11 +78,11 @@ export default function SignUp() {
         </div>
       </div>
       <Paper className={classes.form} p={30}>
-        <Title order={2} className={classes.title} ta="center" mt="md" mb={50}>
+        <Title order={2} className={classes.title} ta="center" mt="md" mb={24}>
           Create New Account
         </Title>
         <form
-          className="max-w-[400px] self-center"
+          className="max-w-[400px] w-full self-center"
           onSubmit={form.onSubmit(register)}
         >
           <TextInput
@@ -95,6 +95,7 @@ export default function SignUp() {
           <TextInput
             label="Username"
             placeholder="Rupaak"
+            mt="lg"
             size="md"
             required
             {...form.getInputProps("username")}
@@ -122,7 +123,7 @@ export default function SignUp() {
             size="md"
             {...form.getInputProps("loginPreference")}
           /> */}
-          <p className="text-sm text-gray-500 mt-2">
+          {/* <p className="text-sm text-gray-500 mt-2">
             By continuing, you agree to our{" "}
             <Anchor<"a"> href="/terms" fw={700}>
               Terms of Service
@@ -132,7 +133,7 @@ export default function SignUp() {
               Privacy Policy
             </Anchor>
             .
-          </p>
+          </p> */}
           <Button
             mt="xl"
             w="100%"

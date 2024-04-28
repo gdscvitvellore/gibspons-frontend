@@ -42,6 +42,7 @@ interface RowData {
 interface ThProps {
   children: React.ReactNode | null;
   reversed: boolean | null;
+  colSpan?: number | 1;
   sorted: boolean | null;
   onSort(): void;
 }
@@ -74,14 +75,14 @@ function sortData(
   );
 }
 
-function Th({ children, reversed, sorted, onSort }: ThProps) {
+function Th({ children, reversed, sorted, colSpan, onSort }: ThProps) {
   const Icon = sorted
     ? reversed
       ? IconChevronUp
       : IconChevronDown
     : IconSelector;
   return (
-    <Table.Th className={classes.th}>
+    <Table.Th colSpan={colSpan} className={classes.th}>
       <UnstyledButton onClick={onSort} className={classes.control}>
         <Group justify="space-between">
           <Text fw={500} fz="sm">
@@ -175,8 +176,8 @@ export default function MembersTable({
   };
 
   const handleApproval = async (status: boolean, id: string) => {
-    if(status === false) return close();
-    const resp = await approveUser(accessToken, id );
+    if (status === false) return close();
+    const resp = await approveUser(accessToken, id);
     if (resp.status === 200) {
       toast.success(`User ${status ? "approved" : "rejected"} successfully`);
     }
@@ -186,21 +187,23 @@ export default function MembersTable({
 
   const rows = sortedData.map((row) => (
     <Table.Tr key={row.id}>
-      <Table.Td>{row.name}</Table.Td>
-      <Table.Td miw={200} className="overflow-ellipsis ">{row.email}</Table.Td>
-      <Table.Td className="">{row.created_at}</Table.Td>
-      <Table.Td className="">{row.role}</Table.Td>
+      <Table.Td colSpan={2}>{row.name}</Table.Td>
+      <Table.Td miw={200} colSpan={2} className="overflow-ellipsis ">
+        {row.email}
+      </Table.Td>
+      <Table.Td colSpan={2} className="">{row.created_at}</Table.Td>
+      <Table.Td className="" colSpan={1}>{row.role}</Table.Td>
       {approved ? (
         role === "user" ? (
           ""
         ) : (
-          <Table.Td className="flex flex-row items-center justify-end">
-            <Button>
+          <Table.Td colSpan={1} className="flex flex-row items-center justify-start">
+            <Button className="w-fit p-0">
               <TbEdit
                 onClick={() => {
                   handleModalOpen(row);
                 }}
-                className="hover:bg-[#f8f9fa] text-black rounded-md cursor-pointer p-2"
+                className="hover:bg-[#f8f9fa] text-black rounded-md cursor-pointer px-2"
                 // className="w-full flex flex-row  items-center justify-end text-left"
                 style={{ width: rem(40), height: rem(40) }}
                 // stroke={2}
@@ -211,12 +214,12 @@ export default function MembersTable({
       ) : (
         <Table.Td className="flex flex-row items-center gap-4 justify-end">
           <IoMdCheckmark
-            onClick={()=> handleApproval(true, row.id)}
+            onClick={() => handleApproval(true, row.id)}
             className="text-green-500 cursor-pointer hover:bg-[#c1f3c8] rounded-full"
             style={{ width: rem(30), height: rem(30) }}
           />
           <IoMdTrash
-            onClick={()=> handleApproval(false, row.id)}
+            onClick={() => handleApproval(false, row.id)}
             className="text-red-500 cursor-pointer hover:bg-[#f3c1c1] rounded-full"
             style={{ width: rem(30), height: rem(30) }}
           />
@@ -227,8 +230,7 @@ export default function MembersTable({
 
   return (
     <>
-      <ToastContainer />
-      {" "}
+      <ToastContainer />{" "}
       <Modal
         classNames={{ content: "border-2 border-red-500" }}
         opened={opened}
@@ -300,6 +302,7 @@ export default function MembersTable({
             <Table.Tbody>
               <Table.Tr>
                 <Th
+                  colSpan={2}
                   sorted={SortBy === "name"}
                   reversed={reverseSortDirection}
                   onSort={() => setSorting("name")}
@@ -307,13 +310,15 @@ export default function MembersTable({
                   Name
                 </Th>
                 <Th
+                  colSpan={2}
                   sorted={SortBy === "email"}
                   reversed={reverseSortDirection}
                   onSort={() => setSorting("email")}
                 >
-                  Email
+                  Name
                 </Th>
                 <Th
+                  colSpan={2}
                   sorted={SortBy === "username"}
                   reversed={reverseSortDirection}
                   onSort={() => setSorting("username")}
@@ -321,6 +326,7 @@ export default function MembersTable({
                   {approved ? "Date Joined" : "Date Requested"}
                 </Th>
                 <Th
+                  colSpan={1}
                   sorted={SortBy === "role"}
                   reversed={reverseSortDirection}
                   onSort={() => setSorting("role")}
@@ -330,8 +336,8 @@ export default function MembersTable({
                 {role === "user" ? (
                   ""
                 ) : (
-                  <Th reversed={null} sorted={null} onSort={() => {}}>
-                    <TbEdit className="w-[20px] h-[20px]" />
+                  <Th colSpan={1} reversed={null} sorted={null} onSort={() => {}}>
+                    <TbEdit className="w-[40px] h-[40px] p-2" />
                   </Th>
                 )}
               </Table.Tr>
@@ -341,7 +347,7 @@ export default function MembersTable({
                 rows
               ) : (
                 <Table.Tr>
-                  <Table.Td colSpan={4}>
+                  <Table.Td colSpan={8}>
                     <Text fw={500} ta="center">
                       Nothing found
                     </Text>

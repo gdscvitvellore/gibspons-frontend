@@ -1,18 +1,17 @@
 /* eslint-disable @next/next/no-img-element */
-'use client'
+"use client";
 import Image from "next/image";
-import { Inter } from "next/font/google";
+import { Outfit } from "next/font/google";
 import Navbar from "../components/Navbar";
 import styles from "../styles/index.module.css";
 import Footer from "../components/Footer";
 import Link from "next/link";
 
-const inter = Inter({ subsets: ["latin"] });
+const outfit = Outfit({ subsets: ["latin"] });
 
 export default function Home() {
-
   return (
-    <div className={`w-full  h-full bg-[#F8F8F8]`}>
+    <div className={`w-full  h-full bg-[#F8F8F8] ${outfit.className}`}>
       <Navbar />
       <div
         id="home"
@@ -20,14 +19,18 @@ export default function Home() {
       >
         <div className="w-[30rem]">
           <h1 className="text-[2rem] md:text-[4rem] font-bold text-white w-full leading-[110%]">
-            tracking <br /> sponsorships <br/> <span className="text-[#5379F6]">made easy</span>
+            tracking <br /> sponsorships <br />{" "}
+            <span className="text-[#5379F6]">made easy</span>
           </h1>
           <p className="mt-4 text-[1.5rem] md:text-[1.75rem]  text-white">
             introducing gibspons, draft mails, track sponsorships, and manage
             negotiations, all in one place!
           </p>
           <div className="mt-8">
-            <Link href="/login" className="px-8 py-2 text-[#070707] text-[1.3rem] bg-[#5379F6] rounded-full mr-4 hover:bg-[#6e8ef4]">
+            <Link
+              href="/login"
+              className="px-8 py-2 text-[#070707] text-[1.3rem] bg-[#5379F6] rounded-full mr-4 hover:bg-[#6e8ef4]"
+            >
               Get Started
             </Link>
           </div>
@@ -42,7 +45,7 @@ export default function Home() {
           />
         </div>
       </div>
-      <div
+      {/* <div
         className={`w-full h-[60vh] flex flex-col md:gap-40 justify-center items-center ${styles.stat} md:flex-row`}
       >
         <div className="flex flex-col justify-center items-center h-[80%] w-auto md:max-w-[30vw]">
@@ -75,13 +78,13 @@ export default function Home() {
             className="md:w-full rounded-xl object-cover"
           />
         </div>
-      </div>
-      <div className="w-full h-[70vh] bg-[#F8F8F8]">
+      </div> */}
+      {/* <div className="w-full h-[70vh] bg-[#F8F8F8]">
         <h1 className="self-center py-16 m-auto break-words w-full p-4 md:max-w-[40vw] text-center text-[2.2rem] text-black ">
           Here&apos;s what <span className="text-[#5379F6]">people</span> are
           saying! &#128173;
         </h1>
-      </div>
+      </div> */}
       <Footer />
     </div>
   );

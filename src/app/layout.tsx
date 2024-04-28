@@ -10,8 +10,10 @@ import {
   MantineProvider,
   createTheme,
   Input,
+  PasswordInput,
 } from "@mantine/core";
 import LoadingScreen from "@/components/loadingScreen";
+import { useLinkStore, link } from "@/store/crumbs";
 // import { authStore } from "@/store/auth";
 // import { use, useEffect } from "react";
 // import { useEffect } from "react";
@@ -49,6 +51,19 @@ export default function RootLayout({
     fontFamily: "Inter",
     components: {
       Input: Input.extend({
+        defaultProps: {
+          variant: "filled",
+          radius: "md",
+          size: "md",
+          w: "100%",  
+        },
+        classNames: {
+          input:
+            "focus:outline-none bg-white border-[#D0D0D0] w-full focus:border-[#7BB9FA] rounded-lg w-full",
+        },
+      }),
+
+      PasswordInput: PasswordInput.extend({
         defaultProps: {
           variant: "filled",
           radius: "md",

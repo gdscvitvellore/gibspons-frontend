@@ -23,6 +23,7 @@ import {
   generateLinkedin,
 } from "@/utils/organisation";
 import { useLoadingStore } from "@/store/loading";
+import { useLinkStore } from "@/store/crumbs";
 
 export default function CreateEvent() {
   const { accessToken, organisation } = authStore();
@@ -31,6 +32,7 @@ export default function CreateEvent() {
   const [company_id, setCompany_id] = useState<number>(0);
   const [pocData, setPocData] = useState<any[] | null>([]);
   const { startLoading, stopLoading } = useLoadingStore();
+  const { setLink } = useLinkStore();
 
   const form = useForm({
     initialValues: {
@@ -59,6 +61,11 @@ export default function CreateEvent() {
   });
 
   useEffect(() => {
+    setLink([
+      { href: "/team", title: "My Team" },
+      { href: `/team/${organisation}/dashboard`, title: "Dashboard" },
+      { href: `/team/${organisation}/generateMail`, title: "Generate Mail" },
+    ]);
     const fetchCompanies = async () => {
       try {
         const resp = await fetchAllCompanies(accessToken, Number(organisation));

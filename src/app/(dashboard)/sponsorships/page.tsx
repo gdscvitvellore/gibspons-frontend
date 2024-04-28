@@ -4,6 +4,7 @@ import { getSponsorsByOrg } from "@/utils/organisation";
 import { Table, ScrollArea, Text } from "@mantine/core";
 import { useState, useEffect } from "react";
 import { useLoadingStore } from "@/store/loading";
+import { useLinkStore } from "@/store/crumbs";
 
 interface RowData {
   id: number;
@@ -17,8 +18,10 @@ export default function Home() {
   const { accessToken, organisation } = authStore();
   const [sponsors, setSponsors] = useState<RowData[]>([]);
   const { startLoading, stopLoading } = useLoadingStore();
+  const { setLink } = useLinkStore();
 
   useEffect(() => {
+    setLink([{ href: "/sponsorships", title: "Sponsorships" }]);
     const fetchSponsors = async () => {
       startLoading();
       try {

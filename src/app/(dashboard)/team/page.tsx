@@ -8,6 +8,7 @@ import { getEvents } from "@/utils/events";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { useRouter } from "next/navigation";
 import { useLoadingStore } from "@/store/loading";
+import { useLinkStore } from "@/store/crumbs";
 
 type Event = {
   id: number;
@@ -44,8 +45,12 @@ export default function Home() {
   const { startLoading, stopLoading } = useLoadingStore();
   const [eventsData, setEventsData] = useState<Event[]>([]);
   const { org } = organisationStore();
+  const { setLink } = useLinkStore();
 
   useEffect(() => {
+    setLink([
+      { href: "/team", title: "My Team" },
+    ]);
     const fetchEvents = async () => {
       startLoading();
       try {
@@ -65,7 +70,7 @@ export default function Home() {
     <>
       <div className="relative h-fit min-h-full bg-white gap-8 flex flex-col items-center p-4">
         <div className="flex flex-col md:flex-row w-full items-center gap-4 h-full justify-center">
-          <div className="flex flex-col items-center md:items-start w-full max-w-[35rem]">
+          <div className="flex flex-col items-center md:items-start w-full max-w-[30rem]">
             {org.logo && (
               <Image
                 src={org.logo}
@@ -82,7 +87,7 @@ export default function Home() {
               </div>
             )}
           </div>
-          <div className="bg-gradient-to-r from-[#4d4d4d] to-[#3e3e3e] p-4 py-8 flex flex-col sm:flex-row justify-between text-white rounded-md shadow-md w-full max-w-[30rem] max-h-full h-[11rem]">
+          <div className="bg-gradient-to-r from-[#4d4d4d] to-[#3e3e3e] p-4 py-8 flex flex-col sm:flex-row justify-between text-white rounded-md shadow-md w-full max-w-[30rem]">
             <div className="flex flex-col w-full justify-center">
               <p>
                 {new Date().toLocaleDateString("en-IN", {

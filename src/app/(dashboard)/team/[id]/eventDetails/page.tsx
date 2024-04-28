@@ -16,10 +16,12 @@ import { getEvents } from "@/utils/events";
 import { useState, useEffect } from "react";
 import { organisationStore } from "@/store/organisation";
 import { Event } from "@/types/org";
+import { useLinkStore } from "@/store/crumbs";
 
-export default function CreateEvent() {
+export default function CreateEvent({ params }: { params: { id: number } }) {
   const { accessToken, role } = authStore();
   const { org } = organisationStore();
+  const { setLink } = useLinkStore();
   const [eventsData, setEventsData] = useState<Event>({
     id: 0,
     name: "",
@@ -33,9 +35,13 @@ export default function CreateEvent() {
   });
 
   useEffect(() => {
+    setLink([
+      { href: "/team", title: "My Team" },
+      { href: `/team/${params.id}/dashboard`, title: "Event Dashboard" },
+    ]);
     const fetchEvents = async () => {
       try {
-        const data = await getEvents(accessToken, org.id, null);
+        const data = await getEvents(accessToken, org.id, params.id);
         setEventsData(data[0]);
         form.setValues({
           name: data[0].name,
@@ -46,13 +52,18 @@ export default function CreateEvent() {
           EventLogo: data[0].logo,
           SponBrochure: data[0].brochure,
         });
+        setLink([
+          { href: `/team}`, title: org.name },
+          { href: `/team/${params.id}/dashboard`, title: data[0].name },
+          { href: `/team/${params.id}/eventDetails`, title: "Event Details" },
+        ]);
       } catch (error: any) {
         toast.error(error);
         console.log(error);
       }
     };
     if (org.id != 0) fetchEvents();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const form = useForm({

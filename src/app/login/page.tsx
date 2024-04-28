@@ -49,6 +49,7 @@ export default function Login() {
         const {
           name,
           email,
+          username,
           organisation,
           id,
           role,
@@ -62,6 +63,7 @@ export default function Login() {
           email,
           loginPreference: loginPreference,
           id,
+          username,
           organisation,
           profile_pic,
           role,
@@ -95,12 +97,12 @@ export default function Login() {
         </div>
       </div>
       <Paper className={classes.form} p={30}>
-        <Title order={1} className={classes.title} ta="center" mt="md" mb={50}>
+        <Title order={2} className={classes.title} ta="center" mt="md" mb={24}>
           Login
         </Title>
-        <Title order={2} className={classes.title} ta="center" mt="md" mb={50}>
+        {/* <Title order={2} className={classes.title} ta="center" mt="md" mb={50}>
           Welcome back to gibspons!
-        </Title>
+        </Title> */}
         <form
           className="w-full max-w-[400px] self-center"
           onSubmit={form.onSubmit(() => {
@@ -122,12 +124,12 @@ export default function Login() {
             required
             {...form.getInputProps("password")}
           />
-          <Checkbox
+          {/* <Checkbox
             label="Keep me logged in"
             mt="xl"
             size="md"
             {...form.getInputProps("loginPreference")}
-          />
+          /> */}
           <Button
             fullWidth
             mt="xl"

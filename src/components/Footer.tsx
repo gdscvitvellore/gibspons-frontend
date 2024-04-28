@@ -4,9 +4,9 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <div className="w-full min-h-[40vh] bg-[#5379F6]">
+    <div className="w-full bg-[#5379F6]">
       <div className="flex flex-col justify-center items-end">
-        <div className="min-h-[30vh] w-full p-2 md:p-8 flex flex-col justify-between items-center md:flex-row">
+        {/* <div className="min-h-[30vh] w-full p-2 md:p-8 flex flex-col justify-between items-center md:flex-row">
           <div className="flex flex-col justify-center items-center">
             <div className="flex flex-row justify-center items-center ">
               <Image
@@ -71,10 +71,10 @@ export default function Footer() {
               </Link>
             </div>
           </div>
-        </div>
-        <div className="h-[10vh] w-full bg-[#F8F8F8] flex flex-row justify-center items-center">
-          <div className="flex flex-col sm:m-4 w-auto justify-center items-center">
-            <h1 className="text-[1.25rem] text-clip text-[#070707] font-[600] md:text-[2rem]">
+        </div> */}
+        <div className="min-h-[4rem] w-full bg-[#F8F8F8] flex flex-row justify-center items-center">
+          <div className="flex flex-col p-[5px] w-auto justify-center items-center">
+            <h1 className="text-[1.25rem] text-clip text-[#070707] font-[600]">
               Made with &#10084;&#65039; by GDSC VIT.
             </h1>
             <p className="text-[0.75rem] pb-2 text-center text-[#555] md:text-[1rem]">

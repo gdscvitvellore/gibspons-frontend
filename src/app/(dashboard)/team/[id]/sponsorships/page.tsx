@@ -2,28 +2,16 @@
 import { authStore } from "@/store/auth";
 import { getSponsorsByEvent } from "@/utils/organisation";
 
-import {
-  Table,
-  ScrollArea,
-  Text,
-  Modal,
-  HoverCard,
-  Button,
-  Accordion,
-  ActionIcon,
-  AccordionControlProps,
-  Center,
-} from "@mantine/core";
+import { Table, ScrollArea, Text, Modal } from "@mantine/core";
 import { useState, useEffect } from "react";
 import { organisationStore } from "@/store/organisation";
 import { IoMdAddCircleOutline } from "react-icons/io";
-import { useRouter, usePathname } from "next/navigation";
 import { useDisclosure } from "@mantine/hooks";
 import Link from "next/link";
 import ModifyCompany from "@/components/companyForm";
-import { IconDots } from "@tabler/icons-react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useLinkStore } from "@/store/crumbs";
 
 interface RowData {
   id: number;
@@ -33,24 +21,14 @@ interface RowData {
   status: string;
 }
 
-function AccordionControl(props: AccordionControlProps) {
-  return (
-    <Center>
-      <Accordion.Control {...props} />
-      <ActionIcon size="lg" variant="subtle" color="gray">
-        <IconDots size="1rem" />
-      </ActionIcon>
-    </Center>
-  );
-}
-
-export default function Home() {
+export default function Home({ params }: { params: { id: number } }) {
   const { accessToken } = authStore();
   const { org } = organisationStore();
   const [sponsors, setSponsors] = useState<RowData[]>([]);
   const [companyId, setCompanyId] = useState<number>(0);
-  const event_id = usePathname().split("/")[2];
+  const event_id = String(params.id);
   const [opened, { open, close }] = useDisclosure(false);
+  const { setLink } = useLinkStore();
 
   const handleOpen = (id: number) => {
     setCompanyId(id);
@@ -85,6 +63,11 @@ export default function Home() {
         };
       });
       setSponsors(rowData);
+      setLink([
+        { href: "/team", title: "My Team" },
+        { href: `/team/${event_id}/dashboard`, title: data.event.name },
+        { href: `/team/${event_id}/sponsorships`, title: "Sponsorships" },
+      ]);
     } catch (error: any) {
       console.error(error);
     }

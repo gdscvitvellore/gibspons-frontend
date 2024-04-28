@@ -12,11 +12,14 @@ import {
 import { useForm, isNotEmpty } from "@mantine/form";
 import { createEvent } from "@/utils/events";
 import { ToastContainer, toast } from "react-toastify";
-import {useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useLinkStore } from "@/store/crumbs";
+import { useEffect } from "react";
 
 export default function CreateEvent() {
   const { accessToken } = authStore();
   const router = useRouter();
+  const { setLink } = useLinkStore();
 
   const form = useForm({
     initialValues: {
@@ -32,7 +35,8 @@ export default function CreateEvent() {
       name: (value) => (value.length > 0 ? null : "Enter Email ID"),
       startDate: (value) => (value ? null : "Enter A Start Date"),
       endDate: (value) => (value ? null : "Enter an End Date"),
-      Desc: (value) => (value.length > 0 ? null : "Description can not be blank"),
+      Desc: (value) =>
+        value.length > 0 ? null : "Description can not be blank",
       ExpReg: (value) =>
         value !== null
           ? Number.isInteger(value)
@@ -62,6 +66,13 @@ export default function CreateEvent() {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    setLink(
+      [{ href: "/team", title: "My Team" }, { href: "/team/createNewEvent", title: "Create a New Event" }]
+    );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="bg-white p-4 rounded-md">

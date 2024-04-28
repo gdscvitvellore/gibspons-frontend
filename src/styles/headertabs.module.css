@@ -1,5 +1,5 @@
 .header {
-  padding-top: var(--mantine-spacing-sm);
+  /* padding-top: var(--mantine-spacing-sm); */
   background-color: light-dark(
     var(--mantine-color-gray-0),
     var(--mantine-color-dark-6)
@@ -14,7 +14,11 @@
 }
 
 .mainSection {
-  padding-bottom: var(--mantine-spacing-sm);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--mantine-spacing-sm);
 }
 
 .user {

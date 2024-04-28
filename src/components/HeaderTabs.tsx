@@ -9,25 +9,16 @@ import {
   Text,
   Menu,
   Tabs,
-  Burger,
   rem,
   useMantineTheme,
+  Breadcrumbs,
+  Anchor,
 } from "@mantine/core";
 import { IconLogout, IconSettings, IconUser } from "@tabler/icons-react";
 import classes from "../styles/headertabs.module.css";
 import { authStore } from "../store/auth";
 import { useRouter } from "next/navigation";
-
-const tabs = [
-  "Home",
-  "Orders",
-  "Education",
-  "Community",
-  "Forums",
-  "Support",
-  "Account",
-  "Helpdesk",
-];
+import { link, useLinkStore } from "../store/crumbs";
 
 export default function HeaderTabs() {
   const theme = useMantineTheme();
@@ -35,21 +26,32 @@ export default function HeaderTabs() {
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const [username, setuserName] = useState("");
   const { name, logout, profile_pic } = authStore();
+  const [items, setItems] = useState<link[]>();
   const router = useRouter();
+  const {links, getLink} = useLinkStore();
 
   useEffect(() => {
     setuserName(name);
   }, [name]);
 
-  const items = tabs.map((tab) => (
-    <Tabs.Tab value={tab} key={tab}>
-      {tab}
-    </Tabs.Tab>
+  useEffect(() => {
+    const links = getLink();
+    setItems(links);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [links]);
+
+  const crumbs = items?.map((item, index) => (
+    <Anchor href={item.href} className=" hover:underline text-black rounded-full" key={index}>
+      {item.title}
+    </Anchor>
   ));
 
   return (
     <div className={classes.header}>
       <Container className={classes.mainSection} size="full">
+        <Breadcrumbs className="max-w-[55vw] md:max-w-[70vw] flex flex-wrap" separator=">">
+          {crumbs}
+        </Breadcrumbs>
         <Group justify="end">
           {/* <MantineLogo size={28} /> */}
 
@@ -73,10 +75,10 @@ export default function HeaderTabs() {
                 })}
               >
                 <Group gap={7}>
-                <Avatar src={profile_pic} alt="profile pic" color="blue" />
+                  <Avatar src={profile_pic} alt="profile pic" color="blue" />
                   <Text
                     fw={500}
-                    className="hidden md:block"
+                    className="hidden md:block max-w-[7rem] text-ellip"
                     size="sm"
                     lh={1}
                     mr={3}

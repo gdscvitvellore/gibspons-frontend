@@ -4,6 +4,7 @@ import { persist } from "zustand/middleware";
 export interface User {
   name: string;
   email: string;
+  username: string;
   loginPreference: boolean;
   id: number;
   organisation: string | null;
@@ -27,6 +28,7 @@ export const authStore = create<AuthStore>()(
     (set, get) => ({
       name: "",
       email: "",
+      username: "",
       organisation: null,
       role: null,
       loginPreference: false,
@@ -40,6 +42,7 @@ export const authStore = create<AuthStore>()(
         return {
           name: get().name,
           email: get().email,
+          username: get().username,
           loginPreference: get().loginPreference,
           id: get().id,
           profile_pic: get().profile_pic,
@@ -60,6 +63,7 @@ export const authStore = create<AuthStore>()(
         set({
           name: "",
           email: "",
+          username: "",
           loginPreference: false,
           profile_pic: null,
           id: NaN,

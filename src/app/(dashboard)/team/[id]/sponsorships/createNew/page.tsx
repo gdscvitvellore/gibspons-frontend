@@ -12,6 +12,7 @@ import { usePathname } from "next/navigation";
 import { companyByOrg } from "@/types/org";
 import { useLoadingStore } from "@/store/loading";
 import { MdOutlineDeleteForever } from "react-icons/md";
+import { useLinkStore } from "@/store/crumbs";
 
 type PoC = {
   designation: string;
@@ -28,6 +29,7 @@ export default function CreateEvent() {
   const [data, setData] = useState<companyByOrg[] | null>([]);
   const { startLoading, stopLoading } = useLoadingStore();
   const router = useRouter();
+  const { setLink } = useLinkStore();
 
   useEffect(() => {
     if (accessToken === "") return;
@@ -39,6 +41,12 @@ export default function CreateEvent() {
         } else {
           setData(resp);
         }
+        setLink([
+          { href: "/team", title: "My Team" },
+          { href: `/team/${event_id}/dashboard`, title: "Event Dashboard" },
+          { href: `/team/${event_id}/sponsorships`, title: "Sponsorships" },
+          { href: `/team/${event_id}/sponsorships/createNew`, title: "New Spons" },
+        ]);
       } catch (error: any) {
         console.error(error);
       }
@@ -245,8 +253,8 @@ export default function CreateEvent() {
                   {...form.getInputProps(`PoCs.${index}.name`)}
                 />
                 <MdOutlineDeleteForever
-                className="text-red-500 text-2xl h-full self-center cursor-pointer hover:text-red-400"
-                  onClick={() => { 
+                  className="text-red-500 text-2xl h-full self-center cursor-pointer hover:text-red-400"
+                  onClick={() => {
                     form.setValues((values) => {
                       if (values.PoCs !== undefined) {
                         return {
@@ -307,9 +315,8 @@ export default function CreateEvent() {
           ))}
           <div className="w-full my-8 flex flex-col md:flex-row justify-center gap-4 text-center items-center">
             <Button
-              className="bg-[#606060] w-full self-center hover:bg-[#60606099]"
+              className="bg-[#606060] w-full max-w-[20rem] md:w-[40%] self-center hover:bg-[#60606099]"
               size="md"
-              w="40%"
               onClick={() => {
                 setPocCount(pocCount + 1);
                 console.log("Hello");
@@ -336,10 +343,9 @@ export default function CreateEvent() {
               Add PoC
             </Button>
             <Button
-              className="bg-blue-500 w-full self-center hover:bg-blue-400"
+              className="bg-blue-500 w-full max-w-[20rem] md:w-[40%] self-center hover:bg-blue-400"
               type="submit"
               size="md"
-              w="40%"
             >
               Save Details
             </Button>

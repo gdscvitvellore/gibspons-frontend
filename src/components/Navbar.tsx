@@ -15,28 +15,10 @@ export default function Navbar() {
       </a>
       <div className="flex flex-row justify-center items-center text-sm sm:text-xl">
         <Link
-          href="#home"
-          className="hover:bg-gray-200 rounded-full p-2 hidden md:block"
-        >
-          <p className="px-4">Home</p>
-        </Link>
-        <Link
           href="https://dscvit.com"
           className="hover:bg-gray-200 rounded-full p-2 hidden md:block"
         >
           <p className="px-4">About GDSC</p>
-        </Link>
-        <Link
-          href="/product"
-          className="hover:bg-gray-200 rounded-full p-2 hidden md:block"
-        >
-          <p className="px-4">Product</p>
-        </Link>
-        <Link
-          href="/blogs"
-          className="hover:bg-gray-200 rounded-full p-2 hidden md:block"
-        >
-          <p className="px-4">Blogs</p>
         </Link>
         <Link href="/login">
           <p className="px-4 m-0 md:ml-4 py-2 text-white bg-black hover:bg-gray-600 rounded-full">

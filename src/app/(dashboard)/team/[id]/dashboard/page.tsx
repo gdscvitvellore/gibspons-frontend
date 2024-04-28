@@ -8,6 +8,8 @@ import { usePathname } from "next/navigation";
 import { useLoadingStore } from "@/store/loading";
 import { Table, ScrollArea, Text } from "@mantine/core";
 import PieChart from "@/components/pieChart";
+import { useLinkStore } from "@/store/crumbs";
+import { organisationStore } from "@/store/organisation";
 
 interface RowData {
   id: number;
@@ -19,16 +21,22 @@ interface RowData {
 
 export default function Home({ params }: { params: { id: number } }) {
   const { organisation, accessToken } = authStore();
-  const event_id = usePathname().split("/")[2];
+  // const event_id = usePathname().split("/")[2];
   const [data, setData] = useState<sponsByEvent>();
   const { startLoading, stopLoading } = useLoadingStore();
+  const { setLink } = useLinkStore();
+  const { getOrganisation } = organisationStore();
 
   useEffect(() => {
     const fetchSponsors = async () => {
       startLoading();
       try {
-        const data = await getSponsorsByEvent(accessToken, event_id);
+        const data = await getSponsorsByEvent(accessToken, String(params.id));
         setData(data);
+        setLink([
+          { href: `/team}`, title: `${getOrganisation().name}` },
+          { href: `/team/${params.id}/dashboard`, title: `${data.event.name}` },
+        ]);
         stopLoading();
       } catch (e) {
         stopLoading();
@@ -122,7 +130,9 @@ export default function Home({ params }: { params: { id: number } }) {
         </div>
         <div className="h-[80%] bg-white rounded-md p-2 w-full">
           {/* <p className="w-full h-fit text-center">Response Statistics</p> */}
-          {organisation && <PieChart accessToken={accessToken} event_id={event_id} />}
+          {organisation && (
+            <PieChart accessToken={accessToken} event_id={params.id} />
+          )}
         </div>
       </div>
     </div>
