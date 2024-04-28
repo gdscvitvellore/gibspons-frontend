@@ -34,7 +34,7 @@ type PoC = {
 };
 
 export default function ModifyCompany({ company_id, close }: { company_id: number, close: (success?:boolean, data?:string) => void}) {
-  const { accessToken, organisation } = authStore();
+  const { accessToken, organisation, role } = authStore();
   // const [pocCount, setPocCount] = useState<number>(1);
   const event_id = usePathname().split("/")[2];
   const [data, setData] = useState<pocResp[]>([]);
@@ -178,7 +178,7 @@ export default function ModifyCompany({ company_id, close }: { company_id: numbe
               data={[
                 { label: "Select status", value: "" },
                 { label: "Not Contacted", value: "Not Contacted" },
-                { label: "Accepted", value: "Accepted" },
+                { label: "Accepted", value: "Accepted", disabled: (role === 'user') },
                 { label: "No Reply", value: "No Reply" },
                 { label: "In Progress", value: "In Progress" },
                 { label: "Rejected", value: "Rejected" },
@@ -211,9 +211,10 @@ export default function ModifyCompany({ company_id, close }: { company_id: numbe
             />
             <TextInput
               label="Money Donated"
-              placeholder="10000"
+              placeholder="donation amount"
               size="md"
               w={"100%"}
+              disabled = {form.values.status === "accepted" ? false : true}
               classNames={{ input: "bg-white w-full " }}
               mb={10}
               {...form.getInputProps("money_donated")}

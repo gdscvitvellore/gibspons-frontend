@@ -78,7 +78,8 @@ function Dashboard({
       />
       <div className="flex flex-col w-full ml-[rem(60)] sm:ml-[rem(300)]">
         <HeaderTabs />
-        {Organisation === null || Is_approved === false ? (
+        {(Organisation === null || Is_approved === false) &&
+        !pathname.includes("profile") ? (
           <ManageOrg />
         ) : (
           <div className="m-4 relative rounded-md h-full overflow-auto">

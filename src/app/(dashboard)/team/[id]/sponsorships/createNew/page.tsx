@@ -237,7 +237,7 @@ export default function CreateEvent() {
               <div className="flex flex-row w-full justify-between">
                 <TextInput
                   label={`Name of PoC ${index + 1}`}
-                  placeholder="Google"
+                  placeholder="Dhruv Shah"
                   size="md"
                   w={"100%"}
                   classNames={{ input: "bg-white w-full" }}
@@ -275,7 +275,7 @@ export default function CreateEvent() {
                 />
                 <TextInput
                   label="Linkedin"
-                  placeholder="Tech"
+                  placeholder="https://linkedin.com/in/dhruvshah"
                   size="md"
                   w={"100%"}
                   classNames={{ input: "bg-white w-full" }}
@@ -286,7 +286,7 @@ export default function CreateEvent() {
               <div className="flex flex-col select-none md:flex-row gap-4">
                 <TextInput
                   label="Phone Number"
-                  placeholder="Google"
+                  placeholder="9954672314"
                   size="md"
                   w={"100%"}
                   classNames={{ input: "bg-white w-full" }}
@@ -295,7 +295,7 @@ export default function CreateEvent() {
                 />
                 <TextInput
                   label="Email Address"
-                  placeholder="Tech"
+                  placeholder="dhruv.shah@gmail.com"
                   size="md"
                   w={"100%"}
                   classNames={{ input: "bg-white w-full" }}

@@ -241,7 +241,7 @@ export default function CreateEvent() {
             </Button>
           </div>
         </form>
-        <div className="w-full h-12 flex flex-row justify-end max-w-[900px]">
+        <div className={`w-full h-12 flex flex-row justify-end max-w-[900px] ${formContent.values.content.length === 0 ? "hidden" : ""}`}>
           <FaRegCopy
             className="w-5 h-5 cursor-pointer"
             onClick={() => {
@@ -251,10 +251,10 @@ export default function CreateEvent() {
           />
         </div>
         <form
-          className="w-full  gap-4 max-w-[900px] items-center self-center"
-          onSubmit={formContent.onSubmit(() => {
-            console.log("hello");
-          })}
+          className={`w-full gap-4 max-w-[900px] items-center self-center ${formContent.values.content.length === 0 ? "hidden" : ""}`}
+          // onSubmit={formContent.onSubmit(() => {
+          //   console.log("hello");
+          // })}
         >
           <Textarea
             label="Draft"
@@ -264,7 +264,7 @@ export default function CreateEvent() {
             mb={16}
             {...formContent.getInputProps("content")}
           />
-          <Textarea
+          {/* <Textarea
             label="Additional Prompt (Optional)"
             placeholder="Make it shorter and more crispy etc ..."
             size="md"
@@ -279,7 +279,7 @@ export default function CreateEvent() {
             >
               <BiRefresh className="text-2xl font-bold" /> Create New Event
             </button>
-          </div>
+          </div> */}
         </form>
       </Paper>
     </div>

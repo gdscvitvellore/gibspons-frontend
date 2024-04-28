@@ -1,11 +1,11 @@
-'use client'
+"use client";
 
 import Link from "next/link";
 
 /* eslint-disable @next/next/no-img-element */
 export default function Navbar() {
   return (
-    <div className="fixed h-[64px] top-0 left-0 w-full bg-white text-xl text-black flex flex-row justify-between px-8 align-middle items-center">
+    <div className="fixed h-[64px] top-0 left-0 w-full bg-white text-xl text-black flex flex-row justify-between px-2 sm:px-8 align-middle items-center">
       <a className="h-[80%] w-auto flex flex-row" href="localhost:3000">
         <img src="/icon.svg" alt="logo" className="h-full w-auto" />
         <div className="flex flex-col justify-center items-center p-2">
@@ -13,7 +13,7 @@ export default function Navbar() {
           <p className="text-sm">by GDSC VIT.</p>
         </div>
       </a>
-      <div className="flex flex-row justify-center items-center text-xl">
+      <div className="flex flex-row justify-center items-center text-sm sm:text-xl">
         <Link
           href="#home"
           className="hover:bg-gray-200 rounded-full p-2 hidden md:block"
@@ -38,8 +38,8 @@ export default function Navbar() {
         >
           <p className="px-4">Blogs</p>
         </Link>
-        <Link href="/login" className="hover:scale-110">
-          <p className="px-4 m-0 md:ml-4 py-2 text-white bg-black rounded-full">
+        <Link href="/login">
+          <p className="px-4 m-0 md:ml-4 py-2 text-white bg-black hover:bg-gray-600 rounded-full">
             Get Started
           </p>
         </Link>

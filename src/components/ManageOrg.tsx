@@ -21,23 +21,18 @@ import { organisation, organisationStore } from "@/store/organisation";
 import { getOrganisation } from "@/utils/organisation";
 
 function ManageOrg() {
-  const { accessToken, organisation, update, getUser } = authStore();
+  const { accessToken, organisation, update, getUser } =
+    authStore();
   const { updateOrganisation } = organisationStore();
   const [hasJoined, setHasJoined] = useState(false);
   const [createOrg, setCreateOrg] = useState(false);
-  const [showCreateOrg, setShowCreateOrg] = useState(false);
 
   useEffect(() => {
     if (organisation !== null) {
       setHasJoined(true);
+      console.log(organisation);
     }
   }, [organisation]);
-
-  useEffect(() => {
-    if (createOrg) {
-      setShowCreateOrg(true);
-    }
-  }, [createOrg]);
 
   const form = useForm({
     initialValues: {
@@ -70,7 +65,6 @@ function ManageOrg() {
   });
 
   const refreshData = async () => {
-    //todo: put logic here once backend is updated
     const respUser: user = await getUserData(accessToken);
     const User = getUser();
     const respOrg: organisation = await getOrganisation(accessToken);
@@ -81,11 +75,13 @@ function ManageOrg() {
       is_approved: respUser.is_approved,
     });
     updateOrganisation(respOrg);
+    if (respUser.organisation !== null)
     setHasJoined(true);
   };
 
   useEffect(() => {
-    if(accessToken === "") return;
+    if (accessToken === "") return;
+
     refreshData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -125,7 +121,7 @@ function ManageOrg() {
     <div className="h-full">
       <ToastContainer />
 
-      {showCreateOrg ? (
+      {createOrg ? (
         <Paper className={classes.form} p={30}>
           <Title order={2} className={classes.title} ta="center" mt="md">
             Create Your Team
@@ -192,7 +188,7 @@ function ManageOrg() {
             </Button>
           </form>
         </Paper>
-      ) : hasJoined ? (
+      ) : !hasJoined ? (
         <Paper className={classes.form} p={30}>
           <Title
             order={2}
@@ -258,7 +254,7 @@ function ManageOrg() {
             Your team joining request is pending. Contact your admin to approve
             request to join the team.
           </Title>
-          <div className="flex flex-col gap-8 md:flex-row justify-between items-center w-full max-w-[400px]">
+          <div className="flex flex-col gap-8 md:flex-row justify-between items-center w-full max-w-[500px]">
             <Button
               key="change-join-code"
               mt="xl"

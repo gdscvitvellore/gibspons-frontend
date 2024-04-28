@@ -1,11 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import Image from "next/image";
 import { authStore } from "@/store/auth";
 import { organisationStore } from "@/store/organisation";
 import { FaRegCopy } from "react-icons/fa";
-import { toast, ToastContainer, ToastItem } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { Avatar, Modal, TextInput, Button } from "@mantine/core";
 import { FaEdit } from "react-icons/fa";
 import { useDisclosure } from "@mantine/hooks";
@@ -17,7 +16,7 @@ import { getSponsorsByUser } from "@/utils/organisation";
 import { sponsorships } from "@/types/org";
 
 export default function Profile() {
-  const { name, email, profile_pic, accessToken, update, getUser } =
+  const { name, email, profile_pic, accessToken, update, getUser, organisation } =
     authStore();
   const [sponsors, setSponsors] = useState<sponsorships[]>([]);
   const { org } = organisationStore();
@@ -43,7 +42,7 @@ export default function Profile() {
   };
 
   useEffect(() => {
-    if (accessToken === "") {
+    if (accessToken === "" || organisation === null) {
       return;
     }
     async function fetchData() {
@@ -121,14 +120,14 @@ export default function Profile() {
       </div>
       <div className="flex flex-col h-full md:flex-row gap-4 items-center justify-center">
         <div className="flex flex-col h-full gap-4 w-full">
-          <div className="border p-4 border-black rounded-md w-full flex flex-col">
+          <div className="border p-4 border-black rounded-md max-w-[500px] w-full flex flex-col">
             <p className="font-semibold">Username</p>
             <p>@{name}</p>
             <br />
             <p className="font-semibold">Email</p>
             <p>{email}</p>
           </div>
-          <div className="h-fit  p-4 w-full border border-black rounded-md ">
+          <div className={`h-fit  p-4 w-full border border-black rounded-md ${organisation === null ? 'hidden' : ""} `}>
             <h1 className="text-lg font-bold">Team Information</h1>
             <div className="flex flex-row gap-4">
               <p className="font-semibold">Organisation:</p>
@@ -155,7 +154,7 @@ export default function Profile() {
             </div>
           </div>
         </div>
-        <div className="w-full flex h-full flex-col border border-black rounded-md p-4">
+        <div className={`w-full flex h-full flex-col border border-black rounded-md p-4 ${organisation === null ? "hidden" : ""}`}>
           <h1 className="font-bold h-full text-lg mb-2">
             Recently Contacted Sponsors
           </h1>

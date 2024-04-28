@@ -19,10 +19,10 @@ export default function Home() {
         className="h-[100vh] bg-[#191919] p-4 w-full flex flex-row justify-center items-center"
       >
         <div className="w-[30rem]">
-          <h1 className="text-[3rem] md:text-[4rem] font-bold text-white w-full leading-[110%]">
+          <h1 className="text-[2rem] md:text-[4rem] font-bold text-white w-full leading-[110%]">
             tracking <br /> sponsorships <br/> <span className="text-[#5379F6]">made easy</span>
           </h1>
-          <p className="mt-4 text-[1.75rem]  text-white">
+          <p className="mt-4 text-[1.5rem] md:text-[1.75rem]  text-white">
             introducing gibspons, draft mails, track sponsorships, and manage
             negotiations, all in one place!
           </p>
