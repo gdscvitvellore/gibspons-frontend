@@ -153,7 +153,7 @@ export default function Login() {
           </Anchor>
         </Text>
         <Text ta="center" mt="md">
-          <Anchor<"a"> href="/forgot" fw={500}>
+          <Anchor<"a"> href="/forgotPass" fw={500}>
             Forgot password?
           </Anchor>
         </Text>

@@ -1,7 +1,7 @@
 "use client";
 
 import { loginRes, registerRes, user } from "@/types/user";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 
 const BaseURL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -182,5 +182,30 @@ export async function handleForgetPass(email: string): Promise<any> {
     return data;
   } catch (error: any) {
     throw new Error(error.response.data.detail);
+  }
+}
+
+export async function handleVerifyOTP(
+  code: number,
+  password: string,
+  email: string
+): Promise<{msg?:string, error?:string}> {
+  try {
+    const response = await axios.post(
+      `${BaseURL}/users/verify_reset_password_otp/?email=${email}`,
+      {
+        otp: Number(code),
+        new_password: password,
+      }
+    );
+    // const data = await response.data;
+    if (response.status === 200) {
+      return { msg: response.data.message };
+    } else {
+      return { error: response.data.detail };
+    }
+  } catch (error: any) {
+    return { error: error.response.data.detail };
+    // throw new Error(error.response.data.detail);
   }
 }
