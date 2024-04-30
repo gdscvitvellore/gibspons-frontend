@@ -204,9 +204,7 @@ export default function MembersTable({
                   handleModalOpen(row);
                 }}
                 className="hover:bg-[#f8f9fa] text-black rounded-md cursor-pointer px-2"
-                // className="w-full flex flex-row  items-center justify-end text-left"
                 style={{ width: rem(40), height: rem(40) }}
-                // stroke={2}
               />
             </Button>
           </Table.Td>
@@ -253,9 +251,7 @@ export default function MembersTable({
               { label: "Owner", value: "owner" },
               { label: "Admin", value: "admin" },
               { label: "User", value: "user" },
-              // { label: "Sales", value: "sales" },
             ]}
-            // onChange={(e) => {}}
             {...changeRoleForm.getInputProps("role")}
           />
           <Button
@@ -284,7 +280,6 @@ export default function MembersTable({
         onChange={handleSearchChange}
       />
       <Table.ScrollContainer
-        // className=" inline overflow-x-hidden"
         type="native"
         minWidth={900}
         maw={"100%"}
@@ -295,12 +290,14 @@ export default function MembersTable({
             verticalSpacing="xs"
             miw={900}
             withRowBorders
+            // stripedColor="#f8f9fa"
+            striped
             border={1}
             borderColor="#48484814"
             layout="fixed"
           >
             <Table.Tbody>
-              <Table.Tr>
+              <Table.Tr bg={"white"}>
                 <Th
                   colSpan={2}
                   sorted={SortBy === "name"}

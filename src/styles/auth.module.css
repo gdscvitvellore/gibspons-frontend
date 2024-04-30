@@ -1,9 +1,10 @@
 .wrapper {
-  min-height: rem(800px);
+  min-height: rem(600px);
   height: 100vh;
   background-size: cover;
-  background-image: url("../assets/login-bg.png");
-  background-color: black;
+  background-image: url("../assets/auth_bg.jpg");
+  background-blend-mode: darken;
+  background-color: #00000080;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -19,7 +20,7 @@
 .form {
   border-left: rem(1px) solid
     light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-7));
-  min-height: rem(800px);
+  min-height: rem(600px);
   height: 100vh;
   display: flex;
   flex-direction: column;

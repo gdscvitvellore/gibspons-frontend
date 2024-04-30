@@ -4,7 +4,7 @@ import { useState } from "react";
 import { authStore } from "@/store/auth";
 import { Paper, TextInput, Button, Title, Autocomplete } from "@mantine/core";
 import { useEffect } from "react";
-import { useForm, FORM_INDEX } from "@mantine/form";
+import { useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
 import { addCompany, addPoC, fetchAllCompanies } from "@/utils/organisation";
@@ -113,7 +113,7 @@ export default function CreateEvent() {
         };
       });
       try {
-        const pocResponse = await addPoC(accessToken, pocData);
+        const _pocResponse = await addPoC(accessToken, pocData);
         stopLoading();
         toast.success("Company created successfully");
       } catch (error: any) {
@@ -139,13 +139,13 @@ export default function CreateEvent() {
           className="text-black font-bold"
           ta="center"
           mt="md"
-          mb={10}
+          mb={16}
         >
           Add a Company
         </Title>
         <Title
           className="font-[500] text-[#646464] text-[1rem] text-center text-wrap w-full max-w-[500px]"
-          mb={20}
+          mb={50}
         >
           Store details of a company you&apos;re in talks with, to keep a track
           of sponsorships and communication, with respect to the company.
@@ -154,7 +154,6 @@ export default function CreateEvent() {
           className="w-full gap-4 max-w-[800px] items-center self-center"
           onSubmit={form.onSubmit(() => {
             handleCreateCompany(form.values);
-            // console.log(form.values);
           })}
         >
           <Title order={3} className="text-black font-bold" ta="center" mb={20}>
@@ -203,7 +202,6 @@ export default function CreateEvent() {
                     };
                   });
                 }}
-                // onChange={(value) => console.log(value)}
                 {...form.getInputProps("CompName")}
               />
             )}
@@ -248,12 +246,12 @@ export default function CreateEvent() {
                   placeholder="Dhruv Shah"
                   size="md"
                   w={"100%"}
-                  classNames={{ input: "bg-white w-full" }}
                   mb={10}
+                  classNames={{ input: "bg-white w-full" }}
                   {...form.getInputProps(`PoCs.${index}.name`)}
                 />
                 <MdOutlineDeleteForever
-                  className="text-red-500 text-2xl h-full self-center cursor-pointer hover:text-red-400"
+                  className="text-[#191919] text-3xl mt-4 h-full self-center cursor-pointer hover:text-red-400"
                   onClick={() => {
                     form.setValues((values) => {
                       if (values.PoCs !== undefined) {

@@ -16,7 +16,7 @@ export interface organisation {
 interface organisationStore {
   org: organisation;
   getOrganisation: () => organisation;
-  updateOrganisation: (props: organisation) => void;
+  updateOrganisation: (_props: organisation) => void;
 }
 
 export const organisationStore = create<organisationStore>()(

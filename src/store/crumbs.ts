@@ -5,9 +5,9 @@ export interface link {
     title: string;
 }
 
-export interface linksStore {
+export interface linksStore{
     links: link[];
-    setLink: (links: link[]) => void;
+    setLink: (_links: link[]) => void;
     getLink: () => link[];
 }
 

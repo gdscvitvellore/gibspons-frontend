@@ -5,7 +5,6 @@ import { organisation } from "@/store/organisation";
 import {
   membersByOrg,
   sponsByOrg,
-  compResp,
   pocResp,
   sponsByEvent,
   companyByOrg,

@@ -3,10 +3,9 @@
 
 import { authStore } from "@/store/auth";
 import { organisationStore } from "@/store/organisation";
-import { FaRegCopy } from "react-icons/fa";
+import { FaRegCopy, FaEdit } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import { Avatar, Modal, TextInput, Button } from "@mantine/core";
-import { FaEdit } from "react-icons/fa";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import { updateUser, getUserData } from "@/utils/auth";
@@ -43,7 +42,6 @@ export default function Profile() {
   });
 
   const refreshData = async () => {
-    //todo: put logic here once backend is updated
     const respUser: user = await getUserData(accessToken);
     const User = getUser();
     update({
@@ -113,7 +111,13 @@ export default function Profile() {
           </Button>
         </form>
       </Modal>
-      <h1 className="text-2xl font-bold w-full text-center">Your Profile</h1>
+      <div className="flex flex-col items-center justify-center">
+        <h1 className="text-3xl text-center my-4 font-bold">Sponsorships</h1>
+        <p className="text-gray-500 text-sm w-full max-w-[400px] text-center">
+          View, Update or Archive the Details of the Companies that have been
+          recently contacted.
+        </p>
+      </div>
       <div className="flex flex-row w-full items-center justify-start gap-4">
         <div className="relative">
           <Avatar

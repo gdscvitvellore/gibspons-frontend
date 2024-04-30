@@ -70,7 +70,7 @@ export default function Home() {
     <>
       <div className="relative h-fit min-h-full bg-white gap-8 flex flex-col items-center p-4">
         <div className="flex flex-col md:flex-row w-full items-center gap-4 h-full justify-center">
-          <div className="flex flex-col items-center md:items-start w-full max-w-[30rem]">
+          <div className="flex flex-col items-center md:items-start w-full max-h-[30rem] max-w-[30rem]">
             {org.logo && (
               <Image
                 src={org.logo}
@@ -96,7 +96,7 @@ export default function Home() {
                   day: "numeric",
                 })}
               </p>
-              <p className="text-xl md:text-3xl font-bold">OVERVIEW</p>
+              <p className="text-xl md:text-3xl font-bold">Overview</p>
             </div>
             <div className="flex flex-col text-right w-full justify-center">
               <p>Amount Raised</p>

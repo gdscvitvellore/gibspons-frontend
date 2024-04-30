@@ -37,12 +37,17 @@ export default function CreateEvent() {
       endDate: (value) => (value ? null : "Enter an End Date"),
       Desc: (value) =>
         value.length > 0 ? null : "Description can not be blank",
-      ExpReg: (value) =>
-        value !== null
-          ? Number.isInteger(value)
-            ? null
-            : "Invalid format, Enter numbers only"
-          : "Enter Expected Registrations",
+      ExpReg: (value) => {
+        if (value !== null) {
+          if (Number.isInteger(value)) {
+            return null;
+          } else {
+            return "Invalid format, Enter numbers only";
+          }
+        } else {
+          return "Enter Expected Registrations";
+        }
+      },
       EventLogo: isNotEmpty("Enter Event Logo URL"),
     },
   });
@@ -58,7 +63,7 @@ export default function CreateEvent() {
       brochure: form.values.SponBrochure,
     };
     try {
-      const resp = await createEvent(accessToken, event);
+      const _resp = await createEvent(accessToken, event);
       toast.success("Event Created Successfully");
       router.push("/team");
     } catch (error: any) {
@@ -134,30 +139,10 @@ export default function CreateEvent() {
                 {...form.getInputProps("endDate")}
               />
             </Input.Wrapper>
-            {/* <DateInput
-                label="Date input"
-                placeholder="Date input"
-                size="md"
-                w={'100%'}
-                clearable
-                withAsterisk
-                classNames={{ input: "bg-black w-full" }}
-                {...form.getInputProps("startDate")}
-              />
-              <DateInput
-                label="Date input"
-                placeholder="Date input"
-                size="md"
-                w={'100%'}
-                clearable
-                withAsterisk
-                classNames={{ input:" text-black w-full" }}
-                {...form.getInputProps("endDate")}
-              /> */}
           </div>
           <NumberInput
             label="Expected Registrations"
-            placeholder="1400"
+            placeholder="No. of Registrations"
             size="md"
             mb={16}
             allowDecimal={false}

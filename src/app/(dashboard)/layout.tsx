@@ -10,6 +10,7 @@ import { RiTeamFill } from "react-icons/ri";
 import { IoMailOpen } from "react-icons/io5";
 import { Inter } from "next/font/google";
 import { usePathname } from "next/navigation";
+import { MdEmojiEvents } from "react-icons/md";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,10 +31,6 @@ function Dashboard({
 
   const event_id = pathname.split("/")[2];
 
-  const teamPathRegex = /^\/team\/(\d+)\/.*$/; // Fix regular expression syntax
-
-  const isTeamPath = teamPathRegex.test(pathname);
-
   return (
     <div
       className={`flex flex-row bg-[#ECECEC] w-full absolute h-screen ${inter.className}`}
@@ -43,13 +40,18 @@ function Dashboard({
           pathname.includes(`/team/${event_id}/`)
             ? [
                 {
+                  link: `/team`,
+                  icon: RiTeamFill,
+                  label: "Team",
+                },
+                {
                   link: `/team/${event_id}/dashboard`,
                   icon: BiSolidDashboard,
                   label: "Dashboard",
                 },
                 {
                   link: `/team/${event_id}/eventDetails`,
-                  icon: RiTeamFill,
+                  icon: MdEmojiEvents,
                   label: "Event Details",
                 },
                 {

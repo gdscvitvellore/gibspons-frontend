@@ -53,7 +53,7 @@ export default function Home({ params }: { params: { id: number } }) {
   const fetchSponsors = async () => {
     try {
       const data = await getSponsorsByEvent(accessToken, event_id);
-      const rowData = data.sponsorships.map((sponsor, key) => {
+      const rowData = data.sponsorships.map((sponsor, _key) => {
         return {
           id: Number(sponsor.company),
           name: sponsor.poc?.name || "None",
@@ -85,28 +85,27 @@ export default function Home({ params }: { params: { id: number } }) {
         console.log(row.id);
         handleOpen(row.id);
       }}
-      className=" border-b cursor-pointer hover:bg-[#6c6c6c66] rounded-md border-black"
+      className=" border-b cursor-pointer hover:bg-[#6c6c6c66] rounded-md"
     >
-      <Table.Td>{row.company_name}</Table.Td>
-      {/* <Table.Td className="text-center">{row.company_name}</Table.Td> */}
+      <Table.Td>{row.company_name}</Table.Td>=
       <Table.Td className="text-center">{row.name}</Table.Td>
       <Table.Td className="text-center">
-        <span className="bg-[#F6F6F6] p-2 px-4 rounded-full">
+        <p className="bg-[#F6F6F6] min-w-[10rem] w-fit m-auto text-center p-2 px-4 rounded-full">
           {row.added_by}
-        </span>
+        </p>
       </Table.Td>
       <Table.Td className="text-center">
-        <span
+        <p
           className={`
-        ${row.status === "Accepted" ? "bg-[#E7F6EE] text-[#3AB876]" : ""}
-        ${row.status === "Rejected" ? "bg-[#FEEDE9] text-[#F46E47]" : ""}
-        ${row.status === "No Reply" ? "bg-[#FFF9E6] text-[#FFD12E]" : ""}
+        ${row.status === "No Reply" ? "bg-[#cef6e1] text-[#3AB876]" : ""}
+        ${row.status === "Accepted" ? "bg-[#fedcd4] text-[#F46E47]" : ""}
+        ${row.status === "Rejected" ? "bg-[#fff3cf] text-[#ffca11]" : ""}
         ${row.status === "In Progress" ? "bg-[#D1C5FF] text-[#7F5DFF]" : ""}
-        ${row.status === "Not Contacted" ? "bg-[#F6F6F6] text-[#414141]" : ""}
-        p-2 px-4 rounded-full`}
+        ${row.status === "Not Contacted" ? "bg-[#d4d5d5] text-[#414141]" : ""}
+        py-2 rounded-full w-[10rem] m-auto`}
         >
           {row.status}
-        </span>
+        </p>
       </Table.Td>
     </Table.Tr>
   ));
@@ -115,47 +114,30 @@ export default function Home({ params }: { params: { id: number } }) {
     <>
       <ToastContainer />
       <div className="h-full absolute max-w-full overflow-x-auto bg-white rounded-md gap-8 flex flex-col items-center p-4">
-        <h1 className="text-3xl font-bold">View Sponsorships</h1>
-        <p className="text-gray-500 text-sm w-full max-w-[400px] text-center">
-          View, Update or Archive the Details of the Companies that have been
-          recently contacted.
-        </p>
-
-        {/* <TextInput
-        placeholder="Search by any field"
-        mb="md"
-        leftSection={
-          <IconSearch
-            style={{ width: rem(16), height: rem(16) }}
-            stroke={1.5}
-          />
-        }
-        value={search}
-        onChange={handleSearchChange}
-      /> */}
+        <div className="text-center gap-4 flex flex-col">
+          <h1 className="text-3xl font-bold">View Sponsorships</h1>
+          <p className="text-gray-500 text-sm w-full max-w-[400px] text-center">
+            View, Update or Archive the Details of the Companies that have been
+            recently contacted.
+          </p>
+        </div>
         <Table.ScrollContainer
-          // className=" inline overflow-x-hidden"
           type="native"
           minWidth={500}
           maw={"100%"}
           mah={"70%"}
         >
           <ScrollArea className="">
-            {/* <div
-        className="min-w-700 overflow-scroll max-w-full"  
-      > */}
             <Table
               horizontalSpacing="md"
               verticalSpacing="xs"
               miw={500}
               layout="fixed"
-              borderColor="black"
-              withRowBorders
+              striped
             >
               <Table.Tbody>
-                <Table.Tr>
+                <Table.Tr bg={"white"}>
                   <Table.Th>Company</Table.Th>
-                  {/* <Table.Th className="text-center">Company PoC</Table.Th> */}
                   <Table.Th className="text-center">Current PoC</Table.Th>
                   <Table.Th className="text-center">Added By</Table.Th>
                   <Table.Th className="text-center">Status</Table.Th>
@@ -175,14 +157,13 @@ export default function Home({ params }: { params: { id: number } }) {
                 )}
               </Table.Tbody>
             </Table>
-            {/* </div> */}
             <Modal
               classNames={{ content: "border-2 border-red-500", root: "" }}
               opened={opened}
               centered
               size="auto"
               onClose={handleClose}
-              title="Modify User Role"
+              title="Modify Company Details"
               w={"100%"}
             >
               <ModifyCompany close={handleCloseFunc} company_id={companyId} />
@@ -192,9 +173,6 @@ export default function Home({ params }: { params: { id: number } }) {
         <div className={`w-full flex flex-row items-center justify-center`}>
           <Link
             href={`/team/${event_id}/sponsorships/createNew`}
-            // onClick={() => {
-            //   router.push(`/team/${event_id}/sponsorships/createNew`);
-            // }}
             className="flex bg-white flex-row sticky bottom-0 items-center gap-2 border-2 font-bold rounded-sm border-blue-500 text-blue-500 p-2 px-4 z-10"
           >
             <IoMdAddCircleOutline className="text-2xl font-bold" /> Add a

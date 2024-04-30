@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { authStore } from "@/store/auth";
 import {
   Paper,
@@ -11,12 +11,10 @@ import {
   Textarea,
   Autocomplete,
 } from "@mantine/core";
-import { useForm, FORM_INDEX } from "@mantine/form";
+import { useForm } from "@mantine/form";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import {
-  addCompany,
-  addPoC,
   getCompanyByID,
   getPoCByCompany,
   getSponsorsByEvent,
@@ -25,17 +23,8 @@ import {
 import { usePathname } from "next/navigation";
 import { pocResp } from "@/types/org";
 
-type PoC = {
-  designation: string;
-  email: string;
-  linkedin: string;
-  name: string;
-  phone: string;
-};
-
-export default function ModifyCompany({ company_id, close }: { company_id: number, close: (success?:boolean, data?:string) => void}) {
+export default function ModifyCompany({ company_id, close }: { company_id: number, close: (_success?:boolean, _data?:string) => void}) {
   const { accessToken, organisation, role } = authStore();
-  // const [pocCount, setPocCount] = useState<number>(1);
   const event_id = usePathname().split("/")[2];
   const [data, setData] = useState<pocResp[]>([]);
 
@@ -75,7 +64,6 @@ export default function ModifyCompany({ company_id, close }: { company_id: numbe
         const spon_filtered = spon.sponsorships.find(
           (c) => c.company === company_id
         );
-        // const comp_filtered = comp.find((c) => c.id === company_id);
         form.setValues({
           CompName: comp_filtered?.name,
           CompIndustry: comp_filtered?.industry,
@@ -89,7 +77,6 @@ export default function ModifyCompany({ company_id, close }: { company_id: numbe
           sponsor_id: spon_filtered?.id,
         });
         const poc = await getPoCByCompany(accessToken, company_id);
-        // setPocCount(poc.length);
         setData(poc);
       } catch (error: any) {
         toast.error(String(error));
@@ -133,13 +120,13 @@ export default function ModifyCompany({ company_id, close }: { company_id: numbe
           mt="md"
           mb={10}
         >
-          Add Sponsorship
+          Update Sponsorship Details
         </Title>
         <Title
           className="font-[500] text-[#646464] text-[1rem] text-center text-wrap w-full max-w-[500px]"
           mb={20}
         >
-          Add Sponsorship and PoCs
+          Update Sponsorship Details and Add PoCs
         </Title>
         <form
           className="w-full gap-4 max-w-[800px] items-center self-center"
@@ -161,15 +148,6 @@ export default function ModifyCompany({ company_id, close }: { company_id: numbe
               mb={10}
               {...form.getInputProps("CompName")}
             />
-            {/* <TextInput
-              label="Status"
-              placeholder="Accepted"
-              size="md"
-              w={"50%"}
-              classNames={{ input: "bg-[#4d4d4d] w-full " }}
-              mb={10}
-              {...form.getInputProps("status")}
-            /> */}
             <NativeSelect
               label="Status"
               radius="md"
@@ -271,7 +249,6 @@ export default function ModifyCompany({ company_id, close }: { company_id: numbe
           >
             PoC Details
           </Title>
-          {/* {Array.from({ length: pocCount }).map((_, index) => ( */}
           <div>
             <Autocomplete
               label="Name"
@@ -305,7 +282,6 @@ export default function ModifyCompany({ company_id, close }: { company_id: numbe
                   };
                 });
               }}
-              // onChange={(value) => console.log(value)}
               {...form.getInputProps("PoCs.name")}
             />
             <div className="flex flex-col select-none md:flex-row gap-4">
@@ -350,35 +326,6 @@ export default function ModifyCompany({ company_id, close }: { company_id: numbe
             </div>
           </div>
           <div className="w-full my-8 flex flex-col md:flex-row justify-center gap-4 text-center items-center">
-            {/* <Button
-              className="bg-[#606060] w-full self-center hover:bg-[#60606099]"
-              size="md"
-              w="40%"
-              onClick={() => {
-                setPocCount(pocCount + 1);
-                console.log("Hello");
-                form.setValues((values) => {
-                  if (values.PoCs !== undefined) {
-                    return {
-                      ...values,
-                      PoCs: values.PoCs.concat({
-                        designation: "",
-                        email: "",
-                        linkedin: "",
-                        name: "",
-                        phone: "",
-                      }),
-                    };
-                  } else {
-                    return {
-                      ...values,
-                    };
-                  }
-                });
-              }}
-            >
-              Add PoC
-            </Button> */}
             <Button
               className="bg-blue-500 w-full self-center hover:bg-blue-400"
               type="submit"

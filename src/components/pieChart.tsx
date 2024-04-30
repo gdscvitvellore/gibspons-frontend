@@ -1,6 +1,6 @@
 "use client";
 
-import { DonutChart, DonutChartCell } from "@mantine/charts";
+import { DonutChart } from "@mantine/charts";
 import { useEffect, useState } from "react";
 import { getPieChart } from "@/utils/events";
 
@@ -20,7 +20,7 @@ export default function PieChart(props: any) {
   const colorMapping: { [key: string]: string } = {
     Accepted: "#3AB876",
     Rejected: "#F46E47",
-    "No Reply": "#FFD12E",
+    "No Reply": "#ffca11",
     "In Progress": "#7F5DFF",
     "Not Contacted": "#414141",
   };
@@ -35,7 +35,7 @@ export default function PieChart(props: any) {
         ? Object.entries(resp).map(([name, value]) => ({
             name,
             value,
-            color: colorMapping[name] || "#000000", // Default color black if not found
+            color: colorMapping[name] || "#000000",
           }))
         : [];
       setData(data);
@@ -60,10 +60,10 @@ export default function PieChart(props: any) {
             tooltipDataSource="segment"
             thickness={30}
           />
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap w-full items-center justify-center gap-2">
             {Object.entries(colorMapping).map(([name, color]) => (
               <div key={name} className="flex items-center gap-2">
-                <div className="w-4 h-4" style={{ backgroundColor: color }} />
+                <div className="w-4 rounded-full h-4" style={{ backgroundColor: color }} />
                 <p>{name}</p>
               </div>
             ))}

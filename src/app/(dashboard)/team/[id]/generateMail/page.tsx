@@ -12,9 +12,8 @@ import {
   NativeSelect,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { ToastContainer, ToastItem, toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import { FaRegCopy } from "react-icons/fa";
-import { BiRefresh } from "react-icons/bi";
 import { usePathname } from "next/navigation";
 import {
   fetchAllCompanies,
@@ -46,7 +45,6 @@ export default function CreateEvent() {
     validate: {
       company: (value) => (value.length > 0 ? null : "Enter a company name"),
       PoC: (value) => (value.length > 0 ? null : "Enter a PoC name"),
-      // additionalPrompt: (value) => (value.length > 0 ? null : "Enter a message"),
     },
   });
 
@@ -248,7 +246,8 @@ export default function CreateEvent() {
             </Button>
           </div>
         </form>
-        <div className={`w-full h-12 flex flex-row justify-end max-w-[900px] ${formContent.values.content.length === 0 ? "hidden" : ""}`}>
+        <div className={`w-full h-8 flex flex-row justify-between items-center max-w-[900px] ${formContent.values.content.length === 0 ? "hidden" : ""}`}>
+            <p className="font-[500]">Draft</p>
           <FaRegCopy
             className="w-5 h-5 cursor-pointer"
             onClick={() => {
@@ -264,7 +263,7 @@ export default function CreateEvent() {
           // })}
         >
           <Textarea
-            label="Draft"
+            // label="Draft"
             placeholder="Hello {PoC}, I'm reaching out to you on behalf of {Company} for {Event}."
             size="md"
             autosize

@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { Outfit } from "next/font/google";
 import Navbar from "../components/Navbar";
-import styles from "../styles/index.module.css";
 import Footer from "../components/Footer";
 import Link from "next/link";
 
@@ -29,7 +28,7 @@ export default function Home() {
           <div className="mt-8">
             <Link
               href="/login"
-              className="px-8 py-2 text-[#070707] text-[1.3rem] bg-[#5379F6] rounded-full mr-4 hover:bg-[#6e8ef4]"
+              className="px-8 py-2 text-[#f8f8f8] md:w-[11rem] text-center text-[1.3rem] bg-[#5379F6] rounded-full mr-4 hover:bg-[#6e8ef4]"
             >
               Get Started
             </Link>

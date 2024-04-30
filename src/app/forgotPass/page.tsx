@@ -71,11 +71,11 @@ export default function Login() {
   return (
     <div className={classes.wrapper}>
       <ToastContainer />
-      <div className="hidden md:flex w-full h-full flex-row justify-center items-center">
-        <Image src="/icon.svg" alt="Gibspons logo" width="60" height="60" />
-        <div className="flex flex-col justify-center text-white text-left p-2">
-          <h1 className="text-3xl font-bold leading-[100%]">gibspons</h1>
-          <p className="text-sm">sponsorships made easier</p>
+      <div className="hidden md:flex w-full gap-4 h-full flex-row justify-center items-center">
+        <Image src="/icon.svg" alt="Gibspons logo" width="100" height="100" />
+        <div className="flex flex-col justify-center gap-2 text-white text-left p-2">
+          <h1 className="text-5xl font-bold leading-[100%]">gibspons</h1>
+          <p className=" text-xl">sponsorships made easier</p>
         </div>
       </div>
       {isVerify === false ? (
@@ -98,7 +98,7 @@ export default function Login() {
             <TextInput
               label="Email ID"
               placeholder="xyz@gmail.com"
-              size="md"
+              size="lg"
               required
               {...form.getInputProps("email")}
             />
@@ -140,8 +140,8 @@ export default function Login() {
             <TextInput
               label="New Password"
               placeholder="Your Password"
-              mt="lg"
-              size="md"
+              mt="xl"
+              size="lg"
               required
               {...formVerify.getInputProps("password")}
             />
@@ -149,7 +149,7 @@ export default function Login() {
               label="Confirm New Password"
               placeholder="Your Password"
               mt="lg"
-              size="md"
+              size="lg"
               required
               {...formVerify.getInputProps("confirmPassword")}
             />

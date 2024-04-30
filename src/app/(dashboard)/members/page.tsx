@@ -83,18 +83,16 @@ export default function Home() {
 
   const refreshData = async () => {
     fetchMembers();
-  }
-  
+  };
+
   useEffect(() => {
-    setLink([
-      { href: "/members", title: "Members" },
-    ]);
+    setLink([{ href: "/members", title: "Members" }]);
     if (org.id !== 0) fetchMembers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <div className="h-full absolute w-full overflow-x-auto bg-white rounded-md md:gap-4 flex flex-col items-center p-4">
+    <div className="min-h-full absolute w-full bg-white rounded-md lg:gap-4 flex flex-col items-center p-4">
       <div className="flex flex-col md:flex-row w-full items-center gap-4 justify-center">
         <div className="flex flex-col items-center md:items-start w-full max-w-[35rem]">
           {org.logo && (
@@ -133,11 +131,19 @@ export default function Home() {
         </div>
       </div>
       {membersNotApproved && (
-        <MembersTable data={membersNotApproved} approved={false} refresh={refreshData}/>
+        <MembersTable
+          data={membersNotApproved}
+          approved={false}
+          refresh={refreshData}
+        />
       )}
       <br />
       {membersApproved && (
-        <MembersTable data={membersApproved} approved={true} refresh={refreshData}/>
+        <MembersTable
+          data={membersApproved}
+          approved={true}
+          refresh={refreshData}
+        />
       )}
     </div>
   );

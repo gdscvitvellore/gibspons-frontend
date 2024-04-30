@@ -47,57 +47,46 @@ export default function Home() {
   }, []);
 
   const rows = sponsors.map((row) => (
-    <Table.Tr key={row.id} className=" border-b-2 border-black">
+    <Table.Tr key={row.id} className="p-2">
       <Table.Td>{row.name}</Table.Td>
       <Table.Td className="text-center">{row.event}</Table.Td>
       <Table.Td className="text-center">{row.added_by}</Table.Td>
       <Table.Td className="text-center">
-        <span
+        <p
           className={`
-        ${row.status === "Accepted" ? "bg-[#E7F6EE] text-[#3AB876]" : ""}
-        ${row.status === "Rejected" ? "bg-[#FEEDE9] text-[#F46E47]" : ""}
-        ${row.status === "No Reply" ? "bg-[#FFF9E6] text-[#FFD12E]" : ""}
+        ${row.status === "Accepted" ? "bg-[#cef6e1] text-[#3AB876]" : ""}
+        ${row.status === "Rejected" ? "bg-[#fedcd4] text-[#F46E47]" : ""}
+        ${row.status === "No Reply" ? "bg-[#fff3cf] text-[#ffca11]" : ""}
         ${row.status === "In Progress" ? "bg-[#D1C5FF] text-[#7F5DFF]" : ""}
-        ${row.status === "Not Contacted" ? "bg-[#F6F6F6] text-[#414141]" : ""}
-        p-2 px-4 rounded-full`}
+        ${row.status === "Not Contacted" ? "bg-[#d4d5d5] text-[#414141]" : ""}
+        py-2 rounded-full w-[10rem] m-auto`}
         >
           {row.status}
-        </span>
+        </p>
       </Table.Td>
     </Table.Tr>
   ));
 
   return (
     <div className="h-full w-full absolute overflow-x-auto bg-white rounded-md gap-8 flex flex-col items-center p-4">
-      <h1 className="text-3xl font-bold">View Companies</h1>
-      <p className="text-gray-500 text-sm w-full max-w-[400px] text-center">
-        View, Update or Archive the Details of the Companies that have been
-        recently contacted.
-      </p>
+      <div>
+        <h1 className="text-3xl text-center my-4 font-bold">Sponsorships</h1>
+        <p className="text-gray-500 text-sm w-full max-w-[400px] text-center">
+          View, Update or Archive the Details of the Companies that have been
+          recently contacted.
+        </p>
+      </div>
       <Table.ScrollContainer type="native" minWidth={800} maw={"100%"}>
         <ScrollArea>
-          {/* <TextInput
-        placeholder="Search by any field"
-        mb="md"
-        leftSection={
-          <IconSearch
-            style={{ width: rem(16), height: rem(16) }}
-            stroke={1.5}
-          />
-        }
-        value={search}
-        onChange={handleSearchChange}
-      /> */}
           <Table
             horizontalSpacing="md"
             verticalSpacing="xs"
             miw={700}
+            striped
             layout="fixed"
-            borderColor="black"
-            withRowBorders
           >
             <Table.Tbody>
-              <Table.Tr>
+              <Table.Tr bg={"white"}>
                 <Table.Th>Company</Table.Th>
                 <Table.Th className="text-center">Event</Table.Th>
                 {/* <Table.Th className="text-center">Industry</Table.Th> */}

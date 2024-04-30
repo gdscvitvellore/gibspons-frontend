@@ -10,15 +10,14 @@ import {
   NumberInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { updateEvent } from "@/utils/events";
+import { updateEvent, getEvents } from "@/utils/events";
 import { ToastContainer, toast } from "react-toastify";
-import { getEvents } from "@/utils/events";
 import { useState, useEffect } from "react";
 import { organisationStore } from "@/store/organisation";
 import { Event } from "@/types/org";
 import { useLinkStore } from "@/store/crumbs";
 
-export default function CreateEvent({ params }: { params: { id: number } }) {
+export default function CreateEvent({ params }: Readonly<{ params: { id: number } }>) {
   const { accessToken, role } = authStore();
   const { org } = organisationStore();
   const { setLink } = useLinkStore();
@@ -53,7 +52,7 @@ export default function CreateEvent({ params }: { params: { id: number } }) {
           SponBrochure: data[0].brochure,
         });
         setLink([
-          { href: `/team}`, title: org.name },
+          { href: `/team`, title: org.name },
           { href: `/team/${params.id}/dashboard`, title: data[0].name },
           { href: `/team/${params.id}/eventDetails`, title: "Event Details" },
         ]);
@@ -81,12 +80,17 @@ export default function CreateEvent({ params }: { params: { id: number } }) {
       startDate: (value) => (value ? null : "Enter A Start Date"),
       endDate: (value) => (value ? null : "Enter an End Date"),
       Desc: (value) => (value.length > 0 ? null : "Enter Description"),
-      ExpReg: (value) =>
-        value !== null
-          ? Number.isInteger(value)
-            ? null
-            : "Invalid format, Enter numbers only"
-          : "Enter Expected Registrations",
+      ExpReg: (value) => {
+        if (value !== null) {
+          if (Number.isInteger(value)) {
+            return null;
+          } else {
+            return "Invalid format, Enter numbers only";
+          }
+        } else {
+          return "Enter Expected Registrations";
+        }
+      },
     },
   });
 
@@ -103,8 +107,8 @@ export default function CreateEvent({ params }: { params: { id: number } }) {
       }),
     };
     try {
-      const resp: Event = await updateEvent(accessToken, event, eventsData.id);
-      toast.success("Event Created Successfully");
+      const _resp: Event = await updateEvent(accessToken, event, eventsData.id);
+      toast.success("Event Updated Successfully");
     } catch (error: any) {
       toast.error(error);
       console.log(error);
@@ -120,7 +124,7 @@ export default function CreateEvent({ params }: { params: { id: number } }) {
           className="text-black font-bold"
           ta="center"
           mt="md"
-          mb={50}
+          mb={16}
         >
           View Event Details
         </Title>
@@ -175,26 +179,6 @@ export default function CreateEvent({ params }: { params: { id: number } }) {
                   {...form.getInputProps("endDate")}
                 />
               </Input.Wrapper>
-              {/* <DateInput
-                label="Date input"
-                placeholder="Date input"
-                size="md"
-                w={'100%'}
-                clearable
-                withAsterisk
-                classNames={{ input: "bg-black w-full" }}
-                {...form.getInputProps("startDate")}
-              />
-              <DateInput
-                label="Date input"
-                placeholder="Date input"
-                size="md"
-                w={'100%'}
-                clearable
-                withAsterisk
-                classNames={{ input:" text-black w-full" }}
-                {...form.getInputProps("endDate")}
-              /> */}
             </div>
             <NumberInput
               label="Expected Registrations"

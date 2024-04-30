@@ -3,7 +3,6 @@ import {
   Paper,
   TextInput,
   PasswordInput,
-  Checkbox,
   Button,
   Title,
   Text,
@@ -13,13 +12,11 @@ import { useForm } from "@mantine/form";
 import classes from "@/styles/auth.module.css";
 import Image from "next/image";
 import { handleRegister } from "@/utils/auth";
-import { authStore } from "@/store/auth";
 import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function SignUp() {
-  // const { login } = authStore();
   const router = useRouter();
 
   const form = useForm({
@@ -42,12 +39,10 @@ export default function SignUp() {
   });
 
   const register = async () => {
-    // e.preventDefault();
-    const { email, password, name, username, loginPreference } = form.values;
+    const { email, password, name, username } = form.values;
     try {
       const res = await handleRegister(name, email, username, password);
       if (res.id) {
-        // window.alert("Registered successfully");
         toast.success("User Registered successfully", {
           position: "top-right",
           autoClose: 3000,
@@ -70,11 +65,11 @@ export default function SignUp() {
   return (
     <div className={classes.wrapper}>
       <ToastContainer />
-      <div className="hidden md:flex w-full h-full flex-row justify-center items-center">
-        <Image src="/icon.svg" alt="Gibspons logo" width="60" height="60" />
-        <div className="flex flex-col justify-center text-white text-left p-2">
-          <h1 className="text-4xl font-bold leading-[100%]">gibspons</h1>
-          <p className="text-md">sponsorships made easier</p>
+      <div className="hidden md:flex w-full gap-4 h-full flex-row justify-center items-center">
+        <Image src="/icon.svg" alt="Gibspons logo" width="100" height="100" />
+        <div className="flex flex-col justify-center gap-2 text-white text-left p-2">
+          <h1 className="text-5xl font-bold leading-[100%]">gibspons</h1>
+          <p className=" text-xl">sponsorships made easier</p>
         </div>
       </div>
       <Paper className={classes.form} p={30}>
@@ -151,7 +146,6 @@ export default function SignUp() {
           <Anchor<"a">
             href="/login"
             fw={700}
-            // onClick={(event) => event.preventDefault()}
           >
             Sign In
           </Anchor>

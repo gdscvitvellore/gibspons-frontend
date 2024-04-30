@@ -3,7 +3,6 @@ import {
   Paper,
   TextInput,
   PasswordInput,
-  Checkbox,
   Button,
   Title,
   Text,
@@ -13,7 +12,6 @@ import classes from "@/styles/auth.module.css";
 import Image from "next/image";
 import { useForm, isEmail } from "@mantine/form";
 import { useRouter } from "next/navigation";
-import { loginRes } from "@/types/user";
 import { handleLogin } from "@/utils/auth";
 import { authStore } from "@/store/auth";
 import { organisationStore } from "@/store/organisation";
@@ -45,7 +43,7 @@ export default function Login() {
     try {
       localStorage.clear();
       const res = await handleLogin(email.toLocaleLowerCase(), password);
-      if (res && res.access_token) {
+      if (res?.access_token) {
         const {
           name,
           email,
@@ -89,20 +87,17 @@ export default function Login() {
   return (
     <div className={classes.wrapper}>
       <ToastContainer />
-      <div className="hidden md:flex w-full h-full flex-row justify-center items-center">
-        <Image src="/icon.svg" alt="Gibspons logo" width="60" height="60" />
-        <div className="flex flex-col justify-center text-white text-left p-2">
-          <h1 className="text-3xl font-bold leading-[100%]">gibspons</h1>
-          <p className="text-sm">sponsorships made easier</p>
+      <div className="hidden md:flex w-full gap-4 h-full flex-row justify-center items-center">
+        <Image src="/icon.svg" alt="Gibspons logo" width="100" height="100" />
+        <div className="flex flex-col justify-center gap-2 text-white text-left p-2">
+          <h1 className="text-5xl font-bold leading-[100%]">gibspons</h1>
+          <p className=" text-xl">sponsorships made easier</p>
         </div>
       </div>
       <Paper className={classes.form} p={30}>
         <Title order={2} className={classes.title} ta="center" mt="md" mb={24}>
           Login
         </Title>
-        {/* <Title order={2} className={classes.title} ta="center" mt="md" mb={50}>
-          Welcome back to gibspons!
-        </Title> */}
         <form
           className="w-full max-w-[400px] self-center"
           onSubmit={form.onSubmit(() => {
@@ -147,7 +142,6 @@ export default function Login() {
           <Anchor<"a">
             href="/signup"
             fw={700}
-            // onClick={(event) => event.preventDefault()}
           >
             Register
           </Anchor>

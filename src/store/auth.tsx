@@ -18,8 +18,8 @@ export interface User {
 interface AuthStore extends User {
   isLoggedIn: boolean;
   getUser: () => User;
-  update: (props: User) => void;
-  login: (props: User) => void;
+  update: (_props: User) => void;
+  login: (_props: User) => void;
   logout: () => void;
 }
 
