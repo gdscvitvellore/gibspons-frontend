@@ -13,7 +13,6 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import {
   getCompanyByID,
   getPoCByCompany,

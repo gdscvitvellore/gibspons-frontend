@@ -61,7 +61,7 @@ export default function Home({ params }: Readonly<{ params: { id: number } }>) {
   return (
     <div className="flex flex-row h-full overflow-x-auto absolute gap-4 w-full rounded-md">
       <div className="flex w-full h-full flex-col gap-4">
-        <div className="bg-gradient-to-r from-[#4d4d4d] to-[#3e3e3e]  w-full justify-between flex rounded-md flex-col gap-4 md:flex-row p-4 text-white">
+        <div className="bg-gradient-to-r from-[#4d4d4d] to-[#3e3e3e] h-full  w-full justify-between flex rounded-md flex-col gap-4 md:flex-row p-4 text-white">
           <div className="flex flex-col">
             <p className="text-xs font-[500]">Overview</p>
             <p className="text-4xl font-[700]">{data?.event?.name}</p>
@@ -75,7 +75,7 @@ export default function Home({ params }: Readonly<{ params: { id: number } }>) {
         </div>
         <div className="bg-white relative h-full min-h-fit p-4 rounded-md">
           <h1 className="font-bold mb-8">Companies & Sponsors</h1>
-          <Table.ScrollContainer type="native" minWidth={500} maw={"100%"}>
+          <Table.ScrollContainer type="native" mah={"80%"} minWidth={500} maw={"100%"}>
             <ScrollArea>
               <Table
                 horizontalSpacing="md"

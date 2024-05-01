@@ -1,4 +1,5 @@
 "use client";
+
 import { authStore } from "@/store/auth";
 import { getSponsorsByEvent } from "@/utils/organisation";
 
@@ -10,7 +11,6 @@ import { useDisclosure } from "@mantine/hooks";
 import Link from "next/link";
 import ModifyCompany from "@/components/companyForm";
 import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useLinkStore } from "@/store/crumbs";
 import { pocResp } from "@/types/org";
 
@@ -91,7 +91,9 @@ export default function Home({ params }: Readonly<{ params: { id: number } }>) {
       className=" border-b cursor-pointer hover:bg-[#6c6c6c66] rounded-md"
     >
       <Table.Td>{row.company_name}</Table.Td>
-      <Table.Td className="text-center">{typeof row.poc === 'object' ? row.poc.name : row.poc}</Table.Td>
+      <Table.Td className="text-center">
+        {typeof row.poc === "object" ? row.poc.name : row.poc}
+      </Table.Td>
       <Table.Td className="text-center">
         <p className="bg-[#F6F6F6] min-w-[10rem] w-fit m-auto text-center p-2 px-4 rounded-full">
           {row.added_by}
