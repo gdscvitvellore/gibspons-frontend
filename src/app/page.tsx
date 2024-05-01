@@ -1,16 +1,16 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import Image from "next/image";
-import { Outfit } from "next/font/google";
+// import { Outfit } from "next/font/google";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Link from "next/link";
 
-const outfit = Outfit({ subsets: ["latin"] });
+// const outfit = Outfit({ subsets: ["latin"] });
 
 export default function Home() {
   return (
-    <div className={`w-full  h-full bg-[#F8F8F8] ${outfit.className}`}>
+    <div className={`w-full  h-full bg-[#F8F8F8] `}>
       <Navbar />
       <div
         id="home"
