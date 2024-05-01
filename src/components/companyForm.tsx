@@ -13,7 +13,7 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import {
   getCompanyByID,
   getPoCByCompany,
@@ -23,7 +23,13 @@ import {
 import { usePathname } from "next/navigation";
 import { pocResp } from "@/types/org";
 
-export default function ModifyCompany({ company_id, close }: { company_id: number, close: (_success?:boolean, _data?:string) => void}) {
+export default function ModifyCompany({
+  company_id,
+  close,
+}: Readonly<{
+  company_id: number;
+  close: (_success?: boolean, _data?: string) => void;
+}>) {
   const { accessToken, organisation, role } = authStore();
   const event_id = usePathname().split("/")[2];
   const [data, setData] = useState<pocResp[]>([]);
@@ -40,6 +46,9 @@ export default function ModifyCompany({ company_id, close }: { company_id: numbe
       industry: "",
       status: "",
       added_by: "",
+      remarks: "",
+      isAccepted: false,
+      showAdditional: false,
       sponsor_id: 0,
       PoCs: {
         id: 0,
@@ -75,12 +84,25 @@ export default function ModifyCompany({ company_id, close }: { company_id: numbe
           status: spon_filtered?.status,
           added_by: spon_filtered?.user_name,
           sponsor_id: spon_filtered?.id,
+          remarks: spon_filtered?.remarks,
         });
+        if (
+          spon_filtered?.status === "Accepted" &&
+          spon_filtered?.type_of_sponsorship === "inkind"
+        ) {
+          form.setValues({
+            showAdditional: true,
+          });
+        }
+        if (spon_filtered?.status === "Accepted") {
+          form.setValues({
+            isAccepted: true,
+          });
+        }
         const poc = await getPoCByCompany(accessToken, company_id);
         setData(poc);
       } catch (error: any) {
         toast.error(String(error));
-        // close();
         console.error(error);
       }
     };
@@ -90,22 +112,33 @@ export default function ModifyCompany({ company_id, close }: { company_id: numbe
 
   const handleUpdateCompany = async (values: any) => {
     try {
-      const data = {
+      let data: any = {
         poc: values.PoCs.id,
         status: values.status,
-        type_of_sponsorship: values.type_of_sponsorship,
-        money_donated: values.money_donated,
-        additional: values.additional,
+        remarks: values.remarks,
       };
+      if (form.values.isAccepted) {
+        data = {
+          ...data,
+          additional: values.additional,
+          money_donated: values.money_donated,
+          type_of_sponsorship: values.type_of_sponsorship,
+        };
+      }
       const resp = await updateSponsorship(
         accessToken,
         data,
         values.sponsor_id
       );
-      console.log(resp);
-      close(true, "Sponsorship Updated Successfully");
+      console.log(resp, "resp");
+      if (resp.status === 200 && typeof resp.data === "string")
+        close(true, resp.response.data.detail);
+      else if (typeof resp.data.detail === "string")
+        close(false, resp.data.detail);
+      else close(true, "Sponsorship details updated successfully!");
     } catch (error: any) {
-      console.error(error);
+      close(false, error.response);
+      console.log("error", error);
     }
   };
 
@@ -156,7 +189,11 @@ export default function ModifyCompany({ company_id, close }: { company_id: numbe
               data={[
                 { label: "Select status", value: "" },
                 { label: "Not Contacted", value: "Not Contacted" },
-                { label: "Accepted", value: "Accepted", disabled: (role === 'user') },
+                {
+                  label: "Accepted",
+                  value: "Accepted",
+                  disabled: role === "user",
+                },
                 { label: "No Reply", value: "No Reply" },
                 { label: "In Progress", value: "In Progress" },
                 { label: "Rejected", value: "Rejected" },
@@ -174,38 +211,52 @@ export default function ModifyCompany({ company_id, close }: { company_id: numbe
               {...form.getInputProps("added_by")}
             />
           </div>
-          <div className="flex flex-col gap-4 md:flex-row">
-            <NativeSelect
-              label="Type of Sponsorship"
-              radius="md"
+          {(role === "admin" || role === "owner") && (
+            <div className="flex flex-col gap-4 md:flex-row">
+              <NativeSelect
+                label="Type of Sponsorship"
+                radius="md"
+                size="md"
+                w="100%"
+                disabled={!form.values.isAccepted}
+                data={[
+                  { label: "Select status", value: "" },
+                  { label: "Monetary", value: "monetary" },
+                  { label: "inKind", value: "inKind" },
+                ]}
+                {...form.getInputProps("type_of_sponsorship")}
+              />
+              <TextInput
+                label="Money Donated"
+                placeholder="donation amount"
+                size="md"
+                w={"100%"}
+                disabled={!form.values.isAccepted}
+                classNames={{ input: "bg-white w-full " }}
+                mb={10}
+                {...form.getInputProps("money_donated")}
+              />
+            </div>
+          )}
+          {form.values.type_of_sponsorship === "inKind" && (
+            <Textarea
+              label="Additional Information"
+              placeholder="Add additional information here"
               size="md"
-              w="100%"
-              data={[
-                { label: "Select status", value: "" },
-                { label: "Monetary", value: "monetary" },
-                { label: "inKind", value: "inKind" },
-              ]}
-              {...form.getInputProps("type_of_sponsorship")}
+              autosize
+              minRows={2}
+              mb={20}
+              {...form.getInputProps("additional")}
             />
-            <TextInput
-              label="Money Donated"
-              placeholder="donation amount"
-              size="md"
-              w={"100%"}
-              disabled = {form.values.status === "accepted" ? false : true}
-              classNames={{ input: "bg-white w-full " }}
-              mb={10}
-              {...form.getInputProps("money_donated")}
-            />
-          </div>
+          )}
           <Textarea
-            label="Additional Information"
-            placeholder="Add additional information here"
+            label="Remarks"
+            placeholder="updates and remarks"
             size="md"
             autosize
             minRows={2}
             mb={20}
-            {...form.getInputProps("additional")}
+            {...form.getInputProps("remarks")}
           />
           <Title order={3} className="text-black font-bold" ta="center" mb={20}>
             Company Details
@@ -255,7 +306,6 @@ export default function ModifyCompany({ company_id, close }: { company_id: numbe
               placeholder="Rupaak S"
               data={data.map((item) => ({
                 label: item.name,
-                // value: item.name,
                 value: String(item.id),
               }))}
               autoComplete="on"

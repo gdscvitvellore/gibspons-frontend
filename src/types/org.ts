@@ -69,7 +69,8 @@ export interface pocResp {
 export interface sponsorships {
   id: number;
   company: number;
-  poc: null | pocResp;
+  poc: null | number;
+  poc_name: string;
   event: number;
   event_name: string;
   contacted_by: number;
@@ -78,6 +79,7 @@ export interface sponsorships {
   type_of_sponsorship: string;
   money_donated: number;
   additional: string;
+  remarks: string;
   company_name: string;
 }
 

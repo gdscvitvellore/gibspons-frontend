@@ -104,10 +104,8 @@ export async function changeUserRole(
     const response = await axios.post(`${BaseURL}/users/changerole/`, body, {
       headers,
     });
-    // console.log(response.data);
     return response;
   } catch (error: any) {
-    // return error.response.detail;
     throw new Error(error.response.data);
   }
 }
@@ -303,6 +301,6 @@ export async function updateSponsorship(
     console.log(response.data);
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data);
+    return error;
   }
 }

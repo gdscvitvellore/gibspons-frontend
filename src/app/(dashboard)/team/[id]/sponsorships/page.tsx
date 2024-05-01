@@ -12,16 +12,18 @@ import ModifyCompany from "@/components/companyForm";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useLinkStore } from "@/store/crumbs";
+import { pocResp } from "@/types/org";
 
 interface RowData {
-  id: number;
-  name: string;
+  spon_id: number;
+  comp_id: number;
+  poc: string | pocResp;
   company_name: string;
   added_by: string;
   status: string;
 }
 
-export default function Home({ params }: { params: { id: number } }) {
+export default function Home({ params }: Readonly<{ params: { id: number } }>) {
   const { accessToken } = authStore();
   const { org } = organisationStore();
   const [sponsors, setSponsors] = useState<RowData[]>([]);
@@ -55,8 +57,9 @@ export default function Home({ params }: { params: { id: number } }) {
       const data = await getSponsorsByEvent(accessToken, event_id);
       const rowData = data.sponsorships.map((sponsor, _key) => {
         return {
-          id: Number(sponsor.company),
-          name: sponsor.poc?.name || "None",
+          spon_id: Number(sponsor.id),
+          comp_id: Number(sponsor.company),
+          poc: sponsor.poc_name ?? "None",
           company_name: sponsor.company_name,
           added_by: sponsor.user_name,
           status: sponsor.status,
@@ -80,15 +83,15 @@ export default function Home({ params }: { params: { id: number } }) {
 
   const rows = sponsors.map((row) => (
     <Table.Tr
-      key={row.id}
+      key={row.spon_id}
       onClick={() => {
-        console.log(row.id);
-        handleOpen(row.id);
+        console.log(row.spon_id);
+        handleOpen(row.comp_id);
       }}
       className=" border-b cursor-pointer hover:bg-[#6c6c6c66] rounded-md"
     >
-      <Table.Td>{row.company_name}</Table.Td>=
-      <Table.Td className="text-center">{row.name}</Table.Td>
+      <Table.Td>{row.company_name}</Table.Td>
+      <Table.Td className="text-center">{typeof row.poc === 'object' ? row.poc.name : row.poc}</Table.Td>
       <Table.Td className="text-center">
         <p className="bg-[#F6F6F6] min-w-[10rem] w-fit m-auto text-center p-2 px-4 rounded-full">
           {row.added_by}
@@ -97,9 +100,9 @@ export default function Home({ params }: { params: { id: number } }) {
       <Table.Td className="text-center">
         <p
           className={`
-        ${row.status === "No Reply" ? "bg-[#cef6e1] text-[#3AB876]" : ""}
-        ${row.status === "Accepted" ? "bg-[#fedcd4] text-[#F46E47]" : ""}
-        ${row.status === "Rejected" ? "bg-[#fff3cf] text-[#ffca11]" : ""}
+        ${row.status === "Accepted" ? "bg-[#cef6e1] text-[#3AB876]" : ""}
+        ${row.status === "Rejected" ? "bg-[#fedcd4] text-[#F46E47]" : ""}
+        ${row.status === "No Reply" ? "bg-[#fff3cf] text-[#ffca11]" : ""}
         ${row.status === "In Progress" ? "bg-[#D1C5FF] text-[#7F5DFF]" : ""}
         ${row.status === "Not Contacted" ? "bg-[#d4d5d5] text-[#414141]" : ""}
         py-2 rounded-full w-[10rem] m-auto`}
