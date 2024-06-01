@@ -72,7 +72,7 @@ export default function Home() {
       <div>
         <h1 className="text-3xl text-center my-4 font-bold">Sponsorships</h1>
         <p className="text-gray-500 text-sm w-full max-w-[400px] text-center">
-          View, Update or Archive the Details of the Companies that have been
+          View the Details of the Companies that have been
           recently contacted.
         </p>
       </div>

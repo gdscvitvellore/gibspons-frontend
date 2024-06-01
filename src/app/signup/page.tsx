@@ -56,9 +56,9 @@ export default function SignUp() {
           router.push("/login");
         }, 2000);
       }
-    } catch (error) {
-      window.alert(error);
-      console.log(error);
+    } catch (error: any) {
+      toast.error(error.message);
+      console.log(error.message);
     }
   };
 

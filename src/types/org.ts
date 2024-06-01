@@ -74,6 +74,7 @@ export interface sponsorships {
   event: number;
   event_name: string;
   contacted_by: number;
+  updated_at: string;
   user_name: string;
   status: string;
   type_of_sponsorship: string;

@@ -112,7 +112,7 @@ function ManageOrg() {
       refreshData();
       toast.success(res);
     } catch (error: any) {
-      window.alert(error);
+      toast.error(error.message);
       console.log(error);
     }
   };

@@ -45,7 +45,7 @@ export async function handleRegister(
     const data: registerRes = await res.data;
     return data;
   } catch (error: any) {
-    // throw new Error("New user registration failed");
+    console.log(error.response.data.detail);
     throw new Error(error.response.data.detail);
   }
 }
@@ -189,7 +189,7 @@ export async function handleVerifyOTP(
   code: number,
   password: string,
   email: string
-): Promise<{msg?:string, error?:string}> {
+): Promise<{ msg?: string; error?: string }> {
   try {
     const response = await axios.post(
       `${BaseURL}/users/verify_reset_password_otp/?email=${email}`,

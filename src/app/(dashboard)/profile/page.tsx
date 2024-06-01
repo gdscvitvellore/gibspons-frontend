@@ -57,6 +57,10 @@ export default function Profile() {
     async function fetchData() {
       try {
         const resp = await getSponsorsByUser(accessToken);
+        resp.sort(
+          (a, b) =>
+            new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+        );
         setSponsors(resp);
       } catch (error: any) {
         toast.error(error.response.data);
@@ -190,9 +194,10 @@ export default function Profile() {
           </h1>
           {sponsors.slice(0, 10).map((sponsor, id) => (
             <div className="flex flex-row items-center gap-4" key={id}>
-              <div className="flex flex-row w-full justify-between my-1">
+              <div className="grid grid-cols-3 w-full justify-between my-1">
                 <h2 className="text-lg font-bold">{sponsor.company_name}</h2>
-                <p className="text-sm">{sponsor.status}</p>
+                <p className="text-sm text-center">{sponsor.updated_at}</p>
+                <p className="text-sm text-right">{sponsor.status}</p>
               </div>
             </div>
           ))}

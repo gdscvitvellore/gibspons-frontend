@@ -116,6 +116,10 @@ export default function ModifyCompany({
         status: values.status,
         remarks: values.remarks,
       };
+      if(data.poc === 0){
+        toast.error("Please select a PoC to update status!!");
+        return;
+      }
       if (form.values.isAccepted) {
         data = {
           ...data,
@@ -142,8 +146,7 @@ export default function ModifyCompany({
   };
 
   return (
-    <div className="bg-white relative p-4 rounded-md">
-      <ToastContainer className="absolute top-0 right-0" />
+    <div className="bg-white p-4 rounded-md">
       <Paper className="h-full relative min-h-[rem(800)px] flex flex-col items-center justify-center max-w-full w-[rem(1200px)]">
         <Title
           order={1}

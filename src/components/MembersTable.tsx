@@ -160,7 +160,7 @@ export default function MembersTable({
       changeRoleForm.values.role
     );
     if (resp.status === 200) {
-      toast.success("Role changed successfully");
+      toast.success(resp.data.detail);
       const newData = sortedData.map((item) => {
         if (item.id === selectedUser?.id) {
           return { ...item, role: changeRoleForm.values.role };
@@ -187,8 +187,8 @@ export default function MembersTable({
 
   const rows = sortedData.map((row) => (
     <Table.Tr key={row.id}>
-      <Table.Td colSpan={2}>{row.name}</Table.Td>
-      <Table.Td miw={200} colSpan={2} className="overflow-ellipsis ">
+      <Table.Td colSpan={2} className=" text-ellipsis overflow-clip w-full">{row.name}</Table.Td>
+      <Table.Td miw={200} colSpan={2} className=" text-ellipsis overflow-clip w-full">
         {row.email}
       </Table.Td>
       <Table.Td colSpan={2} className="">{row.created_at}</Table.Td>
@@ -312,7 +312,7 @@ export default function MembersTable({
                   reversed={reverseSortDirection}
                   onSort={() => setSorting("email")}
                 >
-                  Name
+                  Email
                 </Th>
                 <Th
                   colSpan={2}
