@@ -1,3 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* For status Tags */
+.Accepted {
+    @apply bg-[#cef6e1] text-[#3AB876];
+}
+.Rejected {
+    @apply bg-[#fedcd4] text-[#F46E47];
+}
+.Reply {
+    @apply bg-[#fff3cf] text-[#ffca11];
+}
+.Progress {
+    @apply bg-[#D1C5FF] text-[#7F5DFF];
+}
+.Contacted {
+    @apply bg-[#d4d5d5] text-[#414141];
+}

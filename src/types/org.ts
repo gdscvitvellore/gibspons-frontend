@@ -15,8 +15,6 @@ export interface companyByOrg {
   website: string;
   industry: string;
   linkedin: string;
-  status: string;
-  event: number;
 }
 
 export interface sponsByOrg {
@@ -89,3 +87,11 @@ export interface sponsByEvent {
   sponsorships: sponsorships[];
   total_money_raised: number;
 }
+
+export type PoC = {
+  designation: string;
+  email: string;
+  linkedin: string;
+  name: string;
+  phone: string;
+};

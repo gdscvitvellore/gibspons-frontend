@@ -2,36 +2,35 @@
 
 import { useEffect, useState } from "react";
 import { authStore } from "@/store/auth";
-import {
-  Paper,
-  TextInput,
-  Button,
-  Title,
-  NativeSelect,
-  Textarea,
-  Autocomplete,
-} from "@mantine/core";
+import { Paper, TextInput, Button, Title } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { ToastContainer, toast } from "react-toastify";
-import {
-  getCompanyByID,
-  getPoCByCompany,
-  getSponsorsByEvent,
-  updateSponsorship,
-} from "@/utils/organisation";
-import { usePathname } from "next/navigation";
 import { pocResp } from "@/types/org";
+import { updateCompany, getPoCByCompany, addPoC } from "@/utils/organisation";
+import PocTable from "./PocTable";
+import { toast } from "react-toastify";
+import { MdOutlineDeleteForever } from "react-icons/md";
+import { PoC } from "@/types/org";
+import { useLoadingStore } from "@/store/loading";
+
+interface RowData {
+  comp_id: number;
+  name: string;
+  website: string;
+  industry: string;
+  linkedin: string;
+}
 
 export default function ModifyCompany({
-  company_id,
+  company,
   close,
 }: Readonly<{
-  company_id: number;
+  company: RowData;
   close: (_success?: boolean, _data?: string) => void;
 }>) {
   const { accessToken, organisation, role } = authStore();
-  const event_id = usePathname().split("/")[2];
-  const [data, setData] = useState<pocResp[]>([]);
+  const [pocData, setPocData] = useState<pocResp[]>([]);
+  const [pocCount, setPocCount] = useState<number>(0);
+  const { startLoading, stopLoading } = useLoadingStore();
 
   const form = useForm({
     initialValues: {
@@ -39,109 +38,80 @@ export default function ModifyCompany({
       CompIndustry: "",
       CompLinkedin: "",
       CompWebsite: "",
-      type_of_sponsorship: "",
-      money_donated: 0,
-      additional: "",
-      industry: "",
-      status: "",
-      added_by: "",
-      remarks: "",
-      isAccepted: false,
-      showAdditional: false,
-      sponsor_id: 0,
-      PoCs: {
-        id: 0,
-        designation: "",
-        email: "",
-        linkedin: "",
-        name: "",
-        phone: "",
-      },
+      PoCs: [
+        {
+          name: "",
+          designation: "",
+          email: "",
+          linkedin: "",
+          phone: "",
+        },
+      ],
+    },
+    validate: {
+      CompName: (value) => (value.length > 0 ? null : "Enter a company name"),
+      CompIndustry: (value) =>
+        value.length > 0 ? null : "Enter the industry of the company",
+      CompLinkedin: (value) =>
+        value.length > 0 ? null : "Enter the linkedin of the company",
+      CompWebsite: (value) =>
+        value.length > 0 ? null : "Enter the website of the company",
     },
   });
 
   useEffect(() => {
-    const fetchSponsors = async () => {
+    form.setValues({
+      CompName: company.name,
+      CompIndustry: company.industry,
+      CompLinkedin: company.linkedin,
+      CompWebsite: company.website,
+    });
+    const fetchPOCs = async () => {
       try {
-        const comp_filtered = await getCompanyByID(
-          accessToken,
-          Number(organisation),
-          company_id
-        );
-        const spon = await getSponsorsByEvent(accessToken, event_id);
-        const spon_filtered = spon.sponsorships.find(
-          (c) => c.company === company_id
-        );
-        form.setValues({
-          CompName: comp_filtered?.name,
-          CompIndustry: comp_filtered?.industry,
-          CompLinkedin: comp_filtered?.linkedin,
-          CompWebsite: comp_filtered?.website,
-          type_of_sponsorship: spon_filtered?.type_of_sponsorship,
-          money_donated: spon_filtered?.money_donated,
-          additional: spon_filtered?.additional,
-          status: spon_filtered?.status,
-          added_by: spon_filtered?.user_name,
-          sponsor_id: spon_filtered?.id,
-          remarks: spon_filtered?.remarks,
-        });
-        if (
-          spon_filtered?.status === "Accepted" &&
-          spon_filtered?.type_of_sponsorship === "inkind"
-        ) {
-          form.setValues({
-            showAdditional: true,
-          });
-        }
-        if (spon_filtered?.status === "Accepted") {
-          form.setValues({
-            isAccepted: true,
-          });
-        }
-        const poc = await getPoCByCompany(accessToken, company_id);
-        setData(poc);
-      } catch (error: any) {
-        toast.error(String(error));
-        console.error(error);
+        const data = await getPoCByCompany(accessToken, company.comp_id);
+        setPocData(data);
+      } catch (e: any) {
+        toast.error(e.message);
       }
     };
-    if (Number(organisation) !== 0) fetchSponsors();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    fetchPOCs();
+  }, [company]);
 
   const handleUpdateCompany = async (values: any) => {
     try {
-      let data: any = {
-        poc: values.PoCs.id,
-        status: values.status,
-        remarks: values.remarks,
+      startLoading();
+      const data = {
+        id: company.comp_id,
+        name: values.CompName,
+        industry: values.CompIndustry,
+        linkedin: values.CompLinkedin,
+        website: values.CompWebsite,
       };
-      if(data.poc === 0){
-        toast.error("Please select a PoC to update status!!");
-        return;
+      const resp = await updateCompany(accessToken, data, company.comp_id);
+      if (resp.status === 200) {
+        close(true, "Company Details Updated Successfully");
+      } else {
+        close(false, "Failed to Update Company Details");
       }
-      if (form.values.isAccepted) {
-        data = {
-          ...data,
-          additional: values.additional,
-          money_donated: values.money_donated,
-          type_of_sponsorship: values.type_of_sponsorship,
+      const pocData = values.PoCs.slice(0, pocCount).map((poc: PoC) => {
+        return {
+          name: poc.name,
+          designation: poc.designation,
+          email: poc.email,
+          linkedin: poc.linkedin,
+          phone: poc.phone,
+          company: company.comp_id,
         };
+      });
+      try {
+        const _pocResponse = await addPoC(accessToken, pocData);
+        stopLoading();
+      } catch (error: any) {
+        stopLoading();
+        toast.error("Failed to add PoC");
       }
-      const resp = await updateSponsorship(
-        accessToken,
-        data,
-        values.sponsor_id
-      );
-      console.log(resp, "resp");
-      if (resp.status === 200 && typeof resp.data === "string")
-        close(true, resp.response.data.detail);
-      else if (typeof resp.data.detail === "string")
-        close(false, resp.data.detail);
-      else close(true, "Sponsorship details updated successfully!");
-    } catch (error: any) {
-      close(false, error.response);
-      console.log("error", error);
+    } catch (e) {
+      console.error(e);
     }
   };
 
@@ -155,13 +125,13 @@ export default function ModifyCompany({
           mt="md"
           mb={10}
         >
-          Update Sponsorship Details
+          Update Company Details
         </Title>
         <Title
           className="font-[500] text-[#646464] text-[1rem] text-center text-wrap w-full max-w-[500px]"
           mb={20}
         >
-          Update Sponsorship Details and Add PoCs
+          Update Company Details and Add PoCs
         </Title>
         <form
           className="w-full gap-4 max-w-[800px] items-center self-center"
@@ -170,7 +140,7 @@ export default function ModifyCompany({
           })}
         >
           <Title order={3} className="text-black font-bold" ta="center" mb={20}>
-            Overview
+            Company Details
           </Title>
           <div className="flex flex-col md:flex-row w-full gap-4">
             <TextInput
@@ -178,98 +148,19 @@ export default function ModifyCompany({
               placeholder="Google"
               size="md"
               w={"100%"}
-              disabled
+              disabled={role === "admin" || role === "owner" ? false : true}
               classNames={{ input: "bg-white w-full" }}
               mb={10}
               {...form.getInputProps("CompName")}
             />
-            <NativeSelect
-              label="Status"
-              radius="md"
-              size="md"
-              w="50%"
-              data={[
-                { label: "Select status", value: "" },
-                { label: "Not Contacted", value: "Not Contacted" },
-                {
-                  label: "Accepted",
-                  value: "Accepted",
-                  disabled: role === "user",
-                },
-                { label: "No Reply", value: "No Reply" },
-                { label: "In Progress", value: "In Progress" },
-                { label: "Rejected", value: "Rejected" },
-              ]}
-              {...form.getInputProps("status")}
-            />
-            <TextInput
-              label="Added By"
-              placeholder="Rupaak S"
-              size="md"
-              w={"50%"}
-              disabled
-              classNames={{ input: "bg-[#4d4d4d] w-full " }}
-              mb={10}
-              {...form.getInputProps("added_by")}
-            />
           </div>
-          {(role === "admin" || role === "owner") && (
-            <div className="flex flex-col gap-4 md:flex-row">
-              <NativeSelect
-                label="Type of Sponsorship"
-                radius="md"
-                size="md"
-                w="100%"
-                disabled={!form.values.isAccepted}
-                data={[
-                  { label: "Select status", value: "" },
-                  { label: "Monetary", value: "monetary" },
-                  { label: "inKind", value: "inKind" },
-                ]}
-                {...form.getInputProps("type_of_sponsorship")}
-              />
-              <TextInput
-                label="Money Donated"
-                placeholder="donation amount"
-                size="md"
-                w={"100%"}
-                disabled={!form.values.isAccepted}
-                classNames={{ input: "bg-white w-full " }}
-                mb={10}
-                {...form.getInputProps("money_donated")}
-              />
-            </div>
-          )}
-          {form.values.type_of_sponsorship === "inKind" && (
-            <Textarea
-              label="Additional Information"
-              placeholder="Add additional information here"
-              size="md"
-              autosize
-              minRows={2}
-              mb={20}
-              {...form.getInputProps("additional")}
-            />
-          )}
-          <Textarea
-            label="Remarks"
-            placeholder="updates and remarks"
-            size="md"
-            autosize
-            minRows={2}
-            mb={20}
-            {...form.getInputProps("remarks")}
-          />
-          <Title order={3} className="text-black font-bold" ta="center" mb={20}>
-            Company Details
-          </Title>
           <div className="flex flex-col select-none md:flex-row gap-4">
             <TextInput
               label="Industry"
               placeholder="Tech"
               size="md"
               w={"100%"}
-              disabled
+              disabled={role === "admin" || role === "owner" ? false : true}
               classNames={{ input: "bg-white w-full" }}
               mb={10}
               {...form.getInputProps("CompIndustry")}
@@ -280,7 +171,7 @@ export default function ModifyCompany({
               placeholder="https://www.linkedin.com/company/dscvit/"
               size="md"
               w={"100%"}
-              disabled
+              disabled={role === "admin" || role === "owner" ? false : true}
               mb={10}
               {...form.getInputProps("CompLinkedin")}
             />
@@ -290,7 +181,7 @@ export default function ModifyCompany({
             placeholder="https://dscvit.com"
             size="md"
             mb={10}
-            disabled
+            disabled={role === "admin" || role === "owner" ? false : true}
             {...form.getInputProps("CompWebsite")}
           />
           <Title
@@ -302,87 +193,121 @@ export default function ModifyCompany({
           >
             PoC Details
           </Title>
-          <div>
-            <Autocomplete
-              label="Name"
-              placeholder="Rupaak S"
-              data={data.map((item) => ({
-                label: item.name,
-                value: String(item.id),
-              }))}
-              autoComplete="on"
-              size="md"
-              w={"100%"}
-              limit={5}
-              mb={10}
-              classNames={{ input: "bg-white w-full" }}
-              selectFirstOptionOnChange
-              onOptionSubmit={(value) => {
-                const poc = data.find((item) => item.id === Number(value));
-                if (!poc) return;
-                form.setValues((values) => {
-                  return {
-                    ...values,
-                    PoCs: {
-                      id: poc.id,
-                      designation: poc.designation,
-                      email: poc.email,
-                      linkedin: poc.linkedin,
-                      name: poc.name,
-                      phone: poc.phone,
-                    },
-                  };
-                });
-              }}
-              {...form.getInputProps("PoCs.name")}
-            />
-            <div className="flex flex-col select-none md:flex-row gap-4">
-              <TextInput
-                label="Designation"
-                placeholder="Marketing Head"
-                size="md"
-                w={"100%"}
-                classNames={{ input: "bg-white w-full" }}
-                mb={10}
-                {...form.getInputProps(`PoCs.designation`)}
-              />
-              <TextInput
-                label="Linkedin"
-                placeholder="Tech"
-                size="md"
-                w={"100%"}
-                classNames={{ input: "bg-white w-full" }}
-                mb={10}
-                {...form.getInputProps(`PoCs.linkedin`)}
-              />
+          <Title
+            order={4}
+            className="text-black font-bold"
+            ta="center"
+            mt="xl"
+            mb={20}
+          >
+            Existing POCs
+          </Title>
+          <PocTable pocData={pocData} checkbox={false} />
+          {Array.from({ length: pocCount }).map((_, index) => (
+            <div key={index}>
+              <div className="flex flex-row w-full justify-between">
+                <TextInput
+                  label={`Name of PoC ${index + 1}`}
+                  placeholder="Dhruv Shah"
+                  size="md"
+                  w={"100%"}
+                  mb={10}
+                  classNames={{ input: "bg-white w-full" }}
+                  {...form.getInputProps(`PoCs.${index}.name`)}
+                />
+                <MdOutlineDeleteForever
+                  className="text-[#191919] text-3xl mt-4 h-full self-center cursor-pointer hover:text-red-400"
+                  onClick={() => {
+                    form.setValues((values) => {
+                      if (values.PoCs !== undefined) {
+                        return {
+                          ...values,
+                          PoCs: values.PoCs.filter((_, i) => i !== index),
+                        };
+                      } else {
+                        return {
+                          ...values,
+                        };
+                      }
+                    });
+                    setPocCount(pocCount - 1);
+                  }}
+                />
+              </div>
+              <div className="flex flex-col select-none md:flex-row gap-4">
+                <TextInput
+                  label="Designation"
+                  placeholder="Marketing Head"
+                  size="md"
+                  w={"100%"}
+                  classNames={{ input: "bg-white w-full" }}
+                  mb={10}
+                  {...form.getInputProps(`PoCs.${index}.designation`)}
+                />
+                <TextInput
+                  label="Linkedin"
+                  placeholder="https://linkedin.com/in/dhruvshah"
+                  size="md"
+                  w={"100%"}
+                  classNames={{ input: "bg-white w-full" }}
+                  mb={10}
+                  {...form.getInputProps(`PoCs.${index}.linkedin`)}
+                />
+              </div>
+              <div className="flex flex-col select-none md:flex-row gap-4">
+                <TextInput
+                  label="Phone Number"
+                  placeholder="9954672314"
+                  size="md"
+                  w={"100%"}
+                  classNames={{ input: "bg-white w-full" }}
+                  mb={10}
+                  {...form.getInputProps(`PoCs.${index}.phone`)}
+                />
+                <TextInput
+                  label="Email Address"
+                  placeholder="dhruv.shah@gmail.com"
+                  size="md"
+                  w={"100%"}
+                  classNames={{ input: "bg-white w-full" }}
+                  mb={20}
+                  {...form.getInputProps(`PoCs.${index}.email`)}
+                />
+              </div>
             </div>
-            <div className="flex flex-col select-none md:flex-row gap-4">
-              <TextInput
-                label="Phone Number"
-                placeholder="Google"
-                size="md"
-                w={"100%"}
-                classNames={{ input: "bg-white w-full" }}
-                mb={10}
-                {...form.getInputProps(`PoCs.phone`)}
-              />
-              <TextInput
-                label="Email Address"
-                placeholder="Tech"
-                size="md"
-                w={"100%"}
-                classNames={{ input: "bg-white w-full" }}
-                mb={20}
-                {...form.getInputProps(`PoCs.email`)}
-              />
-            </div>
-          </div>
+          ))}
           <div className="w-full my-8 flex flex-col md:flex-row justify-center gap-4 text-center items-center">
             <Button
-              className="bg-blue-500 w-full self-center hover:bg-blue-400"
+              className="bg-[#606060] w-full max-w-[20rem] md:w-[40%] self-center hover:bg-[#60606099]"
+              size="md"
+              onClick={() => {
+                setPocCount(pocCount + 1);
+                form.setValues((values) => {
+                  if (values.PoCs !== undefined) {
+                    return {
+                      ...values,
+                      PoCs: values.PoCs.concat({
+                        designation: "",
+                        email: "",
+                        linkedin: "",
+                        name: "",
+                        phone: "",
+                      }),
+                    };
+                  } else {
+                    return {
+                      ...values,
+                    };
+                  }
+                });
+              }}
+            >
+              Add New PoC
+            </Button>
+            <Button
+              className="bg-blue-500 w-full max-w-[20rem] md:w-[40%] self-center hover:bg-blue-400"
               type="submit"
               size="md"
-              w="40%"
             >
               Save Details
             </Button>

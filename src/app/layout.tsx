@@ -11,6 +11,7 @@ import {
   PasswordInput,
 } from "@mantine/core";
 import LoadingScreen from "@/components/loadingScreen";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function RootLayout({
   children,

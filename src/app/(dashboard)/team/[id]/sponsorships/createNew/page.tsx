@@ -7,26 +7,26 @@ import { useEffect } from "react";
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
-import { addCompany, addPoC, fetchAllCompanies } from "@/utils/organisation";
+import {
+  addCompany,
+  addPoC,
+  fetchAllCompanies,
+  getPoCByCompany,
+} from "@/utils/organisation";
 import { usePathname } from "next/navigation";
-import { companyByOrg } from "@/types/org";
+import { companyByOrg, pocResp, PoC } from "@/types/org";
 import { useLoadingStore } from "@/store/loading";
 import { MdOutlineDeleteForever } from "react-icons/md";
 import { useLinkStore } from "@/store/crumbs";
-
-type PoC = {
-  designation: string;
-  email: string;
-  linkedin: string;
-  name: string;
-  phone: string;
-};
+import PocTable from "@/components/PocTable";
 
 export default function CreateEvent() {
   const { accessToken, organisation } = authStore();
-  const [pocCount, setPocCount] = useState<number>(1);
+  const [pocCount, setPocCount] = useState<number>(0);
+  const [pocData, setPocData] = useState<pocResp[]>([]);
   const event_id = usePathname().split("/")[2];
   const [data, setData] = useState<companyByOrg[] | null>([]);
+  const [currCompanyId, setCurrCompanyId] = useState<number>(0);
   const { startLoading, stopLoading } = useLoadingStore();
   const router = useRouter();
   const { setLink } = useLinkStore();
@@ -45,7 +45,10 @@ export default function CreateEvent() {
           { href: "/team", title: "My Team" },
           { href: `/team/${event_id}/dashboard`, title: "Event Dashboard" },
           { href: `/team/${event_id}/sponsorships`, title: "Sponsorships" },
-          { href: `/team/${event_id}/sponsorships/createNew`, title: "New Spons" },
+          {
+            href: `/team/${event_id}/sponsorships/createNew`,
+            title: "New Spons",
+          },
         ]);
       } catch (error: any) {
         console.error(error);
@@ -54,6 +57,18 @@ export default function CreateEvent() {
     fetchCompanies();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    const fetchPOCs = async () => {
+      try {
+        const resp = await getPoCByCompany(accessToken, currCompanyId);
+        setPocData(resp);
+      } catch (error: any) {
+        console.error(error);
+      }
+    };
+    if (currCompanyId !== 0) fetchPOCs();
+  }, [currCompanyId]);
 
   const form = useForm({
     initialValues: {
@@ -79,18 +94,19 @@ export default function CreateEvent() {
         value.length > 0 ? null : "Enter the linkedin of the company",
       CompWebsite: (value) =>
         value.length > 0 ? null : "Enter the website of the company",
-      PoCs: {
-        name: (value) => (value.length > 0 ? null : "Enter a name"),
-        designation: (value) =>
-          value.length > 0 ? null : "Enter a designation",
-        // linkedin: (value, values) => (value.length || values.PoCs[Number(0)].email.length || values.PoCs[Number(0)].phone.length > 0 ? null : "Enter a linkedin"),
-        // phone: (value) => (value.length > 0 ? null : "Enter a phone number"),
-        // email: (value) => (value.length > 0 ? null : "Enter an email"),
-      },
+      // PoCs: {
+      //   name: (value) => (value.length > 0 ? null : "Enter a name"),
+      //   designation: (value) =>
+      //     value.length > 0 ? null : "Enter a designation",
+      // linkedin: (value, values) => (value.length || values.PoCs[Number(0)].email.length || values.PoCs[Number(0)].phone.length > 0 ? null : "Enter a linkedin"),
+      // phone: (value) => (value.length > 0 ? null : "Enter a phone number"),
+      // email: (value) => (value.length > 0 ? null : "Enter an email"),
+      // },
     },
   });
 
   const handleCreateCompany = async (values: any) => {
+    console.log("inside handleCreateCompany");
     startLoading();
     try {
       const company = {
@@ -101,7 +117,8 @@ export default function CreateEvent() {
         event_id: event_id,
       };
       const compResp = await addCompany(accessToken, company);
-      const pocData = values.PoCs.map((poc: PoC) => {
+      toast.success("Company created successfully");
+      const pocData = values.PoCs.slice(0, pocCount).map((poc: PoC) => {
         return {
           name: poc.name,
           designation: poc.designation,
@@ -115,7 +132,6 @@ export default function CreateEvent() {
       try {
         const _pocResponse = await addPoC(accessToken, pocData);
         stopLoading();
-        toast.success("Company created successfully");
       } catch (error: any) {
         stopLoading();
         toast.error("Failed to add PoC");
@@ -126,12 +142,12 @@ export default function CreateEvent() {
       }, 700);
     } catch (error: any) {
       stopLoading();
-      toast.error("Failed to create company");
+      toast.error(error.message);
     }
   };
 
   return (
-    <div className="bg-white p-4 rounded-md">
+    <div className="bg-white absolute w-full p-4 rounded-md">
       <ToastContainer />
       <Paper className="h-full min-h-[rem(800)px] flex flex-col items-center justify-center w-full min-w-[rem(200px)]">
         <Title
@@ -141,7 +157,7 @@ export default function CreateEvent() {
           mt="md"
           mb={16}
         >
-          Add a Company
+          Add a Sponsorship
         </Title>
         <Title
           className="font-[500] text-[#646464] text-[1rem] text-center text-wrap w-full max-w-[500px]"
@@ -192,6 +208,7 @@ export default function CreateEvent() {
                 onOptionSubmit={(value) => {
                   if (data === null) return;
                   const comp = data.find((item) => item.id === Number(value));
+                  setCurrCompanyId(Number(value));
                   form.setValues((values) => {
                     return {
                       ...values,
@@ -238,6 +255,8 @@ export default function CreateEvent() {
           >
             PoC Details
           </Title>
+          <h2>Existing POCs</h2>
+          <PocTable pocData={pocData} checkbox={false} />
           {Array.from({ length: pocCount }).map((_, index) => (
             <div key={index}>
               <div className="flex flex-row w-full justify-between">
@@ -317,7 +336,6 @@ export default function CreateEvent() {
               size="md"
               onClick={() => {
                 setPocCount(pocCount + 1);
-                console.log("Hello");
                 form.setValues((values) => {
                   if (values.PoCs !== undefined) {
                     return {

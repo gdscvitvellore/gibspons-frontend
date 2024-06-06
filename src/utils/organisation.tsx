@@ -124,7 +124,7 @@ export async function addCompany(
     const data = await response.data;
     return data;
   } catch (error: any) {
-    throw new Error(error.response.data);
+    throw new Error(error.response.data.detail);
   }
 }
 
@@ -180,7 +180,7 @@ export async function getSponsorsByUser(
     const data = await response.data;
     return data;
   } catch (error: any) {
-    throw new Error(error.response.data);
+    throw new Error(error.response.data.detail);
   }
 }
 
@@ -302,5 +302,28 @@ export async function updateSponsorship(
     return response;
   } catch (error: any) {
     return error;
+  }
+}
+
+export async function updateCompany(
+  accessToken: string,
+  data: any,
+  comp_id: number
+) {
+  try {
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+    };
+    const response = await axios.patch(
+      `${BaseURL}/app/company/${comp_id}/`,
+      data,
+      {
+        headers,
+      }
+    );
+    console.log(response.data);
+    return response;
+  } catch (error: any) {
+    return error.response.data.detail;
   }
 }

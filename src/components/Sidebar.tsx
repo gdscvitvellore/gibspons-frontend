@@ -12,14 +12,6 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { IconType } from "react-icons/lib";
 
-// const data = [
-//   { link: "/team", icon: BiSolidDashboard, label: "My Team" },
-//   { link: "/members", icon: RiTeamFill, label: "Members" },
-//   { link: "/sponsorships", icon: BiBuildings, label: "Sponsorships" },
-//   // { link: "/home/eventDetails"g, icon: IoMdCalendar, label: "Event Details" },
-//   // { link: "/home/generateMail", icon: IoMailOpen, label: "Generate a Mail" },
-// ];
-
 type dataType = {
   link: string;
   icon: IconType;

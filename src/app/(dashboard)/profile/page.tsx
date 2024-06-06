@@ -63,7 +63,7 @@ export default function Profile() {
         );
         setSponsors(resp);
       } catch (error: any) {
-        toast.error(error.response.data);
+        toast.error(error.message);
       }
     }
     fetchData();

@@ -53,13 +53,7 @@ export default function Home() {
       <Table.Td className="text-center">{row.added_by}</Table.Td>
       <Table.Td className="text-center">
         <p
-          className={`
-        ${row.status === "Accepted" ? "bg-[#cef6e1] text-[#3AB876]" : ""}
-        ${row.status === "Rejected" ? "bg-[#fedcd4] text-[#F46E47]" : ""}
-        ${row.status === "No Reply" ? "bg-[#fff3cf] text-[#ffca11]" : ""}
-        ${row.status === "In Progress" ? "bg-[#D1C5FF] text-[#7F5DFF]" : ""}
-        ${row.status === "Not Contacted" ? "bg-[#d4d5d5] text-[#414141]" : ""}
-        py-2 rounded-full w-[10rem] m-auto`}
+          className={`${row.status} py-2 rounded-full w-[10rem] m-auto`}
         >
           {row.status}
         </p>

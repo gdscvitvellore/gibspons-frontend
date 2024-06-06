@@ -75,6 +75,11 @@ function Dashboard({
                   icon: BiBuildings,
                   label: "Sponsorships",
                 },
+                {
+                  link: "/companies",
+                  icon: BiBuildings,
+                  label: "Companies",
+                },
               ]
             : []
         }

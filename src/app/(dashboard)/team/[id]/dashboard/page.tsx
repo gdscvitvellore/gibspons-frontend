@@ -43,14 +43,8 @@ export default function Home({ params }: Readonly<{ params: { id: number } }>) {
       <Table.Td>{row.company_name}</Table.Td>
       <Table.Td className="text-center">{row.user_name}</Table.Td>
       <Table.Td className="text-center">
-      <p
-          className={`
-        ${row.status === "No Reply" ? "bg-[#cef6e1] text-[#3AB876]" : ""}
-        ${row.status === "Accepted" ? "bg-[#fedcd4] text-[#F46E47]" : ""}
-        ${row.status === "Rejected" ? "bg-[#fff3cf] text-[#ffca11]" : ""}
-        ${row.status === "In Progress" ? "bg-[#D1C5FF] text-[#7F5DFF]" : ""}
-        ${row.status === "Not Contacted" ? "bg-[#d4d5d5] text-[#414141]" : ""}
-        py-2 rounded-full w-[10rem] m-auto`}
+        <p
+          className={`${row.status} py-2 rounded-full w-[10rem] m-auto`}
         >
           {row.status}
         </p>
@@ -61,13 +55,15 @@ export default function Home({ params }: Readonly<{ params: { id: number } }>) {
   return (
     <div className="flex flex-row h-full overflow-x-auto absolute gap-4 w-full rounded-md">
       <div className="flex w-full h-full flex-col gap-4">
-        <div className="bg-gradient-to-r from-[#4d4d4d] to-[#3e3e3e] h-full  w-full justify-between flex rounded-md flex-col gap-4 md:flex-row p-4 text-white">
+        <div className="bg-gradient-to-r from-[#4d4d4d] to-[#3e3e3e] h-full max-h-[10rem]  w-full justify-between flex rounded-md flex-col gap-4 md:flex-row p-4 text-white">
           <div className="flex flex-col">
             <p className="text-xs font-[500]">Overview</p>
             <p className="text-4xl font-[700]">{data?.event?.name}</p>
           </div>
           <div className="flex flex-col">
-            <p className="text-xs font-[500] w-full text-right">Total Amount Raised</p>
+            <p className="text-xs font-[500] w-full text-right">
+              Total Amount Raised
+            </p>
             <p className="text-4xl font-bold md:text-right">
               &#8377;{data?.event?.money_raised}
             </p>
@@ -75,7 +71,12 @@ export default function Home({ params }: Readonly<{ params: { id: number } }>) {
         </div>
         <div className="bg-white relative h-full min-h-fit p-4 rounded-md">
           <h1 className="font-bold mb-8">Companies & Sponsors</h1>
-          <Table.ScrollContainer type="native" mah={"80%"} minWidth={500} maw={"100%"}>
+          <Table.ScrollContainer
+            type="native"
+            mah={"80%"}
+            minWidth={500}
+            maw={"100%"}
+          >
             <ScrollArea>
               <Table
                 horizontalSpacing="md"

@@ -1,7 +1,7 @@
 "use client";
 
 import { authStore } from "@/store/auth";
-import { getSponsorsByEvent } from "@/utils/organisation";
+import { fetchAllCompanies } from "@/utils/organisation";
 
 import { Table, ScrollArea, Text, Modal } from "@mantine/core";
 import { useState, useEffect } from "react";
@@ -9,31 +9,35 @@ import { organisationStore } from "@/store/organisation";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { useDisclosure } from "@mantine/hooks";
 import Link from "next/link";
-import ModifySponsorship from "@/components/SponsorshipForm";
+import ModifyCompany from "@/components/CompanyForm";
 import { toast, ToastContainer } from "react-toastify";
 import { useLinkStore } from "@/store/crumbs";
-import { pocResp } from "@/types/org";
 
 interface RowData {
-  spon_id: number;
   comp_id: number;
-  poc: string | pocResp;
-  company_name: string;
-  added_by: string;
-  status: string;
+  name: string;
+  website: string;
+  industry: string;
+  linkedin: string;
 }
 
 export default function Home({ params }: Readonly<{ params: { id: number } }>) {
   const { accessToken } = authStore();
   const { org } = organisationStore();
   const [sponsors, setSponsors] = useState<RowData[]>([]);
-  const [companyId, setCompanyId] = useState<number>(0);
+  const [company, setCompany] = useState<RowData>({
+    comp_id: 0,
+    name: "",
+    website: "",
+    industry: "",
+    linkedin: "",
+  });
   const event_id = String(params.id);
   const [opened, { open, close }] = useDisclosure(false);
   const { setLink } = useLinkStore();
 
-  const handleOpen = (id: number) => {
-    setCompanyId(id);
+  const handleOpen = (data: RowData) => {
+    setCompany(data);
     open();
   };
 
@@ -54,22 +58,20 @@ export default function Home({ params }: Readonly<{ params: { id: number } }>) {
 
   const fetchSponsors = async () => {
     try {
-      const data = await getSponsorsByEvent(accessToken, event_id);
-      const rowData = data.sponsorships.map((sponsor, _key) => {
+      const data = await fetchAllCompanies(accessToken, org.id);
+      const rowData = data.map((company, _key) => {
         return {
-          spon_id: Number(sponsor.id),
-          comp_id: Number(sponsor.company),
-          poc: sponsor.poc_name ?? "None",
-          company_name: sponsor.company_name,
-          added_by: sponsor.user_name,
-          status: sponsor.status,
+          comp_id: company.id,
+          name: company.name,
+          website: company.website,
+          industry: company.industry,
+          linkedin: company.linkedin,
         };
       });
       setSponsors(rowData);
       setLink([
         { href: "/team", title: "My Team" },
-        { href: `/team/${event_id}/dashboard`, title: data.event.name },
-        { href: `/team/${event_id}/sponsorships`, title: "Sponsorships" },
+        { href: `/team/${event_id}/companies`, title: "Companies" },
       ]);
     } catch (error: any) {
       console.error(error);
@@ -83,29 +85,17 @@ export default function Home({ params }: Readonly<{ params: { id: number } }>) {
 
   const rows = sponsors.map((row) => (
     <Table.Tr
-      key={row.spon_id}
+      key={row.comp_id}
       onClick={() => {
-        console.log(row.spon_id);
-        handleOpen(row.comp_id);
+        console.log(row.comp_id);
+        handleOpen(row);
       }}
       className=" border-b cursor-pointer hover:bg-[#6c6c6c66] rounded-md"
     >
-      <Table.Td>{row.company_name}</Table.Td>
-      <Table.Td className="text-center">
-        {typeof row.poc === "object" ? row.poc.name : row.poc}
-      </Table.Td>
-      <Table.Td className="text-center">
-        <p className="bg-[#F6F6F6] min-w-[10rem] w-fit m-auto text-center p-2 px-4 rounded-full">
-          {row.added_by}
-        </p>
-      </Table.Td>
-      <Table.Td className="text-center">
-        <p
-          className={`${row.status} py-2 rounded-full w-[10rem] m-auto`}
-        >
-          {row.status}
-        </p>
-      </Table.Td>
+      <Table.Td>{row.name}</Table.Td>
+      <Table.Td className="text-center">{row.website}</Table.Td>
+      <Table.Td className="text-center">{row.industry}</Table.Td>
+      <Table.Td className="text-center">{row.linkedin}</Table.Td>
     </Table.Tr>
   ));
 
@@ -114,10 +104,9 @@ export default function Home({ params }: Readonly<{ params: { id: number } }>) {
       <ToastContainer />
       <div className="h-full absolute max-w-full overflow-x-auto bg-white rounded-md gap-8 flex flex-col items-center p-4">
         <div className="text-center gap-4 flex flex-col">
-          <h1 className="text-3xl font-bold">View Sponsorships</h1>
+          <h1 className="text-3xl font-bold">View and Manage all Companies</h1>
           <p className="text-gray-500 text-sm w-full max-w-[400px] text-center">
-            View, Update or Archive the Details of the Companies that have been
-            recently contacted.
+            View and Update the Details of the Companies that is added under the organisation
           </p>
         </div>
         <Table.ScrollContainer
@@ -136,10 +125,10 @@ export default function Home({ params }: Readonly<{ params: { id: number } }>) {
             >
               <Table.Tbody>
                 <Table.Tr bg={"white"}>
-                  <Table.Th>Company</Table.Th>
-                  <Table.Th className="text-center">Current PoC</Table.Th>
-                  <Table.Th className="text-center">Added By</Table.Th>
-                  <Table.Th className="text-center">Status</Table.Th>
+                  <Table.Th>Company Name</Table.Th>
+                  <Table.Th className="text-center">Website</Table.Th>
+                  <Table.Th className="text-center">Industry</Table.Th>
+                  <Table.Th className="text-center">Linkedin</Table.Th>
                 </Table.Tr>
               </Table.Tbody>
               <Table.Tbody className="">
@@ -165,19 +154,18 @@ export default function Home({ params }: Readonly<{ params: { id: number } }>) {
               title="Modify Company Details"
               w={"100%"}
             >
-              <ModifySponsorship close={handleCloseFunc} company_id={companyId} />
+              <ModifyCompany close={handleCloseFunc} company={company} />
             </Modal>
           </ScrollArea>
         </Table.ScrollContainer>
-        <div className={`w-full flex flex-row items-center justify-center`}>
+        {/* <div className={`w-full flex flex-row items-center justify-center`}>
           <Link
-            href={`/team/${event_id}/sponsorships/createNew`}
+            href={`/companies/createNew`}
             className="flex bg-white flex-row sticky bottom-0 items-center gap-2 border-2 font-bold rounded-sm border-blue-500 text-blue-500 p-2 px-4 z-10"
           >
-            <IoMdAddCircleOutline className="text-2xl font-bold" /> Add a
-            Company
+            <IoMdAddCircleOutline className="text-2xl font-bold" /> Add new Company
           </Link>
-        </div>
+        </div> */}
       </div>
     </>
   );
