@@ -33,6 +33,7 @@ export default function ModifySponsorship({
   const event_id = usePathname().split("/")[2];
   const [data, setData] = useState<pocResp[]>([]);
   const [currPoc, setCurrPoc] = useState(0);
+  var existingPoc = 0;
 
   const form = useForm({
     initialValues: {
@@ -84,7 +85,10 @@ export default function ModifySponsorship({
           sponsor_id: spon_filtered?.id,
           remarks: spon_filtered?.remarks,
         });
-        if (spon_filtered?.poc) form.setValues({ poc_id: spon_filtered?.poc });
+        if (spon_filtered?.poc) {
+          form.setValues({ poc_id: spon_filtered?.poc });
+          existingPoc = spon_filtered?.poc;
+        }
         if (
           spon_filtered?.status === "Accepted" &&
           spon_filtered?.type_of_sponsorship === "inkind"
@@ -293,7 +297,12 @@ export default function ModifySponsorship({
           >
             PoC Details
           </Title>
-          <PocTable pocData={data} setPoc={setCurrPoc} checkbox={true} currPoc={form.getValues().poc_id} />
+          <PocTable
+            pocData={data}
+            setPoc={setCurrPoc}
+            checkbox={true}
+            currPoc={existingPoc}
+          />
           <div className="w-full my-8 flex flex-col md:flex-row justify-center gap-4 text-center items-center">
             <Button
               className="bg-blue-500 w-full self-center hover:bg-blue-400"
