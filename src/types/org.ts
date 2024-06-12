@@ -1,3 +1,5 @@
+import { count } from "console";
+
 export interface membersByOrg {
   id: number;
   name: string;
@@ -25,7 +27,12 @@ export interface sponsByOrg {
   event_name: string;
   contacted_by: number;
   user_name: string;
-  status: "No Reply" | "Accepted" | "Rejected" | "In Progress" | "Not Contacted";
+  status:
+    | "No Reply"
+    | "Accepted"
+    | "Rejected"
+    | "In Progress"
+    | "Not Contacted";
   type_of_sponsorship: null | string;
   money_donated: number;
   additional: null | string;
@@ -95,3 +102,10 @@ export type PoC = {
   name: string;
   phone: string;
 };
+
+
+export interface respType {
+  count: number;
+  next: string;
+  previous: string;
+}

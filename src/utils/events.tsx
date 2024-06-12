@@ -1,95 +1,57 @@
-"use client";
-
-import axios from "axios";
-import { Event } from "@/types/org";
+import { Event, respType } from "@/types/org";
+import { postRequest, getRequest, patchRequest } from "./axiosFunctions";
 
 const BaseURL = process.env.NEXT_PUBLIC_BASE_URL;
 
+type getEventsType = {
+  respType: respType;
+  results: Event[];
+}
+
 export async function getEvents(
-  accessToken: string,
-  org_id: number,
   event_id: number | null
-): Promise<Event[]> {
+): Promise<getEventsType> {
   try {
-    const headers = {
-      Authorization: `Bearer ${accessToken}`,
-    };
-    const response = await axios.get(`${BaseURL}/app/event/display/`, {
-      params: {
-        org: org_id,
-        id: event_id,
-      },
-      headers,
+    return await getRequest(`${BaseURL}/app/event/`, {
+      id: event_id,
     });
-    const data: Event[] = await response.data;
-    return data;
   } catch (error: any) {
-    throw new Error(error.response.data);
+    throw error;
   }
 }
 
 export async function createEvent(
-  accessToken: string,
   event: any
 ): Promise<Event> {
   try {
-    const headers = {
-      Authorization: `Bearer ${accessToken}`,
-    };
-    const response = await axios.post(`${BaseURL}/app/event/`, event, {
-      headers,
-    });
-    if (response.status !== 200) {
-      const data = await response.data;
-      throw new Error(data);
-    }
-    const data = await response.data;
-    return data;
+    return await postRequest(`${BaseURL}/app/event/`, event);
   } catch (error: any) {
-    return error;
+    throw error;
   }
 }
 
 export async function updateEvent(
-  accessToken: string,
   event: any,
   event_id: number
 ): Promise<Event> {
   try {
-    const headers = {
-      Authorization: `Bearer ${accessToken}`,
-    };
-    const response = await axios.patch(
+    return await patchRequest(
       `${BaseURL}/app/event/${event_id}/`,
-      event,
-      {
-        headers,
-      }
+      event
     );
-    const data = await response.data;
-    return data;
   } catch (error: any) {
-    throw new Error(error.response.data);
+    throw error;
   }
 }
 
 export async function getPieChart(
-  accessToken: string,
   event_id: number
 ): Promise<any> {
   try {
-    const headers = {
-      Authorization: `Bearer ${accessToken}`,
-    };
-    const response = await axios.get(
-      `${BaseURL}/app/piechart/?event=${event_id}`,
-      {
-        headers,
-      }
-    );
-    const data = await response.data;
-    return data;
+    return await getRequest(`${BaseURL}/app/piechart/`, {
+      event: event_id,
+    });
   } catch (error: any) {
-    throw new Error(error.response.data);
+    throw error;
   }
 }

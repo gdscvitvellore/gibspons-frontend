@@ -11,7 +11,7 @@ import { useLinkStore } from "@/store/crumbs";
 import { organisationStore } from "@/store/organisation";
 
 export default function Home({ params }: Readonly<{ params: { id: number } }>) {
-  const { organisation, accessToken } = authStore();
+  const { organisation } = authStore();
   const [data, setData] = useState<sponsByEvent>();
   const { startLoading, stopLoading } = useLoadingStore();
   const { setLink } = useLinkStore();
@@ -21,7 +21,7 @@ export default function Home({ params }: Readonly<{ params: { id: number } }>) {
     const fetchSponsors = async () => {
       startLoading();
       try {
-        const data = await getSponsorsByEvent(accessToken, String(params.id));
+        const data = await getSponsorsByEvent(String(params.id));
         setData(data);
         setLink([
           { href: `/team`, title: `${getOrganisation().name}` },
@@ -55,7 +55,7 @@ export default function Home({ params }: Readonly<{ params: { id: number } }>) {
   return (
     <div className="flex flex-row h-full overflow-x-auto absolute gap-4 w-full rounded-md">
       <div className="flex w-full h-full flex-col gap-4">
-        <div className="bg-gradient-to-r from-[#4d4d4d] to-[#3e3e3e] h-full max-h-[10rem]  w-full justify-between flex rounded-md flex-col gap-4 md:flex-row p-4 text-white">
+        <div className="bg-gradient-to-r from-[#4d4d4d] to-[#3e3e3e] w-full justify-between flex rounded-md flex-col gap-4 md:flex-row p-4 text-white">
           <div className="flex flex-col">
             <p className="text-xs font-[500]">Overview</p>
             <p className="text-4xl font-[700]">{data?.event?.name}</p>
@@ -64,7 +64,7 @@ export default function Home({ params }: Readonly<{ params: { id: number } }>) {
             <p className="text-xs font-[500] w-full text-right">
               Total Amount Raised
             </p>
-            <p className="text-4xl font-bold md:text-right">
+            <p className="text-4xl font-bold text-right">
               &#8377;{data?.event?.money_raised}
             </p>
           </div>
@@ -116,7 +116,7 @@ export default function Home({ params }: Readonly<{ params: { id: number } }>) {
         </div>
         <div className="h-[80%] bg-white rounded-md p-2 w-full">
           {organisation && (
-            <PieChart accessToken={accessToken} event_id={params.id} />
+            <PieChart event_id={params.id} />
           )}
         </div>
       </div>

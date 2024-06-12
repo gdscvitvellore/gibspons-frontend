@@ -1,18 +1,18 @@
 "use client";
 
-import { authStore } from "@/store/auth";
 import { getSponsorsByEvent } from "@/utils/organisation";
 
-import { Table, ScrollArea, Text, Modal } from "@mantine/core";
+import { Table, ScrollArea, Text, Modal, Title, keys, TextInput, rem } from "@mantine/core";
 import { useState, useEffect } from "react";
 import { organisationStore } from "@/store/organisation";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { useDisclosure } from "@mantine/hooks";
 import Link from "next/link";
 import ModifySponsorship from "@/components/SponsorshipForm";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { useLinkStore } from "@/store/crumbs";
 import { pocResp } from "@/types/org";
+import { IconSearch } from "@tabler/icons-react";
 
 interface RowData {
   spon_id: number;
@@ -23,9 +23,20 @@ interface RowData {
   status: string;
 }
 
+function filterData(data: RowData[], search: string) {
+  const query = search.toLowerCase().trim();
+  return data.filter((item) =>
+    keys(data[0]).some((key) =>
+      String(item[key])?.toLowerCase().includes(query)
+    )
+  );
+}
+
 export default function Home({ params }: Readonly<{ params: { id: number } }>) {
-  const { accessToken } = authStore();
   const { org } = organisationStore();
+
+  const [search, setSearch] = useState("");
+  const [filteredData, setFilteredData] = useState<RowData[]>([]);
   const [sponsors, setSponsors] = useState<RowData[]>([]);
   const [companyId, setCompanyId] = useState<number>(0);
   const event_id = String(params.id);
@@ -35,6 +46,12 @@ export default function Home({ params }: Readonly<{ params: { id: number } }>) {
   const handleOpen = (id: number) => {
     setCompanyId(id);
     open();
+  };
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setSearch(value);
+    setFilteredData(filterData(sponsors, value));
   };
 
   const handleCloseFunc = (success?: boolean, data?: string) => {
@@ -54,7 +71,7 @@ export default function Home({ params }: Readonly<{ params: { id: number } }>) {
 
   const fetchSponsors = async () => {
     try {
-      const data = await getSponsorsByEvent(accessToken, event_id);
+      const data = await getSponsorsByEvent(event_id);
       const rowData = data.sponsorships.map((sponsor, _key) => {
         return {
           spon_id: Number(sponsor.id),
@@ -66,6 +83,7 @@ export default function Home({ params }: Readonly<{ params: { id: number } }>) {
         };
       });
       setSponsors(rowData);
+      setFilteredData(rowData);
       setLink([
         { href: "/team", title: "My Team" },
         { href: `/team/${event_id}/dashboard`, title: data.event.name },
@@ -81,7 +99,7 @@ export default function Home({ params }: Readonly<{ params: { id: number } }>) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const rows = sponsors.map((row) => (
+  const rows = filteredData.map((row) => (
     <Table.Tr
       key={row.spon_id}
       onClick={() => {
@@ -100,9 +118,7 @@ export default function Home({ params }: Readonly<{ params: { id: number } }>) {
         </p>
       </Table.Td>
       <Table.Td className="text-center">
-        <p
-          className={`${row.status} py-2 rounded-full w-[10rem] m-auto`}
-        >
+        <p className={`${row.status} py-2 rounded-full w-[10rem] m-auto`}>
           {row.status}
         </p>
       </Table.Td>
@@ -111,15 +127,32 @@ export default function Home({ params }: Readonly<{ params: { id: number } }>) {
 
   return (
     <>
-      <ToastContainer />
       <div className="h-full absolute max-w-full overflow-x-auto bg-white rounded-md gap-8 flex flex-col items-center p-4">
         <div className="text-center gap-4 flex flex-col">
-          <h1 className="text-3xl font-bold">View Sponsorships</h1>
-          <p className="text-gray-500 text-sm w-full max-w-[400px] text-center">
-            View, Update or Archive the Details of the Companies that have been
-            recently contacted.
-          </p>
+          <Title order={1} className="text-black font-bold" ta="center" mt="md">
+            View Sponsorships
+          </Title>
+          <Title
+            className="font-[500] text-[#646464] text-[1rem] text-center text-wrap w-full max-w-[500px]"
+            mt={10}
+            mb={30}
+          >
+            View and Update the Details of the Companies that have been recently
+            contacted.
+          </Title>
         </div>
+        <TextInput
+          placeholder="Search by any field"
+          w={"100%"}
+          leftSection={
+            <IconSearch
+              style={{ width: rem(16), height: rem(16) }}
+              stroke={1.5}
+            />
+          }
+          value={search}
+          onChange={handleSearchChange}
+        />
         <Table.ScrollContainer
           type="native"
           minWidth={500}
@@ -165,7 +198,10 @@ export default function Home({ params }: Readonly<{ params: { id: number } }>) {
               title="Modify Company Details"
               w={"100%"}
             >
-              <ModifySponsorship close={handleCloseFunc} company_id={companyId} />
+              <ModifySponsorship
+                close={handleCloseFunc}
+                company_id={companyId}
+              />
             </Modal>
           </ScrollArea>
         </Table.ScrollContainer>

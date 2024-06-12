@@ -6,7 +6,7 @@ import { Paper, TextInput, Button, Title, Autocomplete } from "@mantine/core";
 import { useEffect } from "react";
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import {
   addCompany,
   addPoC,
@@ -21,7 +21,7 @@ import { useLinkStore } from "@/store/crumbs";
 import PocTable from "@/components/PocTable";
 
 export default function CreateEvent() {
-  const { accessToken, organisation } = authStore();
+  const { organisation } = authStore();
   const [pocCount, setPocCount] = useState<number>(0);
   const [pocData, setPocData] = useState<pocResp[]>([]);
   const event_id = usePathname().split("/")[2];
@@ -32,10 +32,9 @@ export default function CreateEvent() {
   const { setLink } = useLinkStore();
 
   useEffect(() => {
-    if (accessToken === "") return;
     const fetchCompanies = async () => {
       try {
-        const resp = await fetchAllCompanies(accessToken, Number(organisation));
+        const resp = await fetchAllCompanies( Number(organisation));
         if (resp.length === 0) {
           setData(null);
         } else {
@@ -61,7 +60,7 @@ export default function CreateEvent() {
   useEffect(() => {
     const fetchPOCs = async () => {
       try {
-        const resp = await getPoCByCompany(accessToken, currCompanyId);
+        const resp = await getPoCByCompany( currCompanyId);
         setPocData(resp);
       } catch (error: any) {
         console.error(error);
@@ -116,7 +115,7 @@ export default function CreateEvent() {
         industry: values.CompIndustry,
         event_id: event_id,
       };
-      const compResp = await addCompany(accessToken, company);
+      const compResp = await addCompany( company);
       toast.success("Company created successfully");
       const pocData = values.PoCs.slice(0, pocCount).map((poc: PoC) => {
         return {
@@ -130,7 +129,7 @@ export default function CreateEvent() {
         };
       });
       try {
-        const _pocResponse = await addPoC(accessToken, pocData);
+        const _pocResponse = await addPoC( pocData);
         stopLoading();
       } catch (error: any) {
         stopLoading();
@@ -148,7 +147,6 @@ export default function CreateEvent() {
 
   return (
     <div className="bg-white absolute w-full p-4 rounded-md">
-      <ToastContainer />
       <Paper className="h-full min-h-[rem(800)px] flex flex-col items-center justify-center w-full min-w-[rem(200px)]">
         <Title
           order={1}

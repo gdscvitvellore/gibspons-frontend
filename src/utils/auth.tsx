@@ -1,7 +1,5 @@
-"use client";
-
 import { loginRes, registerRes, user } from "@/types/user";
-import axios from "axios";
+import { postRequest, getRequest, patchRequest } from "./axiosFunctions";
 
 const BaseURL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -10,22 +8,9 @@ export async function handleLogin(
   password: string
 ): Promise<any> {
   try {
-    const response = await axios.post(`${BaseURL}/users/login/`, {
-      email: email,
-      password: password,
-    });
-    if (response.status === 200) {
-      const data = response.data.data;
-      return data;
-    } else {
-      throw new Error(response.data.detail);
-    }
+    return await postRequest(`${BaseURL}/users/login/`, { email, password });
   } catch (error: any) {
-    if (error.response && error.response.data && error.response.data.detail) {
-      throw new Error(error.response.data.detail);
-    } else {
-      throw new Error("An error occurred while logging in.");
-    }
+    throw error;
   }
 }
 
@@ -36,42 +21,22 @@ export async function handleRegister(
   password: string
 ): Promise<registerRes> {
   try {
-    const res = await axios.post(`${BaseURL}/users/register/`, {
-      name: name,
-      email: email,
-      username: username,
-      password: password,
+    return await postRequest(`${BaseURL}/users/register/`, {
+      name,
+      email,
+      username,
+      password,
     });
-    const data: registerRes = await res.data;
-    return data;
   } catch (error: any) {
-    console.log(error.response.data.detail);
-    throw new Error(error.response.data.detail);
+    throw error;
   }
 }
 
-export async function handleJoinOrg(
-  orgCode: string,
-  accessToken: string | null
-): Promise<loginRes> {
+export async function handleJoinOrg(orgCode: string): Promise<loginRes> {
   try {
-    const headers = {
-      Authorization: `Bearer ${accessToken}`,
-    };
-    const response = await axios.post(
-      `${BaseURL}/users/joinorg/`,
-      {
-        invite_code: orgCode,
-      },
-      { headers }
-    );
-    const data = await response.data.message;
-    return data;
+    return await postRequest(`${BaseURL}/users/joinorg/`, { code: orgCode });
   } catch (error: any) {
-    if (error.response.status === 401) {
-      throw new Error("Session Expired, Please login again");
-    }
-    throw new Error(error.response.data.detail);
+    throw error;
   }
 }
 
@@ -79,109 +44,53 @@ export async function handleCreateOrg(
   teamname: string,
   teamtype: string,
   location: string,
-  teamlogo: string,
-  accessToken: string | null
+  teamlogo: string
 ): Promise<string> {
   try {
-    const headers = {
-      Authorization: `Bearer ${accessToken}`,
-    };
-    const response = await axios.post(
-      `${BaseURL}/users/createorg/`,
-      {
-        name: teamname,
-        industry: teamtype,
-        location: location,
-        logo: teamlogo,
-      },
-      { headers }
-    );
-    const data = await response.data.message;
-    return data;
+    return await postRequest(`${BaseURL}/users/createorg/`, {
+      teamname,
+      teamtype,
+      location,
+      teamlogo,
+    });
   } catch (error: any) {
-    if (error.response.status === 401) {
-      throw new Error("Session Expired, Please login again");
-    }
-    try {
-      throw new Error(error.response.data.detail);
-    } catch {
-      throw new Error("Network Error");
-    }
+    throw error;
   }
 }
 
-export async function getUserData(accessToken: string | null): Promise<user> {
+export async function getUserData(): Promise<user[]> {
   try {
-    const headers = {
-      Authorization: `Bearer ${accessToken}`,
-      // AccessControlAllowOrigin: "*",
-      // withCredentials: false,
-    };
-    const response = await axios.get(`${BaseURL}/users/user/`, { headers });
-    const data: user = await response.data[0];
-    return data;
+    return getRequest(`${BaseURL}/users/user/`);
   } catch (error: any) {
-    if (error.response.status === 401) {
-      throw new Error("Session Expired, Please login again");
-    }
-    try {
-      throw new Error(error.response.data.detail);
-    } catch {
-      throw new Error("Network Error");
-    }
+    throw error;
   }
 }
 
 export async function updateUser({
-  accessToken,
   body,
 }: {
-  accessToken: string | null;
   body: any;
 }): Promise<any> {
   try {
-    const headers = {
-      Authorization: `Bearer ${accessToken}`,
-    };
-    const response = await axios.patch(`${BaseURL}/users/user/`, body, {
-      headers,
-    });
-    const data = await response.data;
-    return data;
+    return patchRequest(`${BaseURL}/users/user/`, body);
   } catch (error: any) {
-    throw new Error(error.response.data);
+    throw error;
   }
 }
 
-export async function approveUser(
-  accessToken: string | null,
-  user: string
-): Promise<any> {
+export async function approveUser(user: string): Promise<any> {
   try {
-    const headers = {
-      Authorization: `Bearer ${accessToken}`,
-    };
-    const response = await axios.post(
-      `${BaseURL}/users/approve/?user=${user}`,
-      { dummy: "test" },
-      { headers }
-    );
-    const data = await response;
-    return data;
+    return postRequest(`${BaseURL}/users/approve/`, { user });
   } catch (error: any) {
-    throw new Error(error.response.data);
+    throw error;
   }
 }
 
 export async function handleForgetPass(email: string): Promise<any> {
   try {
-    const response = await axios.post(`${BaseURL}/users/reset_password/`, {
-      email: email,
-    });
-    const data = await response.data;
-    return data;
+    return postRequest(`${BaseURL}/users/reset_password_otp/`, { email });
   } catch (error: any) {
-    throw new Error(error.response.data.detail);
+    throw error;
   }
 }
 
@@ -191,21 +100,12 @@ export async function handleVerifyOTP(
   email: string
 ): Promise<{ msg?: string; error?: string }> {
   try {
-    const response = await axios.post(
-      `${BaseURL}/users/verify_reset_password_otp/?email=${email}`,
-      {
-        otp: Number(code),
-        new_password: password,
-      }
-    );
-    // const data = await response.data;
-    if (response.status === 200) {
-      return { msg: response.data.message };
-    } else {
-      return { error: response.data.detail };
-    }
+    return postRequest(`${BaseURL}/users/verify_otp/`, {
+      code,
+      password,
+      email,
+    });
   } catch (error: any) {
-    return { error: error.response.data.detail };
-    // throw new Error(error.response.data.detail);
+    throw error;
   }
 }

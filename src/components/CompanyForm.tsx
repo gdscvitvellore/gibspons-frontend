@@ -27,7 +27,7 @@ export default function ModifyCompany({
   company: RowData;
   close: (_success?: boolean, _data?: string) => void;
 }>) {
-  const { accessToken, organisation, role } = authStore();
+  const { role } = authStore();
   const [pocData, setPocData] = useState<pocResp[]>([]);
   const [pocCount, setPocCount] = useState<number>(0);
   const { startLoading, stopLoading } = useLoadingStore();
@@ -68,7 +68,7 @@ export default function ModifyCompany({
     });
     const fetchPOCs = async () => {
       try {
-        const data = await getPoCByCompany(accessToken, company.comp_id);
+        const data = await getPoCByCompany( company.comp_id);
         setPocData(data);
       } catch (e: any) {
         toast.error(e.message);
@@ -87,11 +87,11 @@ export default function ModifyCompany({
         linkedin: values.CompLinkedin,
         website: values.CompWebsite,
       };
-      const resp = await updateCompany(accessToken, data, company.comp_id);
-      if (resp.status === 200) {
-        close(true, "Company Details Updated Successfully");
-      } else {
-        close(false, "Failed to Update Company Details");
+      const _resp = await updateCompany( data, company.comp_id);
+      close(true, "Company Details Updated Successfully");
+      if (pocCount === 0) {
+        stopLoading();
+        return;
       }
       const pocData = values.PoCs.slice(0, pocCount).map((poc: PoC) => {
         return {
@@ -104,11 +104,11 @@ export default function ModifyCompany({
         };
       });
       try {
-        const _pocResponse = await addPoC(accessToken, pocData);
+        const _pocResponse = await addPoC( pocData);
         stopLoading();
       } catch (error: any) {
         stopLoading();
-        toast.error("Failed to add PoC");
+        toast.error(error.message);
       }
     } catch (e) {
       console.error(e);

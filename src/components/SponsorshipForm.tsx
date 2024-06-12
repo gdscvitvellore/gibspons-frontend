@@ -9,10 +9,9 @@ import {
   Title,
   NativeSelect,
   Textarea,
-  Autocomplete,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import {
   getCompanyByID,
   getPoCByCompany,
@@ -30,7 +29,7 @@ export default function ModifySponsorship({
   company_id: number;
   close: (_success?: boolean, _data?: string) => void;
 }>) {
-  const { accessToken, organisation, role } = authStore();
+  const { organisation, role } = authStore();
   const event_id = usePathname().split("/")[2];
   const [data, setData] = useState<pocResp[]>([]);
   const [currPoc, setCurrPoc] = useState(0);
@@ -56,18 +55,13 @@ export default function ModifySponsorship({
   });
 
   useEffect(() => {
-    if (currPoc !== 0) form.setValues({ poc_id: currPoc });
-  }, [currPoc]);
-
-  useEffect(() => {
     const fetchSponsors = async () => {
       try {
         const comp_filtered = await getCompanyByID(
-          accessToken,
           Number(organisation),
           company_id
         );
-        const spon = await getSponsorsByEvent(accessToken, event_id);
+        const spon = await getSponsorsByEvent( event_id);
         const spon_filtered = spon.sponsorships.find(
           (c) => c.company === company_id
         );
@@ -97,10 +91,10 @@ export default function ModifySponsorship({
             isAccepted: true,
           });
         }
-        const poc = await getPoCByCompany(accessToken, company_id);
+        const poc = await getPoCByCompany( company_id);
         setData(poc);
       } catch (error: any) {
-        toast.error(error.detail);
+        toast.error(error.message);
         console.error(error.detail);
       }
     };
@@ -128,19 +122,13 @@ export default function ModifySponsorship({
         };
       }
       const resp = await updateSponsorship(
-        accessToken,
         data,
         values.sponsor_id
       );
-      console.log(resp, "resp");
-      if (resp.status === 200 && typeof resp.data === "string")
-        close(true, resp.response.data.detail);
-      else if (typeof resp.data.detail === "string")
-        close(false, resp.data.detail);
-      else close(true, "Sponsorship details updated successfully!");
+      console.log(resp);
+      close(true, resp);
     } catch (error: any) {
       close(false, error.response);
-      console.log("error", error);
     }
   };
 
@@ -301,7 +289,12 @@ export default function ModifySponsorship({
           >
             PoC Details
           </Title>
-          <PocTable pocData={data} setPoc={setCurrPoc} checkbox={true} />
+          <PocTable
+            pocData={data}
+            setPoc={setCurrPoc}
+            checkbox={true}
+            currPoc={currPoc}
+          />
           <div className="w-full my-8 flex flex-col md:flex-row justify-center gap-4 text-center items-center">
             <Button
               className="bg-blue-500 w-full self-center hover:bg-blue-400"

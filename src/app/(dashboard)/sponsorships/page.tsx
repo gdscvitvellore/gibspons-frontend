@@ -1,4 +1,5 @@
 "use client";
+
 import { authStore } from "@/store/auth";
 import { getSponsorsByOrg } from "@/utils/organisation";
 import { Table, ScrollArea, Text } from "@mantine/core";
@@ -15,7 +16,7 @@ interface RowData {
 }
 
 export default function Home() {
-  const { accessToken, organisation } = authStore();
+  const { organisation } = authStore();
   const [sponsors, setSponsors] = useState<RowData[]>([]);
   const { startLoading, stopLoading } = useLoadingStore();
   const { setLink } = useLinkStore();
@@ -25,7 +26,7 @@ export default function Home() {
     const fetchSponsors = async () => {
       startLoading();
       try {
-        const data = await getSponsorsByOrg(accessToken, organisation);
+        const data = await getSponsorsByOrg(organisation);
         const rowData = data.map((sponsor) => {
           return {
             id: sponsor.id,

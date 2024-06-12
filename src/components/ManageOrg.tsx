@@ -9,11 +9,10 @@ import {
 } from "@mantine/core";
 import classes from "@/styles/manageOrg.module.css";
 import { useForm } from "@mantine/form";
-import { handleJoinOrg, handleCreateOrg } from "@/utils/auth";
-import { getUserData } from "@/utils/auth";
+import { handleJoinOrg, handleCreateOrg, getUserData } from "@/utils/auth";
 import { authStore } from "@/store/auth";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect, useState } from "react";
 import { user } from "@/types/user";
@@ -21,8 +20,7 @@ import { organisation, organisationStore } from "@/store/organisation";
 import { getOrganisation } from "@/utils/organisation";
 
 function ManageOrg() {
-  const { accessToken, organisation, update, getUser } =
-    authStore();
+  const { organisation, update, getUser } = authStore();
   const { updateOrganisation } = organisationStore();
   const [hasJoined, setHasJoined] = useState(false);
   const [createOrg, setCreateOrg] = useState(false);
@@ -65,23 +63,20 @@ function ManageOrg() {
   });
 
   const refreshData = async () => {
-    const respUser: user = await getUserData(accessToken);
+    const respUser: user[] = await getUserData();
     const User = getUser();
-    const respOrg: organisation = await getOrganisation(accessToken);
+    const respOrg: organisation = await getOrganisation();
     update({
       ...User,
-      organisation: respUser.organisation,
-      role: respUser.role,
-      is_approved: respUser.is_approved,
+      organisation: respUser[0].organisation,
+      role: respUser[0].role,
+      is_approved: respUser[0].is_approved,
     });
     updateOrganisation(respOrg);
-    if (respUser.organisation !== null)
-    setHasJoined(true);
+    if (respUser[0].organisation !== null) setHasJoined(true);
   };
 
   useEffect(() => {
-    if (accessToken === "") return;
-
     refreshData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -93,8 +88,7 @@ function ManageOrg() {
         teamname,
         teamtype,
         location,
-        teamlogo,
-        accessToken
+        teamlogo
       );
       refreshData();
       toast.success(res);
@@ -107,7 +101,7 @@ function ManageOrg() {
   const JoinOrg = async () => {
     const { orgCode } = form.values;
     try {
-      const res: any = await handleJoinOrg(orgCode, accessToken);
+      const res: any = await handleJoinOrg(orgCode);
       console.log(res);
       refreshData();
       toast.success(res);
@@ -119,7 +113,6 @@ function ManageOrg() {
 
   return (
     <div className="h-full">
-      <ToastContainer />
 
       {createOrg ? (
         <Paper className={classes.form} p={30}>

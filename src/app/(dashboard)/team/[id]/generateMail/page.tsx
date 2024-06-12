@@ -12,7 +12,7 @@ import {
   NativeSelect,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { FaRegCopy } from "react-icons/fa";
 import { usePathname } from "next/navigation";
 import {
@@ -25,7 +25,7 @@ import { useLoadingStore } from "@/store/loading";
 import { useLinkStore } from "@/store/crumbs";
 
 export default function CreateEvent() {
-  const { accessToken, organisation } = authStore();
+  const { organisation } = authStore();
   const event_id = usePathname().split("/")[2];
   const [data, setData] = useState<any[] | null>([]);
   const [company_id, setCompany_id] = useState<number>(0);
@@ -66,7 +66,7 @@ export default function CreateEvent() {
     ]);
     const fetchCompanies = async () => {
       try {
-        const resp = await fetchAllCompanies(accessToken, Number(organisation));
+        const resp = await fetchAllCompanies(Number(organisation));
         if (resp.length === 0) {
           setData(null);
         } else {
@@ -85,7 +85,7 @@ export default function CreateEvent() {
     if (company_id === 0) return;
     const fetchPoC = async () => {
       try {
-        const resp = await getPoCByCompany(accessToken, company_id);
+        const resp = await getPoCByCompany(company_id);
         if (resp.length === 0) {
           setPocData(null);
         } else {
@@ -101,31 +101,25 @@ export default function CreateEvent() {
   }, [company_id]);
 
   const handleGenerate = async () => {
-    console.log(
-      form.values.poc_id,
-      form.values.event,
-      form.values.additionalPrompt
-    );
     if (form.values.communication === "email") {
       startLoading();
       try {
         const resp = await generateMail(
-          accessToken,
           form.values.poc_id,
           form.values.event,
           form.values.additionalPrompt
         );
+        console.log(resp)
         formContent.setValues({ ...form.values, content: resp.message });
         stopLoading();
       } catch (error: any) {
         stopLoading();
-        console.error(error);
+        toast.error(error.message);
       }
     } else {
       try {
         startLoading();
         const resp = await generateLinkedin(
-          accessToken,
           form.values.poc_id,
           form.values.event,
           form.values.additionalPrompt
@@ -134,14 +128,13 @@ export default function CreateEvent() {
         stopLoading();
       } catch (error: any) {
         stopLoading();
-        console.error(error);
+        toast.error(error.message);
       }
     }
   };
 
   return (
     <div className="bg-white p-4 rounded-md">
-      <ToastContainer />
       <Paper className="h-full min-h-[rem(800)px] flex flex-col items-center justify-center w-full min-w-[rem(200px)]">
         <Title order={1} className="text-black font-bold" ta="center" mt="md">
           Generate a Mail

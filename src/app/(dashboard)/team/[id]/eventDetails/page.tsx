@@ -1,4 +1,5 @@
 "use client";
+
 import { authStore } from "@/store/auth";
 import {
   Paper,
@@ -11,14 +12,16 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { updateEvent, getEvents } from "@/utils/events";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { useState, useEffect } from "react";
 import { organisationStore } from "@/store/organisation";
 import { Event } from "@/types/org";
 import { useLinkStore } from "@/store/crumbs";
 
-export default function CreateEvent({ params }: Readonly<{ params: { id: number } }>) {
-  const { accessToken, role } = authStore();
+export default function CreateEvent({
+  params,
+}: Readonly<{ params: { id: number } }>) {
+  const { role } = authStore();
   const { org } = organisationStore();
   const { setLink } = useLinkStore();
   const [eventsData, setEventsData] = useState<Event>({
@@ -40,7 +43,8 @@ export default function CreateEvent({ params }: Readonly<{ params: { id: number 
     ]);
     const fetchEvents = async () => {
       try {
-        const data = await getEvents(accessToken, org.id, params.id);
+        const resp = await getEvents(params.id);
+        const data = resp.results;
         setEventsData(data[0]);
         form.setValues({
           name: data[0].name,
@@ -107,7 +111,7 @@ export default function CreateEvent({ params }: Readonly<{ params: { id: number 
       }),
     };
     try {
-      const _resp: Event = await updateEvent(accessToken, event, eventsData.id);
+      const _resp: Event = await updateEvent(event, eventsData.id);
       toast.success("Event Updated Successfully");
     } catch (error: any) {
       toast.error(error);
@@ -117,7 +121,6 @@ export default function CreateEvent({ params }: Readonly<{ params: { id: number 
 
   return (
     <div className="bg-white p-4 rounded-md">
-      <ToastContainer />
       <Paper className="h-full min-h-[rem(800)px] flex flex-col items-center justify-center w-full min-w-[rem(200px)]">
         <Title
           order={1}

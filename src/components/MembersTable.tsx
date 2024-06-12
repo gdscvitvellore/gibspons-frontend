@@ -27,7 +27,7 @@ import classes from "@/styles/TableSort.module.css";
 import { useDisclosure } from "@mantine/hooks";
 import { authStore } from "@/store/auth";
 import { changeUserRole } from "@/utils/organisation";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { approveUser } from "@/utils/auth";
 
 interface RowData {
@@ -112,7 +112,7 @@ export default function MembersTable({
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
   const [opened, { open, close }] = useDisclosure(false);
   const [selectedUser, setSelectedUser] = useState<RowData>();
-  const { role, accessToken } = authStore();
+  const { role } = authStore();
 
   const changeRoleForm = useForm({
     initialValues: {
@@ -154,13 +154,12 @@ export default function MembersTable({
 
   const handleChangeRole = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const resp = await changeUserRole(
-      accessToken,
-      Number(selectedUser?.id),
-      changeRoleForm.values.role
-    );
-    if (resp.status === 200) {
-      toast.success(resp.data.detail);
+    try {
+      const resp = await changeUserRole(
+        Number(selectedUser?.id),
+        changeRoleForm.values.role
+      );
+      toast.success(resp.detail);
       const newData = sortedData.map((item) => {
         if (item.id === selectedUser?.id) {
           return { ...item, role: changeRoleForm.values.role };
@@ -168,8 +167,8 @@ export default function MembersTable({
         return item;
       });
       setSortedData(newData);
-    } else {
-      toast.error(resp.data.detail);
+    } catch (error: any) {
+      toast.error(error.message);
     }
     close();
     refresh();
@@ -177,7 +176,7 @@ export default function MembersTable({
 
   const handleApproval = async (status: boolean, id: string) => {
     if (status === false) return close();
-    const resp = await approveUser(accessToken, id);
+    const resp = await approveUser(id);
     if (resp.status === 200) {
       toast.success(`User ${status ? "approved" : "rejected"} successfully`);
     }
@@ -187,17 +186,30 @@ export default function MembersTable({
 
   const rows = sortedData.map((row) => (
     <Table.Tr key={row.id}>
-      <Table.Td colSpan={2} className=" text-ellipsis overflow-clip w-full">{row.name}</Table.Td>
-      <Table.Td miw={200} colSpan={2} className=" text-ellipsis overflow-clip w-full">
+      <Table.Td colSpan={2} className=" text-ellipsis overflow-clip w-full">
+        {row.name}
+      </Table.Td>
+      <Table.Td
+        miw={200}
+        colSpan={2}
+        className=" text-ellipsis overflow-clip w-full"
+      >
         {row.email}
       </Table.Td>
-      <Table.Td colSpan={2} className="">{row.created_at}</Table.Td>
-      <Table.Td className="" colSpan={1}>{row.role}</Table.Td>
+      <Table.Td colSpan={2} className="">
+        {row.created_at}
+      </Table.Td>
+      <Table.Td className="" colSpan={1}>
+        {row.role}
+      </Table.Td>
       {approved ? (
         role === "user" ? (
           ""
         ) : (
-          <Table.Td colSpan={1} className="flex flex-row items-center justify-start">
+          <Table.Td
+            colSpan={1}
+            className="flex flex-row items-center justify-start"
+          >
             <Button className="w-fit p-0">
               <TbEdit
                 onClick={() => {
@@ -228,7 +240,6 @@ export default function MembersTable({
 
   return (
     <>
-      <ToastContainer />{" "}
       <Modal
         classNames={{ content: "border-2 border-red-500" }}
         opened={opened}
@@ -279,11 +290,7 @@ export default function MembersTable({
         value={search}
         onChange={handleSearchChange}
       />
-      <Table.ScrollContainer
-        type="native"
-        minWidth={900}
-        maw={"100%"}
-      >
+      <Table.ScrollContainer type="native" minWidth={900} maw={"100%"}>
         <ScrollArea>
           <Table
             horizontalSpacing="md"
@@ -333,7 +340,12 @@ export default function MembersTable({
                 {role === "user" ? (
                   ""
                 ) : (
-                  <Th colSpan={1} reversed={null} sorted={null} onSort={() => {}}>
+                  <Th
+                    colSpan={1}
+                    reversed={null}
+                    sorted={null}
+                    onSort={() => {}}
+                  >
                     <TbEdit className="w-[40px] h-[40px] p-2" />
                   </Th>
                 )}

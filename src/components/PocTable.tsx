@@ -1,26 +1,34 @@
 import { Table, ScrollArea, Text, Checkbox, rem } from "@mantine/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { pocResp } from "@/types/org";
 import cx from "clsx";
 import classes from "@/styles/TableSelection.module.css";
+import { IoAddCircleOutline } from "react-icons/io5";
 
 export default function PocTable({
   checkbox,
   pocData,
   setPoc,
+  currPoc
 }: {
   checkbox: boolean;
   pocData: pocResp[];
   setPoc?: (id: number) => void;
+  currPoc?: number;
 }) {
-  const [selection, setSelection] = useState(0);
+  const [selection, setSelection] = useState(currPoc || 0); // Initialize selection with currPoc or 0
+
   const toggleRow = (id: number) => {
     setSelection(id);
     if (setPoc) setPoc(id);
   };
 
+  useEffect(() => {
+    if(currPoc) setSelection(currPoc);
+  }, []);
+  
   const rows = pocData.map((item) => {
-    const selected = selection == item.id;
+    const selected = selection === item.id;
     return (
       <Table.Tr
         key={item.id}
@@ -45,9 +53,9 @@ export default function PocTable({
   });
 
   return (
-    <Table.ScrollContainer type="native" minWidth={900} maw={"100%"}>
+    <Table.ScrollContainer type="native" minWidth={1000} maw={"100%"}>
       <ScrollArea className="mb-4" maw={"100%"}>
-        <Table miw={900} verticalSpacing="sm">
+        <Table miw={1000} verticalSpacing="sm">
           <Table.Thead>
             <Table.Tr>
               {checkbox && (
@@ -70,7 +78,16 @@ export default function PocTable({
                 </Table.Td>
               </Table.Tr>
             ) : (
-              rows
+              rows.concat(
+                <Table.Tr className="hover:bg-[#c4c4c4] w-full hover:cursor-pointer">
+                  <Table.Td colSpan={6} align="center">
+                    <button className="flex font-semibold gap-2 text-[1rem] flex-row items-center justify-center">
+                      <IoAddCircleOutline className="text-[1.5rem]" />
+                      Add POCs
+                    </button>
+                  </Table.Td>
+                </Table.Tr>
+              )
             )}
           </Table.Tbody>
         </Table>

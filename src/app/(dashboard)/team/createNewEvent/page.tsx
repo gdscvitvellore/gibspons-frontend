@@ -1,5 +1,5 @@
 "use client";
-import { authStore } from "@/store/auth";
+
 import {
   Paper,
   TextInput,
@@ -11,13 +11,12 @@ import {
 } from "@mantine/core";
 import { useForm, isNotEmpty } from "@mantine/form";
 import { createEvent } from "@/utils/events";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useLinkStore } from "@/store/crumbs";
 import { useEffect } from "react";
 
 export default function CreateEvent() {
-  const { accessToken } = authStore();
   const router = useRouter();
   const { setLink } = useLinkStore();
 
@@ -63,7 +62,7 @@ export default function CreateEvent() {
       brochure: form.values.SponBrochure,
     };
     try {
-      const _resp = await createEvent(accessToken, event);
+      const _resp = await createEvent(event);
       toast.success("Event Created Successfully");
       router.push("/team");
     } catch (error: any) {
@@ -81,7 +80,6 @@ export default function CreateEvent() {
 
   return (
     <div className="bg-white p-4 rounded-md">
-      <ToastContainer />
       <Paper className="h-full min-h-[rem(800)px] flex flex-col items-center justify-center w-full min-w-[rem(200px)]">
         <Title
           order={1}

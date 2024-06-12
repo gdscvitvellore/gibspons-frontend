@@ -28,7 +28,6 @@ export default function PieChart(props: any) {
   useEffect(() => {
     const fetchData = async () => {
       const resp: chartResp = await getPieChart(
-        props.accessToken,
         props.event_id
       );
       const data = resp

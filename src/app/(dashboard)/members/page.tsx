@@ -1,5 +1,5 @@
 "use client";
-import { authStore } from "@/store/auth";
+
 import { organisationStore } from "@/store/organisation";
 import Image from "next/image";
 import { IoLocationSharp } from "react-icons/io5";
@@ -19,7 +19,6 @@ interface RowData {
 }
 
 export default function Home() {
-  const { accessToken } = authStore();
   const { org } = organisationStore();
   const [membersApproved, setMembersApproved] = useState<RowData[] | null>();
   const [membersNotApproved, setMembersNotApproved] = useState<
@@ -31,7 +30,7 @@ export default function Home() {
   const fetchMembers = async () => {
     try {
       startLoading();
-      const data = await getMembersByOrg(accessToken, org.id);
+      const data = await getMembersByOrg(org.id);
       const rowDataApproved = data
         .filter((member) => member.is_approved === true)
         .map((member) => {

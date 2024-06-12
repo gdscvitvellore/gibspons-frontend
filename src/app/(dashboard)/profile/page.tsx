@@ -4,7 +4,7 @@
 import { authStore } from "@/store/auth";
 import { organisationStore } from "@/store/organisation";
 import { FaRegCopy, FaEdit } from "react-icons/fa";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { Avatar, Modal, TextInput, Button } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
@@ -23,7 +23,6 @@ export default function Profile() {
     email,
     username,
     profile_pic,
-    accessToken,
     update,
     getUser,
     organisation,
@@ -42,21 +41,21 @@ export default function Profile() {
   });
 
   const refreshData = async () => {
-    const respUser: user = await getUserData(accessToken);
+    const respUser: user[] = await getUserData();
     const User = getUser();
     update({
       ...User,
-      profile_pic: respUser.profile_pic,
+      profile_pic: respUser[0].profile_pic,
     });
   };
 
   useEffect(() => {
-    if (accessToken === "" || organisation === null) {
+    if (organisation === null) {
       return;
     }
     async function fetchData() {
       try {
-        const resp = await getSponsorsByUser(accessToken);
+        const resp = await getSponsorsByUser();
         resp.sort(
           (a, b) =>
             new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
@@ -72,7 +71,6 @@ export default function Profile() {
 
   return (
     <div className="flex bg-white flex-col min-h-full min-w-[40rem] gap-8 p-4">
-      <ToastContainer />
       <Modal
         classNames={{
           content: "border-2 border-blue-500 min-w-[40rem] min-h-[10rem]",
@@ -92,7 +90,7 @@ export default function Profile() {
             const body = {
               profile_pic: formContent.values.profilePic,
             };
-            updateUser({ accessToken: accessToken, body: body });
+            updateUser({ body: body });
             refreshData();
             close();
           })}
