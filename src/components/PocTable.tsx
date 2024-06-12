@@ -10,12 +10,10 @@ export default function PocTable({
   checkbox,
   pocData,
   setPoc,
-  form
 }: {
   checkbox: boolean;
   pocData: pocResp[];
   setPoc?: (id: number) => void;
-  form: any;
 }) {
   const [selection, setSelection] = useState(0); // Initialize selection with currPoc or 0
 
@@ -34,7 +32,7 @@ export default function PocTable({
       >
         {checkbox && (
           <Table.Td>
-            <Checkbox checked={selected} onChange={() => toggleRow(item.id)} {...form.getInputProps("poc_id")}/>
+            <Checkbox checked={selected} onChange={() => toggleRow(item.id)}/>
 
           </Table.Td>
         )}

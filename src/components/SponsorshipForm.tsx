@@ -301,7 +301,6 @@ export default function ModifySponsorship({
             pocData={data}
             setPoc={setCurrPoc}
             checkbox={true}
-            form={form}
           />
           <div className="w-full my-8 flex flex-col md:flex-row justify-center gap-4 text-center items-center">
             <Button
