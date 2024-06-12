@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { MdOutlineDeleteForever } from "react-icons/md";
 import { PoC } from "@/types/org";
 import { useLoadingStore } from "@/store/loading";
+import { FaRegSquarePlus } from "react-icons/fa6";
 
 interface RowData {
   comp_id: number;
@@ -68,7 +69,7 @@ export default function ModifyCompany({
     });
     const fetchPOCs = async () => {
       try {
-        const data = await getPoCByCompany( company.comp_id);
+        const data = await getPoCByCompany(company.comp_id);
         setPocData(data);
       } catch (e: any) {
         toast.error(e.message);
@@ -87,7 +88,7 @@ export default function ModifyCompany({
         linkedin: values.CompLinkedin,
         website: values.CompWebsite,
       };
-      const _resp = await updateCompany( data, company.comp_id);
+      const _resp = await updateCompany(data, company.comp_id);
       close(true, "Company Details Updated Successfully");
       if (pocCount === 0) {
         stopLoading();
@@ -104,8 +105,8 @@ export default function ModifyCompany({
         };
       });
       try {
-        const _pocResponse = await addPoC( pocData);
-        stopLoading();
+        const _pocResponse = await addPoC(pocData);
+        toast.success("PoC Details Updated Successfully");
       } catch (error: any) {
         stopLoading();
         toast.error(error.message);
@@ -184,24 +185,41 @@ export default function ModifyCompany({
             disabled={role === "admin" || role === "owner" ? false : true}
             {...form.getInputProps("CompWebsite")}
           />
-          <Title
-            order={3}
-            className="text-black font-bold"
-            ta="center"
-            mt="xl"
-            mb={20}
-          >
-            PoC Details
-          </Title>
-          <Title
-            order={4}
-            className="text-black font-bold"
-            ta="center"
-            mt="xl"
-            mb={20}
-          >
-            Existing POCs
-          </Title>
+          <div className="flex flex-row w-full items-center justify-center gap-8">
+            <Title
+              order={3}
+              className="text-black font-bold"
+              ta="center"
+              mt="xl"
+              mb={20}
+            >
+              PoC Details
+            </Title>
+            <FaRegSquarePlus
+              className="text-[#191919] text-3xl mt-4 h-full self-center cursor-pointer hover:text-blue-700"
+              onClick={() => {
+                setPocCount(pocCount + 1);
+                form.setValues((values) => {
+                  if (values.PoCs !== undefined) {
+                    return {
+                      ...values,
+                      PoCs: values.PoCs.concat({
+                        designation: "",
+                        email: "",
+                        linkedin: "",
+                        name: "",
+                        phone: "",
+                      }),
+                    };
+                  } else {
+                    return {
+                      ...values,
+                    };
+                  }
+                });
+              }}
+            />
+          </div>
           <PocTable pocData={pocData} checkbox={false} />
           {Array.from({ length: pocCount }).map((_, index) => (
             <div key={index}>
@@ -277,33 +295,6 @@ export default function ModifyCompany({
             </div>
           ))}
           <div className="w-full my-8 flex flex-col md:flex-row justify-center gap-4 text-center items-center">
-            <Button
-              className="bg-[#606060] w-full max-w-[20rem] md:w-[40%] self-center hover:bg-[#60606099]"
-              size="md"
-              onClick={() => {
-                setPocCount(pocCount + 1);
-                form.setValues((values) => {
-                  if (values.PoCs !== undefined) {
-                    return {
-                      ...values,
-                      PoCs: values.PoCs.concat({
-                        designation: "",
-                        email: "",
-                        linkedin: "",
-                        name: "",
-                        phone: "",
-                      }),
-                    };
-                  } else {
-                    return {
-                      ...values,
-                    };
-                  }
-                });
-              }}
-            >
-              Add New PoC
-            </Button>
             <Button
               className="bg-blue-500 w-full max-w-[20rem] md:w-[40%] self-center hover:bg-blue-400"
               type="submit"

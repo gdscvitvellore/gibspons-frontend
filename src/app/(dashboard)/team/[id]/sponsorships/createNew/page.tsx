@@ -19,6 +19,7 @@ import { useLoadingStore } from "@/store/loading";
 import { MdOutlineDeleteForever } from "react-icons/md";
 import { useLinkStore } from "@/store/crumbs";
 import PocTable from "@/components/PocTable";
+import { FaRegSquarePlus } from "react-icons/fa6";
 
 export default function CreateEvent() {
   const { organisation } = authStore();
@@ -34,7 +35,7 @@ export default function CreateEvent() {
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        const resp = await fetchAllCompanies( Number(organisation));
+        const resp = await fetchAllCompanies(Number(organisation));
         if (resp.length === 0) {
           setData(null);
         } else {
@@ -60,7 +61,7 @@ export default function CreateEvent() {
   useEffect(() => {
     const fetchPOCs = async () => {
       try {
-        const resp = await getPoCByCompany( currCompanyId);
+        const resp = await getPoCByCompany(currCompanyId);
         setPocData(resp);
       } catch (error: any) {
         console.error(error);
@@ -115,7 +116,7 @@ export default function CreateEvent() {
         industry: values.CompIndustry,
         event_id: event_id,
       };
-      const compResp = await addCompany( company);
+      const compResp = await addCompany(company);
       toast.success("Company created successfully");
       const pocData = values.PoCs.slice(0, pocCount).map((poc: PoC) => {
         return {
@@ -129,7 +130,7 @@ export default function CreateEvent() {
         };
       });
       try {
-        const _pocResponse = await addPoC( pocData);
+        const _pocResponse = await addPoC(pocData);
         stopLoading();
       } catch (error: any) {
         stopLoading();
@@ -244,16 +245,41 @@ export default function CreateEvent() {
             mb={10}
             {...form.getInputProps("CompWebsite")}
           />
-          <Title
-            order={3}
-            className="text-black font-bold"
-            ta="center"
-            mt="xl"
-            mb={20}
-          >
-            PoC Details
-          </Title>
-          <h2>Existing POCs</h2>
+          <div className="flex flex-row w-full items-center justify-center gap-8">
+            <Title
+              order={3}
+              className="text-black font-bold"
+              ta="center"
+              mt="xl"
+              mb={20}
+            >
+              PoC Details
+            </Title>
+            <FaRegSquarePlus
+              className="text-[#191919] text-3xl mt-4 h-full self-center cursor-pointer hover:text-blue-700"
+              onClick={() => {
+                setPocCount(pocCount + 1);
+                form.setValues((values) => {
+                  if (values.PoCs !== undefined) {
+                    return {
+                      ...values,
+                      PoCs: values.PoCs.concat({
+                        designation: "",
+                        email: "",
+                        linkedin: "",
+                        name: "",
+                        phone: "",
+                      }),
+                    };
+                  } else {
+                    return {
+                      ...values,
+                    };
+                  }
+                });
+              }}
+            />
+          </div>
           <PocTable pocData={pocData} checkbox={false} />
           {Array.from({ length: pocCount }).map((_, index) => (
             <div key={index}>
@@ -332,27 +358,6 @@ export default function CreateEvent() {
             <Button
               className="bg-[#606060] w-full max-w-[20rem] md:w-[40%] self-center hover:bg-[#60606099]"
               size="md"
-              onClick={() => {
-                setPocCount(pocCount + 1);
-                form.setValues((values) => {
-                  if (values.PoCs !== undefined) {
-                    return {
-                      ...values,
-                      PoCs: values.PoCs.concat({
-                        designation: "",
-                        email: "",
-                        linkedin: "",
-                        name: "",
-                        phone: "",
-                      }),
-                    };
-                  } else {
-                    return {
-                      ...values,
-                    };
-                  }
-                });
-              }}
             >
               Add PoC
             </Button>

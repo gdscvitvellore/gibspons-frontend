@@ -173,7 +173,7 @@ export default function Home({ params }: Readonly<{ params: { id: number } }>) {
               </Table.Tbody>
             </Table>
             <Modal
-              classNames={{ content: "border-2 border-red-500", root: "" }}
+              classNames={{ content: "border-2 border-blue-700", root: "" }}
               opened={opened}
               centered
               size="auto"
@@ -185,14 +185,6 @@ export default function Home({ params }: Readonly<{ params: { id: number } }>) {
             </Modal>
           </ScrollArea>
         </Table.ScrollContainer>
-        {/* <div className={`w-full flex flex-row items-center justify-center`}>
-          <Link
-            href={`/companies/createNew`}
-            className="flex bg-white flex-row sticky bottom-0 items-center gap-2 border-2 font-bold rounded-sm border-blue-500 text-blue-500 p-2 px-4 z-10"
-          >
-            <IoMdAddCircleOutline className="text-2xl font-bold" /> Add new Company
-          </Link>
-        </div> */}
       </div>
   );
 }

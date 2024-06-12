@@ -42,10 +42,6 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    console.log("from spons page",organisation);
-  },[]);
-
   const rows = sponsors.map((row) => (
     <Table.Tr key={row.id} className="p-2">
       <Table.Td>{row.name}</Table.Td>

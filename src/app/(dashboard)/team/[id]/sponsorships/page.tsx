@@ -95,7 +95,7 @@ export default function Home({ params }: Readonly<{ params: { id: number } }>) {
   };
 
   useEffect(() => {
-    if (org.id !== 0) fetchSponsors();
+   fetchSponsors();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -103,7 +103,6 @@ export default function Home({ params }: Readonly<{ params: { id: number } }>) {
     <Table.Tr
       key={row.spon_id}
       onClick={() => {
-        console.log(row.spon_id);
         handleOpen(row.comp_id);
       }}
       className=" border-b cursor-pointer hover:bg-[#6c6c6c66] rounded-md"
@@ -190,7 +189,7 @@ export default function Home({ params }: Readonly<{ params: { id: number } }>) {
               </Table.Tbody>
             </Table>
             <Modal
-              classNames={{ content: "border-2 border-red-500", root: "" }}
+              classNames={{ content: "border-2 border-blue-700", root: "" }}
               opened={opened}
               centered
               size="auto"

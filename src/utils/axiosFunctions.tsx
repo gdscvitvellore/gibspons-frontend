@@ -53,7 +53,7 @@ export const postRequest = async (url: string, body: any) => {
   try {
     const response = await api.post(url, body);
 
-    if (response.status === 200) {
+    if (response.status === 200 || 201) {
       return response.data;
     } else {
       throw new Error(response.data.detail);

@@ -22,7 +22,6 @@ import { usePathname } from "next/navigation";
 import { pocResp } from "@/types/org";
 import PocTable from "./PocTable";
 
-
 export default function ModifySponsorship({
   company_id,
   close,
@@ -68,7 +67,7 @@ export default function ModifySponsorship({
           Number(organisation),
           company_id
         );
-        const spon = await getSponsorsByEvent( event_id);
+        const spon = await getSponsorsByEvent(event_id);
         const spon_filtered = spon.sponsorships.find(
           (c) => c.company === company_id
         );
@@ -85,7 +84,7 @@ export default function ModifySponsorship({
           sponsor_id: spon_filtered?.id,
           remarks: spon_filtered?.remarks,
         });
-        if(spon_filtered?.poc) form.setValues({ poc_id: spon_filtered?.poc });
+        if (spon_filtered?.poc) form.setValues({ poc_id: spon_filtered?.poc });
         if (
           spon_filtered?.status === "Accepted" &&
           spon_filtered?.type_of_sponsorship === "inkind"
@@ -99,7 +98,7 @@ export default function ModifySponsorship({
             isAccepted: true,
           });
         }
-        const poc = await getPoCByCompany( company_id);
+        const poc = await getPoCByCompany(company_id);
         setData(poc);
       } catch (error: any) {
         toast.error(error.message);
@@ -129,10 +128,7 @@ export default function ModifySponsorship({
           type_of_sponsorship: values.type_of_sponsorship,
         };
       }
-      const resp = await updateSponsorship(
-        data,
-        values.sponsor_id
-      );
+      const resp = await updateSponsorship(data, values.sponsor_id);
       console.log(resp);
       close(true, resp);
     } catch (error: any) {
@@ -297,11 +293,7 @@ export default function ModifySponsorship({
           >
             PoC Details
           </Title>
-          <PocTable
-            pocData={data}
-            setPoc={setCurrPoc}
-            checkbox={true}
-          />
+          <PocTable pocData={data} setPoc={setCurrPoc} checkbox={true} currPoc={form.getValues().poc_id} />
           <div className="w-full my-8 flex flex-col md:flex-row justify-center gap-4 text-center items-center">
             <Button
               className="bg-blue-500 w-full self-center hover:bg-blue-400"
