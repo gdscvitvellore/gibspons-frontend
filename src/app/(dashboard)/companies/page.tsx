@@ -1,6 +1,5 @@
 "use client";
 
-import { authStore } from "@/store/auth";
 import { fetchAllCompanies } from "@/utils/organisation";
 
 import { Table, ScrollArea, Text, Modal, keys, TextInput, rem } from "@mantine/core";
@@ -30,7 +29,6 @@ function filterData(data: RowData[], search: string) {
 }
 
 export default function Home({ params }: Readonly<{ params: { id: number } }>) {
-  const { accessToken } = authStore();
   const { org } = organisationStore();
 
   const [search, setSearch] = useState("");

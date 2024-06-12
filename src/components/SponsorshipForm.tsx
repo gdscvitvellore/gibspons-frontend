@@ -22,6 +22,7 @@ import { usePathname } from "next/navigation";
 import { pocResp } from "@/types/org";
 import PocTable from "./PocTable";
 
+
 export default function ModifySponsorship({
   company_id,
   close,
@@ -55,6 +56,12 @@ export default function ModifySponsorship({
   });
 
   useEffect(() => {
+    form.setValues({
+      poc_id: currPoc,
+    });
+  }, [currPoc]);
+
+  useEffect(() => {
     const fetchSponsors = async () => {
       try {
         const comp_filtered = await getCompanyByID(
@@ -78,6 +85,7 @@ export default function ModifySponsorship({
           sponsor_id: spon_filtered?.id,
           remarks: spon_filtered?.remarks,
         });
+        if(spon_filtered?.poc) form.setValues({ poc_id: spon_filtered?.poc });
         if (
           spon_filtered?.status === "Accepted" &&
           spon_filtered?.type_of_sponsorship === "inkind"
@@ -293,7 +301,7 @@ export default function ModifySponsorship({
             pocData={data}
             setPoc={setCurrPoc}
             checkbox={true}
-            currPoc={currPoc}
+            form={form}
           />
           <div className="w-full my-8 flex flex-col md:flex-row justify-center gap-4 text-center items-center">
             <Button

@@ -75,7 +75,7 @@ function sortData(
   );
 }
 
-function Th({ children, reversed, sorted, colSpan, onSort }: ThProps) {
+function Th({ children, reversed, sorted, colSpan, onSort }: Readonly<ThProps>) {
   const Icon = sorted
     ? reversed
       ? IconChevronUp
@@ -101,11 +101,11 @@ export default function MembersTable({
   data,
   approved,
   refresh,
-}: {
+}: Readonly<{
   data: RowData[];
   approved: boolean;
   refresh: () => Promise<void>;
-}) {
+}>) {
   const [search, setSearch] = useState("");
   const [sortedData, setSortedData] = useState<RowData[]>(data);
   const [SortBy, setSortBy] = useState<keyof RowData | null>(null);

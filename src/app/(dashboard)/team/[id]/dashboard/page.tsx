@@ -4,7 +4,6 @@ import { authStore } from "@/store/auth";
 import { useEffect, useState } from "react";
 import { sponsByEvent } from "@/types/org";
 import { getSponsorsByEvent } from "@/utils/organisation";
-import { useLoadingStore } from "@/store/loading";
 import { Table, ScrollArea, Text } from "@mantine/core";
 import PieChart from "@/components/pieChart";
 import { useLinkStore } from "@/store/crumbs";
@@ -13,13 +12,11 @@ import { organisationStore } from "@/store/organisation";
 export default function Home({ params }: Readonly<{ params: { id: number } }>) {
   const { organisation } = authStore();
   const [data, setData] = useState<sponsByEvent>();
-  const { startLoading, stopLoading } = useLoadingStore();
   const { setLink } = useLinkStore();
   const { getOrganisation } = organisationStore();
 
   useEffect(() => {
     const fetchSponsors = async () => {
-      startLoading();
       try {
         const data = await getSponsorsByEvent(String(params.id));
         setData(data);
@@ -27,13 +24,10 @@ export default function Home({ params }: Readonly<{ params: { id: number } }>) {
           { href: `/team`, title: `${getOrganisation().name}` },
           { href: `/team/${params.id}/dashboard`, title: `${data.event.name}` },
         ]);
-        stopLoading();
       } catch (e) {
-        stopLoading();
         console.log(e);
       }
     };
-    if (Number(organisation) === 0) return;
     fetchSponsors();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

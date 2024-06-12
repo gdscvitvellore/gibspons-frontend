@@ -1,10 +1,11 @@
 "use client";
+
 import Sidebar from "@/components/Sidebar";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import HeaderTabs from "@/components/HeaderTabs";
 import ManageOrg from "@/components/ManageOrg";
 import { authStore } from "@/store/auth";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { BiSolidDashboard, BiBuildings } from "react-icons/bi";
 import { RiTeamFill } from "react-icons/ri";
 import { IoMailOpen } from "react-icons/io5";
@@ -12,6 +13,7 @@ import { Inter } from "next/font/google";
 import { usePathname } from "next/navigation";
 import { MdEmojiEvents } from "react-icons/md";
 import { ToastContainer } from "react-toastify";
+import Loading from "./loading";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,13 +23,13 @@ function Dashboard({
   children: React.ReactNode;
 }>) {
   const { organisation, is_approved } = authStore();
-  const [Organisation, setOrganisation] = useState<string | null>("");
-  const [Is_approved, setIsApproved] = useState(true);
+  const [org, setOrg] = useState<string | null>("");
+  const [approved, setApproved] = useState(true);
   const pathname = usePathname();
 
   useEffect(() => {
-    setOrganisation(organisation);
-    setIsApproved(is_approved);
+    setOrg(organisation);
+    setApproved(is_approved);
   }, [organisation, is_approved]);
 
   const event_id = pathname.split("/")[2];
@@ -86,13 +88,13 @@ function Dashboard({
       />
       <div className="flex flex-col w-full ml-[rem(60)] sm:ml-[rem(300)]">
         <HeaderTabs />
-        {(Organisation === null || Is_approved === false) &&
+        {(org === null || approved === false) &&
         !pathname.includes("profile") ? (
           <ManageOrg />
         ) : (
           <div className="m-4 relative rounded-md h-full overflow-auto">
             <ToastContainer />
-            {children}
+            <Suspense fallback={<Loading />}>{children}</Suspense>
           </div>
         )}
       </div>

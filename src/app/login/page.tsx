@@ -43,6 +43,7 @@ export default function Login() {
     try {
       localStorage.clear();
       const res = await handleLogin(email.toLocaleLowerCase(), password);
+      console.log(res);
       if (res.data?.access_token) {
         const {
           name,
@@ -72,6 +73,7 @@ export default function Login() {
         login(user);
         if (organisation && is_approved) {
           const org = await getOrganisation();
+          console.log(org)
           updateOrganisation(org);
         }
         router.push("/team");

@@ -12,7 +12,7 @@ import { getRequest, postRequest, patchRequest } from "./axiosFunctions";
 
 const BaseURL = process.env.NEXT_PUBLIC_BASE_URL;
 
-export async function getOrganisation(): Promise<organisation> {
+export async function getOrganisation(): Promise<any> {
   try {
     return await getRequest(`${BaseURL}/app/organisation/`);
   } catch (error: any) {
@@ -43,10 +43,9 @@ export async function fetchAllCompanies(
 }
 
 export async function getSponsorsByOrg(
-  org: string | null
 ): Promise<sponsByOrg[]> {
   try {
-    return await getRequest(`${BaseURL}/app/sponsors/`, { org });
+    return await getRequest(`${BaseURL}/app/sponsors/`);
   } catch (error: any) {
     throw error;
   }

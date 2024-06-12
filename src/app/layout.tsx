@@ -12,6 +12,8 @@ import {
 } from "@mantine/core";
 import LoadingScreen from "@/components/loadingScreen";
 import "react-toastify/dist/ReactToastify.css";
+import { Suspense } from "react";
+import Loading from "./loading";
 
 export default function RootLayout({
   children,
@@ -63,7 +65,7 @@ export default function RootLayout({
       <body>
         <LoadingScreen />
         <MantineProvider theme={theme} defaultColorScheme="light">
-          {children}
+          <Suspense fallback={<Loading />}>{children}</Suspense>
         </MantineProvider>
       </body>
     </html>

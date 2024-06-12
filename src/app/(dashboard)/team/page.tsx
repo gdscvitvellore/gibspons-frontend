@@ -3,11 +3,10 @@ import { authStore } from "@/store/auth";
 import { organisationStore } from "@/store/organisation";
 import Image from "next/image";
 import { IoLocationSharp } from "react-icons/io5";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { getEvents } from "@/utils/events";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { useRouter } from "next/navigation";
-import { useLoadingStore } from "@/store/loading";
 import { useLinkStore } from "@/store/crumbs";
 import { Event } from "@/types/org";
 
@@ -32,7 +31,6 @@ const eventCard = (event: Event) => {
 export default function Home() {
   const { role } = authStore();
   const router = useRouter();
-  const { startLoading, stopLoading } = useLoadingStore();
   const [eventsData, setEventsData] = useState<Event[]>([]);
   const { org } = organisationStore();
   const { setLink } = useLinkStore();
@@ -40,13 +38,10 @@ export default function Home() {
   useEffect(() => {
     setLink([{ href: "/team", title: "My Team" }]);
     const fetchEvents = async () => {
-      startLoading();
       try {
         const data = await getEvents(null);
         setEventsData(data.results);
-        stopLoading();
       } catch (error: any) {
-        stopLoading();
         console.error(error);
       }
     };
@@ -57,23 +52,25 @@ export default function Home() {
   return (
     <div className="relative h-fit min-h-full bg-white gap-8 flex flex-col items-center p-4">
       <div className="flex flex-col md:flex-row w-full items-center gap-4 h-full justify-center">
-        <div className="flex flex-col items-center md:items-start w-full max-h-[30rem] max-w-[30rem]">
-          {org.logo && (
-            <Image
-              src={org.logo}
-              alt="Organisation Logo"
-              width={100}
-              height={100}
-            />
-          )}
-          <h1 className=" font-semibold text-2xl">{org.name}</h1>
-          {org.location && (
-            <div className="flex flex-row gap-4 items-center">
-              <IoLocationSharp />
-              <h2 className="text-lg ">{org.location}</h2>
-            </div>
-          )}
-        </div>
+        <Suspense fallback={<h1>Loading...</h1>}>
+          <div className="flex flex-col items-center md:items-start w-full max-h-[30rem] max-w-[30rem]">
+            {org.logo && (
+              <Image
+                src={org.logo}
+                alt="Organisation Logo"
+                width={100}
+                height={100}
+              />
+            )}
+            <h1 className=" font-semibold text-2xl">{org.name}</h1>
+            {org.location && (
+              <div className="flex flex-row gap-4 items-center">
+                <IoLocationSharp />
+                <h2 className="text-lg ">{org.location}</h2>
+              </div>
+            )}
+          </div>
+        </Suspense>
         <div className="bg-gradient-to-r from-[#4d4d4d] to-[#3e3e3e] p-4 py-8 flex flex-col sm:flex-row justify-between text-white rounded-md shadow-md w-full max-w-[30rem]">
           <div className="flex flex-col w-full justify-center">
             <p>

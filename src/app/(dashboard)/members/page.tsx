@@ -6,7 +6,6 @@ import { IoLocationSharp } from "react-icons/io5";
 import { useState, useEffect } from "react";
 import { getMembersByOrg } from "@/utils/organisation";
 import MembersTable from "@/components/MembersTable";
-import { useLoadingStore } from "@/store/loading";
 import { useLinkStore } from "@/store/crumbs";
 
 interface RowData {
@@ -24,12 +23,10 @@ export default function Home() {
   const [membersNotApproved, setMembersNotApproved] = useState<
     RowData[] | null
   >();
-  const { startLoading, stopLoading } = useLoadingStore();
   const { setLink } = useLinkStore();
 
   const fetchMembers = async () => {
     try {
-      startLoading();
       const data = await getMembersByOrg(org.id);
       const rowDataApproved = data
         .filter((member) => member.is_approved === true)
@@ -73,9 +70,7 @@ export default function Home() {
       setMembersNotApproved(
         rowDataNotApproved.length === 0 ? null : rowDataNotApproved
       );
-      stopLoading();
     } catch (error: any) {
-      stopLoading();
       console.error(error);
     }
   };

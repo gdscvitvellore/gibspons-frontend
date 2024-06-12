@@ -4,28 +4,26 @@ import { pocResp } from "@/types/org";
 import cx from "clsx";
 import classes from "@/styles/TableSelection.module.css";
 import { IoAddCircleOutline } from "react-icons/io5";
+import { UseFormReturnType } from "@mantine/form";
 
 export default function PocTable({
   checkbox,
   pocData,
   setPoc,
-  currPoc
+  form
 }: {
   checkbox: boolean;
   pocData: pocResp[];
   setPoc?: (id: number) => void;
-  currPoc?: number;
+  form: any;
 }) {
-  const [selection, setSelection] = useState(currPoc || 0); // Initialize selection with currPoc or 0
+  const [selection, setSelection] = useState(0); // Initialize selection with currPoc or 0
 
   const toggleRow = (id: number) => {
     setSelection(id);
     if (setPoc) setPoc(id);
   };
 
-  useEffect(() => {
-    if(currPoc) setSelection(currPoc);
-  }, []);
   
   const rows = pocData.map((item) => {
     const selected = selection === item.id;
@@ -36,7 +34,8 @@ export default function PocTable({
       >
         {checkbox && (
           <Table.Td>
-            <Checkbox checked={selected} onChange={() => toggleRow(item.id)} />
+            <Checkbox checked={selected} onChange={() => toggleRow(item.id)} {...form.getInputProps("poc_id")}/>
+
           </Table.Td>
         )}
         <Table.Td>
@@ -83,7 +82,7 @@ export default function PocTable({
                   <Table.Td colSpan={6} align="center">
                     <button className="flex font-semibold gap-2 text-[1rem] flex-row items-center justify-center">
                       <IoAddCircleOutline className="text-[1.5rem]" />
-                      Add POCs
+                      Add POCs {}
                     </button>
                   </Table.Td>
                 </Table.Tr>

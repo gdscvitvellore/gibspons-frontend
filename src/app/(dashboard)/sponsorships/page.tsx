@@ -4,7 +4,6 @@ import { authStore } from "@/store/auth";
 import { getSponsorsByOrg } from "@/utils/organisation";
 import { Table, ScrollArea, Text } from "@mantine/core";
 import { useState, useEffect } from "react";
-import { useLoadingStore } from "@/store/loading";
 import { useLinkStore } from "@/store/crumbs";
 
 interface RowData {
@@ -18,15 +17,13 @@ interface RowData {
 export default function Home() {
   const { organisation } = authStore();
   const [sponsors, setSponsors] = useState<RowData[]>([]);
-  const { startLoading, stopLoading } = useLoadingStore();
   const { setLink } = useLinkStore();
 
   useEffect(() => {
     setLink([{ href: "/sponsorships", title: "Sponsorships" }]);
     const fetchSponsors = async () => {
-      startLoading();
       try {
-        const data = await getSponsorsByOrg(organisation);
+        const data = await getSponsorsByOrg();
         const rowData = data.map((sponsor) => {
           return {
             id: sponsor.id,
@@ -37,15 +34,17 @@ export default function Home() {
           };
         });
         setSponsors(rowData);
-        stopLoading();
       } catch (error: any) {
-        stopLoading();
         console.error(error);
       }
     };
     if (Number(organisation) !== 0) fetchSponsors();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    console.log("from spons page",organisation);
+  },[]);
 
   const rows = sponsors.map((row) => (
     <Table.Tr key={row.id} className="p-2">
