@@ -102,7 +102,7 @@ function ManageOrg() {
     const { orgCode } = form.values;
     try {
       const res: any = await handleJoinOrg(orgCode);
-      console.log(res);
+      toast.info(res.message)
       refreshData();
       toast.success(res);
     } catch (error: any) {

@@ -12,7 +12,6 @@ import { IoMailOpen } from "react-icons/io5";
 import { Inter } from "next/font/google";
 import { usePathname } from "next/navigation";
 import { MdEmojiEvents } from "react-icons/md";
-import { ToastContainer } from "react-toastify";
 import Loading from "./loading";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -93,7 +92,6 @@ function Dashboard({
           <ManageOrg />
         ) : (
           <div className="m-4 relative rounded-md h-full overflow-auto">
-            <ToastContainer />
             <Suspense fallback={<Loading />}>{children}</Suspense>
           </div>
         )}

@@ -49,9 +49,9 @@ api.interceptors.response.use(
   }
 );
 
-export const postRequest = async (url: string, body: any) => {
+export const postRequest = async (url: string, body: any, params?:{}) => {
   try {
-    const response = await api.post(url, body);
+    const response = await api.post(url, body, { params });
 
     if (response.status === 200 || 201) {
       return response.data;

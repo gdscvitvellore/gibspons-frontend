@@ -10,7 +10,6 @@ import {
   Input,
   PasswordInput,
 } from "@mantine/core";
-import LoadingScreen from "@/components/loadingScreen";
 import "react-toastify/dist/ReactToastify.css";
 import { Suspense } from "react";
 import Loading from "./loading";
@@ -60,10 +59,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* <link rel="manifest" href="manifest.json" /> */}
         <ColorSchemeScript defaultColorScheme="light" />
       </head>
       <body>
-        <LoadingScreen />
         <MantineProvider theme={theme} defaultColorScheme="light">
           <Suspense fallback={<Loading />}>{children}</Suspense>
         </MantineProvider>

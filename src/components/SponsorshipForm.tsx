@@ -33,7 +33,7 @@ export default function ModifySponsorship({
   const event_id = usePathname().split("/")[2];
   const [data, setData] = useState<pocResp[]>([]);
   const [currPoc, setCurrPoc] = useState(0);
-  var existingPoc = 0;
+  const [existingPoc, setExistingPoc ] = useState(0);
 
   const form = useForm({
     initialValues: {
@@ -87,7 +87,7 @@ export default function ModifySponsorship({
         });
         if (spon_filtered?.poc) {
           form.setValues({ poc_id: spon_filtered?.poc });
-          existingPoc = spon_filtered?.poc;
+          setExistingPoc(spon_filtered?.poc);
         }
         if (
           spon_filtered?.status === "Accepted" &&

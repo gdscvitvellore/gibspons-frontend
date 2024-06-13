@@ -34,7 +34,7 @@ export async function handleRegister(
 
 export async function handleJoinOrg(orgCode: string): Promise<loginRes> {
   try {
-    return await postRequest(`${BaseURL}/users/joinorg/`, { code: orgCode });
+    return await postRequest(`${BaseURL}/users/joinorg/`, { invite_code: orgCode });
   } catch (error: any) {
     throw error;
   }
@@ -80,7 +80,7 @@ export async function updateUser({
 
 export async function approveUser(user: string): Promise<any> {
   try {
-    return postRequest(`${BaseURL}/users/approve/`, { user });
+    return postRequest(`${BaseURL}/users/approve/`,null, { user });
   } catch (error: any) {
     throw error;
   }
