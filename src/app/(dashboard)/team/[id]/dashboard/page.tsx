@@ -8,6 +8,7 @@ import { Table, ScrollArea, Text } from "@mantine/core";
 import PieChart from "@/components/pieChart";
 import { useLinkStore } from "@/store/crumbs";
 import { organisationStore } from "@/store/organisation";
+import Leaderboard from "@/components/Leaderboard";
 
 export default function Home({ params }: Readonly<{ params: { id: number } }>) {
   const { organisation } = authStore();
@@ -37,9 +38,7 @@ export default function Home({ params }: Readonly<{ params: { id: number } }>) {
       <Table.Td>{row.company_name}</Table.Td>
       <Table.Td className="text-center">{row.user_name}</Table.Td>
       <Table.Td className="text-center">
-        <p
-          className={`${row.status} py-2 rounded-full w-[10rem] m-auto`}
-        >
+        <p className={`${row.status} py-2 rounded-full w-[10rem] m-auto`}>
           {row.status}
         </p>
       </Table.Td>
@@ -106,12 +105,10 @@ export default function Home({ params }: Readonly<{ params: { id: number } }>) {
       </div>
       <div className="w-[50%] max-h-full min-w-[400px] gap-4 flex flex-col">
         <div className="h-full w-full rounded-md p-2 bg-white">
-          LeaderBoard Position
+          {organisation && <Leaderboard event_id={params.id} />}
         </div>
         <div className="h-[80%] bg-white rounded-md p-2 w-full">
-          {organisation && (
-            <PieChart event_id={params.id} />
-          )}
+          {organisation && <PieChart event_id={params.id} />}
         </div>
       </div>
     </div>

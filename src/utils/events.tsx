@@ -55,3 +55,15 @@ export async function getPieChart(
     throw error;
   }
 }
+
+export async function getLeaderBoard(
+  event_id: number
+): Promise<any> {
+  try {
+    return await getRequest(`${BaseURL}/app/leaderboard/`, {
+      event: event_id,
+    });
+  } catch (error: any) {
+    throw error;
+  }
+}
