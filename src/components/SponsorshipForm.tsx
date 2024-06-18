@@ -215,7 +215,7 @@ export default function ModifySponsorship({
                 radius="md"
                 size="md"
                 w="100%"
-                disabled={!form.values.isAccepted}
+                disabled={!(form.values.status === "Accepted")}
                 data={[
                   { label: "Select status", value: "" },
                   { label: "Monetary", value: "monetary" },
@@ -228,7 +228,7 @@ export default function ModifySponsorship({
                 placeholder="donation amount"
                 size="md"
                 w={"100%"}
-                disabled={!form.values.isAccepted}
+                disabled={!(form.values.status === "Accepted")}
                 classNames={{ input: "bg-white w-full " }}
                 mb={10}
                 {...form.getInputProps("money_donated")}
