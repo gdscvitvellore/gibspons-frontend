@@ -18,8 +18,7 @@ export default function PocTable({
   const [pocSelected, setPocSelected] = useState(0);
 
   useEffect(() => {
-    if(currPoc) setPocSelected(currPoc);
-    // if (currPoc) form.setValues({ poc_id: currPoc });
+    if (currPoc) setPocSelected(currPoc);
   }, [currPoc]);
 
   const toggleRow = (id: number) => {
@@ -82,18 +81,6 @@ export default function PocTable({
                 </Table.Td>
               </Table.Tr>
             ) : (
-              //  (
-              //   rows.concat(
-              //     <Table.Tr className="hover:bg-[#c4c4c4] w-full hover:cursor-pointer">
-              //       <Table.Td colSpan={6} align="center">
-              //         <button className="flex font-semibold gap-2 text-[1rem] flex-row items-center justify-center">
-              //           <IoAddCircleOutline className="text-[1.5rem]" />
-              //           Add POCs {}
-              //         </button>
-              //       </Table.Td>
-              //     </Table.Tr>
-              //   )
-              // )
               rows
             )}
           </Table.Tbody>

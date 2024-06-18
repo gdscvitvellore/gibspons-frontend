@@ -10,7 +10,7 @@ export default function Footer() {
               Made with &#10084;&#65039; by GDSC VIT.
             </h1>
             <p className="text-[0.75rem] pb-2 text-center text-[#555] md:text-[1rem]">
-              2023 &#169; All Rights Reserved, Google Developer Student Clubs
+              2024 &#169; All Rights Reserved, Google Developer Student Clubs
               VIT.
             </p>
           </div>

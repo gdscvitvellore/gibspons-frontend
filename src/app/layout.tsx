@@ -59,7 +59,20 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* <link rel="manifest" href="manifest.json" /> */}
+        <link rel="icon" href="/favicon.svg" type="image/svg" sizes="32x32" />
+
+        <meta name="title" content="gibspons" />
+        <meta
+          name="description"
+          content="Gibspons is a platform that helps you track sponsorships"
+        />
+        <meta name="og:title" content="gibspons" />
+        <meta
+          name="og:description"
+          content="Gibspons is a platform that helps you track sponsorships"
+        />
+        <meta name="og:image" content="/OG image.png" />
+        <title>gibspons</title>
         <ColorSchemeScript defaultColorScheme="light" />
       </head>
       <body>
