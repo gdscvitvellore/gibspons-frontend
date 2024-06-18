@@ -71,7 +71,37 @@ export default function RootLayout({
           name="og:description"
           content="Gibspons is a platform that helps you track sponsorships"
         />
-        <meta name="og:image" content="/OG image.png" />
+        <title>gibspons</title>
+        <meta
+          property="og:url"
+          content="https://gibspons.dscvit.com"
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="gibspons" />
+        <meta
+          property="og:image"
+          content="https://imgur.com/ReuRKn4.png"
+        />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          property="twitter:domain"
+          content="https;//gibspons.dscvit.com"
+        />
+        <meta
+          property="twitter:url"
+          content="https://gibspons.dscvit.com"
+        />
+        <meta name="twitter:title" content="gibspons" />
+        <meta
+          name="twitter:description"
+          content="Gibspons is a platform that helps you track sponsorships"
+        />
+        <meta
+          name="twitter:image"
+          content="https://imgur.com/ReuRKn4.png"
+        />
+
         <title>gibspons</title>
         <ColorSchemeScript defaultColorScheme="light" />
       </head>
