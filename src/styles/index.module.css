@@ -1,0 +1,6 @@
+.stat {
+  padding: 25px;
+  background: url("/ellipse.svg");
+  background-position: 10px;
+  background-repeat: space;
+}

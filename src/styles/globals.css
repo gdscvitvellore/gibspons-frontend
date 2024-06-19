@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* For status Tags */
+.Accepted {
+  @apply bg-[#cef6e1] text-[#3AB876];
+}
+.Rejected {
+  @apply bg-[#fedcd4] text-[#F46E47];
+}
+.Reply {
+  @apply bg-[#fff3cf] text-[#ffca11];
+}
+.Progress {
+  @apply bg-[#D1C5FF] text-[#7F5DFF];
+}
+.Contacted {
+  @apply bg-[#d4d5d5] text-[#414141];
+}
+
+/* BEGIN: Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #fdfdfd;
+  border-radius: 3px;
+
+    &:hover {
+        background-color: #a0a0a0;
+    }
+}
