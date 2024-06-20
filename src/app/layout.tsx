@@ -10,9 +10,13 @@ import {
   Input,
   PasswordInput,
 } from "@mantine/core";
+import { Inter } from "next/font/google";
 import "react-toastify/dist/ReactToastify.css";
 import { Suspense } from "react";
 import Loading from "./loading";
+
+const inter = Inter({subsets: ["latin"]});
+
 
 export default function RootLayout({
   children,
@@ -105,7 +109,7 @@ export default function RootLayout({
         <title>gibspons</title>
         <ColorSchemeScript defaultColorScheme="light" />
       </head>
-      <body>
+      <body className={`${inter.className}`}>
         <MantineProvider theme={theme} defaultColorScheme="light">
           <Suspense fallback={<Loading />}>{children}</Suspense>
         </MantineProvider>

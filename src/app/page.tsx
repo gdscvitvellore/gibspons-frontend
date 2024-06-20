@@ -1,12 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import Image from "next/image";
-// import { Outfit } from "next/font/google";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Link from "next/link";
 
-// const outfit = Outfit({ subsets: ["latin"] });
 
 export default function Home() {
   return (
