@@ -124,7 +124,7 @@ export default function ModifySponsorship({
         toast.error("Please select a PoC to update status!!");
         return;
       }
-      if (form.values.isAccepted) {
+      if (form.values.status === "Accepted") {
         data = {
           ...data,
           additional: values.additional,
