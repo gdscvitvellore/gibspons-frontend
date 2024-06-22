@@ -54,9 +54,8 @@ function ManageOrg() {
     validate: {
       teamname: (value) => (value.length > 0 ? null : "Team name is required"),
       teamtype: (value) => (value.length > 0 ? null : "Team type is required"),
-      location: (value) => (value.length > 0 ? null : "Location is required"),
       teamlogo: (value) =>
-        /\bhttps?:\/\/\S+?\.(jpg|jpeg|png|gif)\b/.test(value)
+        /\bhttps?:\/\/\S+?\.(jpg|jpeg|png)\b/.test(value)
           ? null
           : "Enter a valid image url, supported formats are jpg, jpeg, png",
     },
