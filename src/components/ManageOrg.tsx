@@ -85,9 +85,9 @@ function ManageOrg() {
     try {
       const res: any = await handleCreateOrg(
         teamname,
-        teamtype,
+        industry: teamtype,
         location,
-        teamlogo
+        logo: teamlogo
       );
       refreshData();
       toast.success(res);
