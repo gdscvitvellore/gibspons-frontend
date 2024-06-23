@@ -42,16 +42,16 @@ export async function handleJoinOrg(orgCode: string): Promise<loginRes> {
 
 export async function handleCreateOrg(
   teamname: string,
-  teamtype: string,
+  industry: string,
   location: string,
-  teamlogo: string
+  logo: string
 ): Promise<string> {
   try {
     return await postRequest(`${BaseURL}/users/createorg/`, {
       teamname,
-      teamtype,
+      industry,
       location,
-      teamlogo,
+      logo,
     });
   } catch (error: any) {
     throw error;
