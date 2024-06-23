@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import {
   Table,
   ScrollArea,
@@ -297,7 +296,6 @@ export default function MembersTable({
             verticalSpacing="xs"
             miw={900}
             withRowBorders
-            // stripedColor="#f8f9fa"
             striped
             border={1}
             borderColor="#48484814"

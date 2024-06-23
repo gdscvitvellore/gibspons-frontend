@@ -5,7 +5,6 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Link from "next/link";
 
-
 export default function Home() {
   return (
     <div className={`w-full  h-full bg-[#F8F8F8] `}>
@@ -16,8 +15,8 @@ export default function Home() {
       >
         <div className="w-[30rem]">
           <h1 className="text-[2rem] md:text-[4rem] font-bold text-white w-full leading-[110%]">
-            tracking <br /> sponsorships <br />{" "}
-            <span className="text-[#5379F6]">made easy</span>
+            tracking <br /> <span className="text-[#5379F6]">sponsorships</span>{" "}
+            <br /> made easy
           </h1>
           <p className="mt-4 text-[1.5rem] md:text-[1.75rem]  text-white">
             introducing gibspons, draft mails, track sponsorships, and manage
